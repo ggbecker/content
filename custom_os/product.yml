@@ -1,0 +1,11 @@
+product: custom_os
+full_name: Custom OS
+type: platform
+
+benchmark_root: "../linux_os/guide"
+
+profiles_root: "./profiles"
+
+pkg_manager: "apt_get"
+
+init_system: "systemd"
