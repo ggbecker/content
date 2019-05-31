@@ -3,5 +3,5 @@
 
 include_dconf_settings
 
-dconf_settings 'org/gnome/login-screen' 'enable-smartcard-authentication' 'true' 'gdm.d' '00-security-settings'
-dconf_lock 'org/gnome/login-screen' 'enable-smartcard-authentication' 'gdm.d' '00-security-settings-lock'
+dconf_settings 'org/gnome/login-screen' 'enable-smartcard-authentication' 'true' 'local.d' '00-security-settings'
+dconf_lock 'org/gnome/login-screen' 'enable-smartcard-authentication' 'local.d' '00-security-settings-lock'

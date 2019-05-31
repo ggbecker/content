@@ -3,5 +3,5 @@
 
 include_dconf_settings
 
-dconf_settings 'org/gnome/login-screen' 'disable-restart-buttons' 'true' 'gdm.d' '00-security-settings'
-dconf_lock 'org/gnome/login-screen' 'disable-restart-buttons' 'gdm.d' '00-security-settings-lock'
+dconf_settings 'org/gnome/login-screen' 'disable-restart-buttons' 'true' 'local.d' '00-security-settings'
+dconf_lock 'org/gnome/login-screen' 'disable-restart-buttons' 'local.d' '00-security-settings-lock'

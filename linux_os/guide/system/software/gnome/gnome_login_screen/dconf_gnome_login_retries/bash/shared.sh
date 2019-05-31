@@ -3,5 +3,5 @@
 
 include_dconf_settings
 
-dconf_settings 'org/gnome/login-screen' 'allowed-failures' "3" 'gdm.d' '00-security-settings'
-dconf_lock 'org/gnome/login-screen' 'allowed-failures' 'gdm.d' '00-security-settings-lock'
+dconf_settings 'org/gnome/login-screen' 'allowed-failures' "3" 'local.d' '00-security-settings'
+dconf_lock 'org/gnome/login-screen' 'allowed-failures' 'local.d' '00-security-settings-lock'

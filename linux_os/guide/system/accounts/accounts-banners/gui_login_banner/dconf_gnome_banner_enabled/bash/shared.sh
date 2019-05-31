@@ -3,5 +3,5 @@
 
 include_dconf_settings
 
-dconf_settings 'org/gnome/login-screen' 'banner-message-enable' 'true' 'gdm.d' '00-security-settings'
-dconf_lock 'org/gnome/login-screen' 'banner-message-enable' 'gdm.d' '00-security-settings-lock'
+dconf_settings 'org/gnome/login-screen' 'banner-message-enable' 'true' 'local.d' '00-security-settings'
+dconf_lock 'org/gnome/login-screen' 'banner-message-enable' 'local.d' '00-security-settings-lock'
