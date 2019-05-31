@@ -13,7 +13,7 @@
     <criteria operator="OR">
       <extend_definition comment="dconf installed" definition_ref="package_dconf_installed" negate="true" />
       <criteria comment="Disable GUI shutdown and restart buttons and prevent user from changing it" operator="AND">
-        <extend_definition comment="dconf user profile exists" definition_ref="enable_dconf_user_profile" />
+        <extend_definition comment="dconf gdm profile exists" definition_ref="enable_dconf_gdm_profile" />
         <criterion comment="Disable restart and shutdown buttons" test_ref="test_disable_restart_buttons" />
         <criterion comment="Prevent user from changing" test_ref="test_prevent_user_enable_restart_buttons" />
       </criteria>

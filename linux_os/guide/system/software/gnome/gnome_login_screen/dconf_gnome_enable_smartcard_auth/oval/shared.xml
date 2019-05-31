@@ -13,7 +13,7 @@
     <criteria operator="OR">
       <extend_definition comment="dconf installed" definition_ref="package_dconf_installed" negate="true" />
       <criteria comment="Enable smartcard authentication and prevent user from changing it" operator="AND">
-        <extend_definition comment="dconf user profile exists" definition_ref="enable_dconf_user_profile" />
+        <extend_definition comment="dconf gdm profile exists" definition_ref="enable_dconf_gdm_profile" />
         <criterion comment="Enable smartcard authentication" test_ref="test_enable_gnome_smartcard" />
         <criterion comment="Prevent user from changing" test_ref="test_prevent_user_disable_smartcard" />
       </criteria>
