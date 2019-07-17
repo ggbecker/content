@@ -2,7 +2,7 @@
 :rootdir: ../..
 :imagesdir: ./images
 :templatesdir: ../../shared/templates
-:rhel7dir: ../../rhel7/templates/csv
+:rhel7dir: ../../rhel7
 :toc:
 :toc-placement: preamble
 :numbered:
@@ -1153,14 +1153,14 @@ Use the jinja syntax we use elsewhere in the project; refer to the earlier secti
 This is an example of an OVAL template file called _template_OVAL_package_installed_
 
 [source,xml]
-----
-include::{templatesdir}/template_OVAL_package_installed
-----
+
+include::{templatesdir}/template_OVAL_package_installed[]
+
 
 And here is the Ansible template file called _template_ANSIBLE_package_installed_:
 
 ----
-include::{templatesdir}/template_ANSIBLE_package_installed
+include::{templatesdir}/template_ANSIBLE_package_installed[]
 ----
 
 2) Create a csv (comma-separated-values) file in the _PRODUCT/template/csv_ directory with the same name of the template followed by the extension _.csv_. It should contain all the instances you want to generate from the template, one per line. Use the line to supply values to the variables. You can use `#` to make a comment until the end of the line.
@@ -1168,7 +1168,7 @@ include::{templatesdir}/template_ANSIBLE_package_installed
 This is the file _rhel7/template/csv/packages_installed.csv_:
 
 ----
-include::{rhel7dir}/template/csv/packages_installed.csv
+include::{rhel7dir}/templates/csv/packages_installed.csv[]
 ----
 
 3) Create a python file containing the generator class. The name of the file should start with _create__ and then be followed by the template name and the extension _.py_. The generator class name should also be the template name, in Camel case, followed by _Generator_.
@@ -1181,7 +1181,7 @@ This is the file with the generator class for the installed package template, it
 
 [source,python]
 ----
-include::{templatesdir}/create_package_installed.py
+include::{templatesdir}/create_package_installed.py[]
 ----
 
 4) Finally, you have to ensure the build system knows your template. To do that, you have to edit the file _ssg/build_templates.py_ and include the generator class you've just created and declare which csv file to use along with it.
