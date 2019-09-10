@@ -980,7 +980,7 @@ class DirectoryLoader(object):
         self.subdirectories = []
 
         self.all_values = set()
-        self.all_rules = set()
+        self.all_rules = list()
         self.all_groups = set()
 
         self.profiles_dir = profiles_dir
@@ -1008,7 +1008,11 @@ class DirectoryLoader(object):
             elif extension == '.rule':
                 self.rule_files.append(dir_item_path)
             elif is_rule_dir(dir_item_path):
-                self.rule_files.append(get_rule_dir_yaml(dir_item_path))
+
+                if "_installed" in dir_item_path and "package" in dir_item_path:
+                    self.rule_files.insert(0, get_rule_dir_yaml(dir_item_path))
+                else:
+                    self.rule_files.append(get_rule_dir_yaml(dir_item_path))
             elif dir_item != "tests":
                 if os.path.isdir(dir_item_path):
                     self.subdirectories.append(dir_item_path)
@@ -1068,7 +1072,15 @@ class DirectoryLoader(object):
             loader.parent_group = self.loaded_group
             loader.process_directory_tree(subdir)
             self.all_values.update(loader.all_values)
-            self.all_rules.update(loader.all_rules)
+            for rule in loader.all_rules:
+                if "_installed" in rule.id_:
+                    self.all_rules.insert(0, rule)
+                else:
+                    self.all_rules.append(rule)
+            with open('all_rules', 'w+') as f:
+                for elem in self.all_rules:
+                    f.write(elem.id_)
+                    f.write(os.linesep)
             self.all_groups.update(loader.all_groups)
 
     def _get_new_loader(self):
@@ -1103,7 +1115,10 @@ class BuildLoader(DirectoryLoader):
             prodtypes = parse_prodtype(rule.prodtype)
             if "all" not in prodtypes and self.product not in prodtypes:
                 continue
-            self.all_rules.add(rule)
+            if "_installed" in rule.id_:
+                self.all_rules.insert(0, rule)
+            else:
+                self.all_rules.append(rule)
             self.loaded_group.add_rule(rule)
             if self.resolved_rules_dir:
                 output_for_rule = os.path.join(
