@@ -2,7 +2,7 @@
 
 # profiles = xccdf_org.ssgproject.content_profile_ncp
 
-yum install -y opensc nss-utils
+yum install -y opensc nss-tools
 
 # notice the absence of prefix sql: in -dbdir parameter value, this cause modutil to write in old dabatase format
 # which does not write into /etc/pki/nssdb/pkcs11.txt file (our OVAL checks this file)
