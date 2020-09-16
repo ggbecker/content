@@ -6,19 +6,57 @@ import jinja2
 import argparse
 
 from ssg import yaml, checks
+from ssg.build_yaml import DocumentationNotComplete
 from ssg.shims import input_func
 import ssg
+import pdb
 
 
 def has_empty_identifier(yaml_file, product_yaml=None):
-    rule = yaml.open_and_macro_expand(yaml_file, product_yaml)
-    if 'identifiers' in rule and rule['identifiers'] is None:
-        return True
+    try:
+        rule = yaml.open_and_macro_expand(yaml_file, product_yaml)
+    except DocumentationNotComplete:
+        return False
+    cces = []
+    with open('/home/ggasparb/workspace/github/content/shared/references/cce-redhat-avail.txt', 'r') as f:
+        cces = f.readlines()
 
-    if 'identifiers' in rule and rule['identifiers'] is not None:
-        for _, value in rule['identifiers'].items():
-            if str(value).strip() == "":
-                return True
+    if 'linux_os/guide' in yaml_file:
+        if 'prodtype' not in rule or 'rhel8' in rule['prodtype']:
+            if 'identifiers' not in rule:
+                print("rule does not contain any identifier " + yaml_file)
+                cce = cces[0]
+                del cces[0]
+
+                with open(yaml_file, 'a') as f:
+                    f.write('''
+identifiers:
+    cce@rhel8: {}'''.format(cce))
+                with open('/home/ggasparb/workspace/github/content/shared/references/cce-redhat-avail.txt', 'w') as f:
+                    for line in cces:
+                        f.write(line)
+
+                return False
+            else:
+                if 'cce@rhel8' not in rule['identifiers']:
+                    cce = cces[0]
+                    del cces[0]
+
+                    with open(yaml_file, 'r') as f:
+                        data = f.read()
+                        data = data.replace('''identifiers:
+''', '''identifiers:
+    cce@rhel8: {}'''.format(cce))
+                    with open(yaml_file, 'w') as f:
+                        f.write(data)
+
+                    with open('/home/ggasparb/workspace/github/content/shared/references/cce-redhat-avail.txt', 'w') as f:
+                        for line in cces:
+                            f.write(line)
+    # if 'identifiers' in rule and rule['identifiers'] is not None:
+    #     for _, value in rule['identifiers'].items():
+    #         if str(value).strip() == "":
+    #             return True
     return False
 
 
