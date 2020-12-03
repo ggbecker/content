@@ -167,6 +167,7 @@ FULL_NAME_TO_PRODUCT_MAPPING = {
     "Ubuntu 20.04": "ubuntu2004",
     "WRLinux 8": "wrlinux8",
     "WRLinux 1019": "wrlinux1019",
+    "Amazon Linux 2": "amzn2",
 }
 
 
@@ -181,7 +182,7 @@ REF_PREFIX_MAP = {
 }
 
 MULTI_PLATFORM_LIST = ["rhel", "fedora", "rhosp", "rhv", "debian", "ubuntu",
-                       "wrlinux", "opensuse", "sle", "ol", "ocp", "rhcos", "example"]
+                       "wrlinux", "opensuse", "sle", "ol", "ocp", "rhcos", "example", "amzn"]
 
 MULTI_PLATFORM_MAPPING = {
     "multi_platform_debian": ["debian9", "debian10"],
@@ -197,6 +198,7 @@ MULTI_PLATFORM_MAPPING = {
     "multi_platform_sle": ["sle12", "sle15"],
     "multi_platform_ubuntu": ["ubuntu1604", "ubuntu1804", "ubuntu2004"],
     "multi_platform_wrlinux": ["wrlinux8", "wrlinux1019"],
+    "multi_platform_amzn": ["amzn2"],
 }
 
 RHEL_CENTOS_CPE_MAPPING = {
@@ -361,6 +363,7 @@ MAKEFILE_ID_TO_PRODUCT_MAP = {
     'ol': 'Oracle Linux',
     'ocp': 'Red Hat OpenShift Container Platform',
     'rhcos': 'Red Hat Enterprise Linux CoreOS',
+    'amzn': 'Amazon Linux',
 }
 
 
