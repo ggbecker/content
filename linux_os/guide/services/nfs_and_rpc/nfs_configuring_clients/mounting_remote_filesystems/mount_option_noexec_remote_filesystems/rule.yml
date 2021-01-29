@@ -16,6 +16,7 @@ severity: medium
 
 identifiers:
     cce@rhel7: CCE-80436-9
+    cce@rhel8: CCE-84050-4
 
 references:
     stigid@ol7: OL07-00-021021
