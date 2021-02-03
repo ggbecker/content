@@ -77,9 +77,9 @@ selections:
     - banner_etc_issue
     - set_password_hashing_algorithm_logindefs
     - grub2_uefi_password
-    - grub2_uefi_admin_username
-    - grub2_password
-    - grub2_admin_username
+    # - grub2_uefi_admin_username
+    # - grub2_password
+    # - grub2_admin_username
     - kerberos_disable_no_keytab
     - package_krb5-workstation_removed
     - selinux_state
@@ -233,8 +233,8 @@ selections:
     - kernel_module_cramfs_disabled
     - kernel_module_firewire-core_disabled
     - configure_firewalld_ports
-    - service_autofs_disabled
-    - kernel_module_usb-storage_disabled
+    # - service_autofs_disabled
+    # - kernel_module_usb-storage_disabled
     - service_firewalld_enabled
     - package_firewalld_installed
     - wireless_disable_interfaces
