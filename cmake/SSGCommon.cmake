@@ -277,9 +277,9 @@ macro(ssg_build_ansible_playbooks PRODUCT)
         DEPENDS "${SSG_BUILD_SCRIPTS}/build_rule_playbooks.py"
         COMMENT "[${PRODUCT}-content] Generating Ansible Playbooks"
     )
-    add_custom_target(
+    add_dependencies(
         generate-${PRODUCT}-ansible-playbooks
-        DEPENDS "${ANSIBLE_PLAYBOOKS_DIR}"
+        "${ANSIBLE_PLAYBOOKS_DIR}"
     )
     add_test(
         NAME "${PRODUCT}-ansible-playbooks-generated-for-all-rules"
@@ -769,6 +769,7 @@ macro(ssg_build_product PRODUCT)
     ssg_build_xccdf_unlinked(${PRODUCT})
     ssg_build_ocil_unlinked(${PRODUCT})
     ssg_build_remediations(${PRODUCT})
+    add_custom_target(generate-${PRODUCT}-ansible-playbooks)
     if ("${PRODUCT_ANSIBLE_REMEDIATION_ENABLED}" AND SSG_ANSIBLE_PLAYBOOKS_PER_RULE_ENABLED)
         ssg_build_ansible_playbooks(${PRODUCT})
     endif()
