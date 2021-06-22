@@ -1,0 +1,27 @@
+name: Content Test Filtering
+on:
+  pull_request:
+    branches: [ master ]
+jobs:
+  content-test-filtering:
+    name: Content Test Filtering on Ubuntu Latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Deps
+        uses: mstksg/get-package@master
+        with:
+          apt-get: git python3-jinja2 python3-yaml python3-deepdiff python3-git python3-github python3-requests xmldiff
+      # TODO: Use action's checkout along with --local and --repository options of ctf
+      #- name: Checkout
+      #  uses: actions/checkout@v2
+      - name: Checkout (CTF)
+        uses: actions/checkout@v2
+        with:
+          repository: ggbecker/content-test-filtering
+          path: ctf
+      - name: Process
+        run: python3 ./ctf/content_test_filtering.py pr --output-format markdown ${{ github.event.pull_request.number }} > ctf.md
+      - name: Check output
+        run: cat ctf.md
+      - name: Update the PR
+        run: python3 ./ctf/utility_scripts/comment_pr.py --token ${{ github.token }} --pr ${{ github.event.pull_request.number }} --comment ctf.md
