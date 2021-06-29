@@ -107,7 +107,6 @@ selections:
 - disable_users_coredumps
 - display_login_attempts
 - enable_dracut_fips_module
-- enable_fips_mode
 - encrypt_partitions
 - ensure_gpgcheck_globally_activated
 - ensure_gpgcheck_local_packages
@@ -333,5 +332,4 @@ selections:
 - var_auditd_disk_error_action=halt
 - var_auditd_max_log_file_action=syslog
 - var_auditd_disk_full_action=halt
-- var_system_crypto_policy=fips
 title: DISA STIG for Red Hat Enterprise Linux 8
