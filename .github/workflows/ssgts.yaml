@@ -1,0 +1,58 @@
+name: Gating
+on:
+  pull_request:
+    branches: [ master ]
+jobs:
+  validate-ubuntu:
+    name: Run SSGTS
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install Deps
+        uses: mstksg/get-package@master
+        with:
+          apt-get: cmake ninja-build libopenscap8 libxml2-utils expat xsltproc python3-jinja2 python3-yaml ansible-lint python3-github podman
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: ./build_product fedora --datastream-only
+      - name: Generate id_rsa key
+        run: ssh-keygen -N '' -t rsa -f ~/.ssh/id_rsa
+      - name: Build test suite container
+        run: podman build --build-arg "CLIENT_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" -t ssg_test_suite -f test_suite-fedora
+        working-directory: ./Dockerfiles
+      - name: Get oscap-ssh
+        run: |
+          wget https://raw.githubusercontent.com/OpenSCAP/openscap/maint-1.2/utils/oscap-ssh
+          sudo chmod 755 oscap-ssh
+          sudo mv -v oscap-ssh /usr/local/bin
+          sudo chown root:root /usr/local/bin/oscap-ssh
+          rm -f oscap-ssh
+      - name: Run rule in container
+        run: tests/test_rule_in_container.sh --name ssg_test_suite --datastream build/ssg-fedora-ds.xml sshd_enable_strictmodes
+      # enable this task to upload test logs
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: logs
+      #     path: logs/
+
+
+  # content-test-filtering:
+  #   name: Content Test Filtering on Ubuntu Latest
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Install Deps
+  #       uses: mstksg/get-package@master
+  #       with:
+  #         apt-get: git python3-jinja2 python3-yaml python3-deepdiff python3-git python3-github python3-requests xmldiff
+  #     # TODO: Use action's checkout along with --local and --repository options of ctf
+  #     #- name: Checkout
+  #     #  uses: actions/checkout@v2
+  #     - name: Checkout (CTF)
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: mildas/content-test-filtering
+  #         path: ctf
+  #     - name: Process
+  #       run: python3 ./ctf/content_test_filtering.py pr --output-format markdown ${{ github.event.pull_request.number }} > ctf.md
+  #     - name: Update the PR
+  #       run: python3 ./ctf/utility_scripts/comment_pr.py --token ${{ github.token }} --pr ${{ github.event.pull_request.number }} --comment ctf.md
