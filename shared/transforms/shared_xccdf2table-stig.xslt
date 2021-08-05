@@ -4,18 +4,14 @@
 <!-- setting the external variable $notes identifies a file from which to add notes,
 	 but set to nothing by default -->
 <xsl:param name="notes" select="''" />
-<!-- <xsl:param name="total" select="''"/> -->
-<xsl:param name="missing" select="''"/>
-<xsl:param name="implemented_percentage" select="''"/>
+<xsl:param name="external_links" select="''" />
 
 <xsl:variable name="notegroup" select="document($notes)/notegroup" />
-<!-- <xsl:variable name="total" select="number(count(cdf:Rule))"/> -->
-<!-- <xsl:variable name="total" select="number(count(/cdf:Benchmark/cdf:Group/cdf:Rule[@id='Missing Rule']))"/> -->
 
 	<xsl:template match="/">
 		<html>
 		<head>
-			<title>Rules In <xsl:value-of select="/cdf:Benchmark/cdf:title" /> Total <xsl:value-of select="number(count(/cdf:Benchmark/cdf:Group/cdf:Rule))" /> Missing <xsl:value-of select="$missing" /> Implemented percentage <xsl:value-of select="$implemented_percentage" /> <xsl:if test="$notes"> with Notes for Transition to <xsl:value-of select="$product_short_name" /> Consensus</xsl:if></title>
+			<title>Rules In <xsl:value-of select="/cdf:Benchmark/cdf:title" /><xsl:if test="$notes"> with Notes for Transition to <xsl:value-of select="$product_short_name" /> Consensus</xsl:if></title>
 		</head>
 		<body>
 			<br/>
@@ -47,7 +43,14 @@
 					<td>
 						<xsl:for-each select="/cdf:Benchmark/cdf:Group/cdf:Rule[@id='Missing Rule']">
 							<xsl:variable name="v_id"><xsl:value-of select="../@id"/></xsl:variable>
-							<a href="https://vaulted.io/library/disa-stigs-srgs/red_hat_enterprise_linux_8_security_technical_implementation_guide/{$v_id}"><xsl:value-of select="cdf:version/node()"/><xsl:text>&#xd;</xsl:text></a>
+							<xsl:choose>
+								<xsl:when test="$external_links">
+									<a href="https://vaulted.io/library/disa-stigs-srgs/red_hat_enterprise_linux_8_security_technical_implementation_guide/{$v_id}"><xsl:value-of select="cdf:version/node()"/><xsl:text>&#xd;</xsl:text></a>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="cdf:version/node()"/><xsl:text>&#xd;</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:for-each>
 					</td>
 				  </tr>
@@ -115,7 +118,15 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="v_id"><xsl:value-of select="@id"/></xsl:variable>
-				<td><a href="https://vaulted.io/library/disa-stigs-srgs/red_hat_enterprise_linux_8_security_technical_implementation_guide/{$v_id}"><xsl:value-of select="@id"/></a></td>
+
+				<xsl:choose>
+					<xsl:when test="$external_links">
+						<td><a href="https://vaulted.io/library/disa-stigs-srgs/red_hat_enterprise_linux_8_security_technical_implementation_guide/{$v_id}"><xsl:value-of select="@id"/></a></td>
+					</xsl:when>
+					<xsl:otherwise>
+						<td><xsl:value-of select="@id"/></td>
+					</xsl:otherwise>
+				</xsl:choose>
 				<td> <xsl:value-of select="cdf:Rule/cdf:ident" /></td>
 				<!--<td> <xsl:value-of select="cdf:title" /></td>-->
 				<td> <xsl:value-of select="cdf:Rule/@severity" /></td>
