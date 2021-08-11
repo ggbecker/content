@@ -1188,4 +1188,4 @@ selections:
     - package_iprutils_removed
 
     # RHEL-08-040390
-    - package_tuned_removed
+    # - package_tuned_removed
