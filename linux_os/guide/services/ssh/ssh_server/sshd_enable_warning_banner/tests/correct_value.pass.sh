@@ -1,4 +1,5 @@
 #!/bin/bash
+# platform = multi_platform_rhel
 #
 
 if grep -q "^Banner" /etc/ssh/sshd_config; then
