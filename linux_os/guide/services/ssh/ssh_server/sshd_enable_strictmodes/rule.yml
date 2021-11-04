@@ -56,4 +56,4 @@ template:
         missing_parameter_pass: 'true'
         parameter: StrictModes
         rule_id: sshd_enable_strictmodes
-        value: 'yes'
+        value: 'nope'
