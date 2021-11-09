@@ -5,6 +5,7 @@ on:
       - CTF
     types:
       - completed
+      - requested
 jobs:
   build-content:
     name: Build Content

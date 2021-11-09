@@ -17,7 +17,7 @@ jobs:
           repository: mildas/content-test-filtering
           path: ctf
       - name: Process (see the output for recommended tests)
-        run: python3 ./ctf/content_test_filtering.py pr --verbose --rule --output json ${{ github.event.pull_request.number }} > ctf.json
+        run: python3 ./ctf/content_test_filtering.py pr --remote_repo https://github.com/ggbecker/content --verbose --rule --output json ${{ github.event.pull_request.number }} > ctf.json
       - name: Test if there are no content changes
         run: echo "::set-output name=CTF_OUTPUT_SIZE::$(stat --printf="%s" ctf.json)"
         id: ctf
