@@ -1,50 +1,39 @@
 name: SSGTS
 on:
-  pull_request:
-    branches: [ master ]
+  workflow_run:
+    workflows:
+      - CTF
+    types:
+      - completed
+      - requested
 jobs:
   build-content:
     name: Build Content
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     container:
       image: fedora:latest
     steps:
       - name: Install Deps
-        run: dnf install -y cmake make openscap-utils python3-pyyaml python3-jinja2 git python3-deepdiff python3-requests jq python3-pip
-      - name: Install deps python
-        run: pip install gitpython xmldiff
+        run: dnf install -y cmake make openscap-utils python3-pyyaml python3-jinja2
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Checkout (CTF)
-        uses: actions/checkout@v2
+      - name: Get cached CTF output
+        uses: actions/download-artifact@v2
+        id: get_ctf_output
         with:
-          repository: mildas/content-test-filtering
-          path: ctf
-      - name: Detect content changes in the PR
-        run: python3 ./ctf/content_test_filtering.py pr --verbose --rule --output json ${{ github.event.pull_request.number }} > output.json
-      - name: Test if there are no content changes
-        run: echo "::set-output name=CTF_OUTPUT_SIZE::$(stat --printf="%s" output.json)"
-        id: ctf
-      - uses: actions/upload-artifact@v2
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        with:
-          name: output.json
-          path: output.json
-      - name: Print changes to content detected if any
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        run: cat output.json
+          name: ctf.json
+      - name: Print changes to content detected by CTF
+        run: cat ctf.json
       - name: Get product attribute
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         id: product
         uses: notiz-dev/github-action-json-property@release
         with:
-          path: 'output.json'
+          path: 'ctf.json'
           prop_path: 'product'
       - name: Build product
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         run: ./build_product ${{steps.product.outputs.prop}} --datastream-only
       - uses: actions/upload-artifact@v2
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         with:
           name: ssg-${{steps.product.outputs.prop}}-ds.xml
           path: build/ssg-${{steps.product.outputs.prop}}-ds.xml
@@ -52,6 +41,7 @@ jobs:
     name: Run Tests
     needs: build-content
     runs-on: ubuntu-20.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Install Deps
         uses: mstksg/get-package@master
@@ -63,26 +53,15 @@ jobs:
         uses: actions/download-artifact@v2
         id: get_ctf_output
         with:
-          name: output.json
-        # continue even if the file is unavailable that
-        # means there are no changes detected by CTF in the previous job
-        continue-on-error: true
-      - name: Test if there are no content changes
-        if: ${{ steps.get_ctf_output.outcome == 'success' }}
-        run: echo "::set-output name=CTF_OUTPUT_SIZE::$(stat --printf="%s" output.json)"
-        id: ctf
-      - name: Print changes to content detected if any
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        run: cat output.json
+          name: ctf.json
+      - name: Print changes to content detected by CTF
+        run: cat ctf.json
       - name: Generate id_rsa key
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         run: ssh-keygen -N '' -t rsa -f ~/.ssh/id_rsa
       - name: Build test suite container
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         run: podman build --build-arg "CLIENT_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" -t ssg_test_suite -f test_suite-fedora
         working-directory: ./Dockerfiles
       - name: Get oscap-ssh
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         run: |
           wget https://raw.githubusercontent.com/OpenSCAP/openscap/maint-1.2/utils/oscap-ssh
           sudo chmod 755 oscap-ssh
@@ -90,44 +69,39 @@ jobs:
           sudo chown root:root /usr/local/bin/oscap-ssh
           rm -f oscap-ssh
       - name: Get rule ids to be tested
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         id: rules
         uses: notiz-dev/github-action-json-property@release
         with:
-          path: 'output.json'
+          path: 'ctf.json'
           prop_path: 'rules'
       - name: Get product attribute
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         id: product
         uses: notiz-dev/github-action-json-property@release
         with:
-          path: 'output.json'
+          path: 'ctf.json'
           prop_path: 'product'
       - name: Get bash attribute
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         id: bash
         uses: notiz-dev/github-action-json-property@release
         with:
-          path: 'output.json'
+          path: 'ctf.json'
           prop_path: 'bash'
       - name: Get ansible attribute
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         id: ansible
         uses: notiz-dev/github-action-json-property@release
         with:
-          path: 'output.json'
+          path: 'ctf.json'
           prop_path: 'ansible'
       - uses: actions/download-artifact@v2
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         with:
           name: ssg-${{steps.product.outputs.prop}}-ds.xml
       - name: Run tests in a container - Bash
-        if: ${{steps.bash.outputs.prop == 'True' && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{steps.bash.outputs.prop == 'True'}}
         run: tests/test_rule_in_container.sh --dontclean --logdir logs_bash --remediate-using bash --name ssg_test_suite --datastream ssg-${{steps.product.outputs.prop}}-ds.xml ${{join(steps.rules.outputs.prop)}}
         env:
           ADDITIONAL_SSGTS_OPTIONS: "--duplicate-templates --add-product-to-fips-certified fedora"
       - name: Check for ERROR in logs
-        if: ${{steps.bash.outputs.prop == 'True' && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{steps.bash.outputs.prop == 'True'}}
         run: grep -q "^ERROR" logs_bash/test_suite.log
         id: check_results_bash
         # when grep returns 1 means it didn't find the ^ERROR string in the test_suite.log file
@@ -137,34 +111,33 @@ jobs:
         # See the step below
         continue-on-error: true
       - name: Upload logs in case of failure
-        if: ${{steps.bash.outputs.prop == 'True' && steps.check_results_bash.outcome == 'success' && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{steps.bash.outputs.prop == 'True' && steps.check_results_bash.outcome == 'success'}}
         uses: actions/upload-artifact@v2
         with:
           name: logs_bash
           path: logs_bash/
       - name: Run tests in a container - Ansible
-        if: ${{ steps.ansible.outputs.prop == 'True' && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{ steps.ansible.outputs.prop == 'True'}}
         run: tests/test_rule_in_container.sh --dontclean --logdir logs_ansible --remediate-using ansible --name ssg_test_suite --datastream ssg-${{steps.product.outputs.prop}}-ds.xml ${{join(steps.rules.outputs.prop)}}
         env:
           ADDITIONAL_SSGTS_OPTIONS: "--duplicate-templates --add-product-to-fips-certified fedora"
       - name: Check for ERROR in logs
-        if: ${{steps.ansible.outputs.prop == 'True' && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{steps.ansible.outputs.prop == 'True'}}
         run: grep -q "^ERROR" logs_ansible/test_suite.log
         id: check_results_ansible
         continue-on-error: true
       - name: Upload logs in case of failure
-        if: ${{ steps.ansible.outputs.prop == 'True' && steps.check_results_ansible.outcome == 'success' && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{ steps.ansible.outputs.prop == 'True' && steps.check_results_ansible.outcome == 'success'}}
         uses: actions/upload-artifact@v2
         with:
           name: logs_ansible
           path: logs_ansible/
       - name: Delete datastream artifact
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         uses: geekyeggo/delete-artifact@v1
         with:
           name: ssg-${{steps.product.outputs.prop}}-ds.xml
       - name: Fail in case of ERROR present in logs_bash/test_suite.log or logs_ansible/test_suite.log
-        if: ${{ (steps.check_results_bash.outcome == 'success' || steps.check_results_ansible.outcome == 'success') && steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        if: ${{ (steps.check_results_bash.outcome == 'success' || steps.check_results_ansible.outcome == 'success')}}
         run: |
           [[ -f logs_bash/test_suite.log ]] && echo "---------Bash Remediation Logs---------" && cat logs_bash/test_suite.log | grep -v "DEBUG - "
           [[ -f logs_ansible/test_suite.log ]] && echo "---------Ansible Remediation Logs---------" && cat logs_ansible/test_suite.log | grep -v "DEBUG - "

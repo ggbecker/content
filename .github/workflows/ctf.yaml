@@ -1,4 +1,4 @@
-name: Gating
+name: CTF
 on:
   pull_request:
     branches: [ master ]
@@ -11,19 +11,21 @@ jobs:
         uses: mstksg/get-package@master
         with:
           apt-get: git python3-jinja2 python3-yaml python3-deepdiff python3-git python3-github python3-requests xmldiff
-      # TODO: Use action's checkout along with --local and --repository options of ctf
-      # See: https://github.community/t/how-to-commit-to-two-branches-from-an-action/17713/4
-      #- name: Checkout
-      #  uses: actions/checkout@v1
       - name: Checkout (CTF)
         uses: actions/checkout@v2
         with:
           repository: mildas/content-test-filtering
           path: ctf
       - name: Process (see the output for recommended tests)
-        run: python3 ./ctf/content_test_filtering.py pr --output-format markdown ${{ github.event.pull_request.number }} # > ctf.md
-      # TODO: We can't do this for now: github.token is incapable of writing to the PR, and we can't provide our own
-      # for PRs coming from forked repos
-      # TODO: mshick/add-pr-comment@v1 and alike won't work as well
-      #- name: Update the PR
-      #  run: python3 ./ctf/utility_scripts/comment_pr.py --token ${{ github.token }} --pr ${{ github.event.pull_request.number }} --comment ctf.md
+        run: python3 ./ctf/content_test_filtering.py pr --remote_repo https://github.com/ggbecker/content --verbose --rule --output json ${{ github.event.pull_request.number }} > ctf.json
+      - name: Test if there are no content changes
+        run: echo "::set-output name=CTF_OUTPUT_SIZE::$(stat --printf="%s" ctf.json)"
+        id: ctf
+      - name: Exit if there are no changes detected
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE == '0' }}
+        run: exit 1
+      - name: Upload CTF output
+        uses: actions/upload-artifact@v2
+        with:
+          name: ctf.json
+          path: ctf.json
