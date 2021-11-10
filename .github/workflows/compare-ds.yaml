@@ -48,7 +48,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-        with:
           clean: false
       - name: Build product
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
