@@ -16,9 +16,9 @@ done
 
 if ! $found ; then
 	SSSD_CONF="/etc/sssd/conf.d/ospp.conf"
-	mkdir -p $( dirname $SSSD_CONF )
-	touch $SSSD_CONF
-	chown root:root $SSSD_CONF
-	chmod 600 $SSSD_CONF
-	echo -e "[sssd]\nuser = sssd" >> $SSSD_CONF
+	mkdir -p "$( dirname "$SSSD_CONF" )"
+	touch "$SSSD_CONF"
+	chown root:root "$SSSD_CONF"
+	chmod 600 "$SSSD_CONF"
+	echo -e "[sssd]\nuser = sssd" >> "$SSSD_CONF"
 fi
