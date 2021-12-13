@@ -16,6 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: Find forking point
         env:
@@ -33,7 +34,7 @@ jobs:
           repository: mildas/content-test-filtering
           path: ctf
       - name: Detect content changes in the PR
-        run: python3 ./ctf/content_test_filtering.py pr --rule --output json ${{ github.event.pull_request.number }} > output.json
+        run: python3 ./ctf/content_test_filtering.py pr --remote_repo https://github.com/ggbecker/content --rule --output json ${{ github.event.pull_request.number }} > output.json
       - name: Test if there are no content changes
         run: echo "::set-output name=CTF_OUTPUT_SIZE::$(stat --printf="%s" output.json)"
         id: ctf
@@ -108,3 +109,10 @@ jobs:
 
             </details>
           edit-mode: replace
+      - name: Delete comment in case no changes detected but there is already a comment from previous states
+        if: ${{ steps.compare_ds.outputs.COMPARE_DS_OUTPUT_SIZE == '0' && steps.fc.outputs.comment-id != 0 }}
+        uses: jungwinter/comment@v1
+        with:
+          type: delete
+          comment_id: ${{ steps.fc.outputs.comment-id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
