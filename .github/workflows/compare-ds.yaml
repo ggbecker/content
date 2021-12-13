@@ -108,3 +108,10 @@ jobs:
 
             </details>
           edit-mode: replace
+      - name: Delete comment in case no changes detected but there is already a comment from previous states
+        if: ${{ steps.compare_ds.outputs.COMPARE_DS_OUTPUT_SIZE == '0' && steps.fc.outputs.comment-id != 0 }}
+        uses: jungwinter/comment@v1
+        with:
+          type: delete
+          comment_id: ${{ steps.fc.outputs.comment-id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
