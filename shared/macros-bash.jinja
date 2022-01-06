@@ -1642,3 +1642,17 @@ if [ "$skip" -ne 0 ]; then
     fi
 fi
 {{%- endmacro %}}
+
+
+{{% macro pam_faillock_stuff(remediation)  %}}
+SYSTEM_AUTH="/etc/pam.d/system-auth"
+PASSWORD_AUTH="/etc/pam.d/password-auth"
+FAILLOCK_CONF="/etc/security/faillock.conf"
+
+if [ $(grep -c "^\s*auth.*pam_unix.so" $SYSTEM_AUTH) > 1 ] || \
+   [ $(grep -c "^\s*auth.*pam_unix.so" $PASSWORD_AUTH) > 1 ]; then
+   echo "Skipping remediation because there are more pam_unix.so entries than expected."
+   false
+{{{ remediation() }}}
+fi
+{{%- endmacro %}}

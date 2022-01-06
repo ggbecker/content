@@ -2,17 +2,8 @@
 
 {{{ bash_instantiate_variables("var_accounts_passwords_pam_faillock_fail_interval") }}}
 
-SYSTEM_AUTH="/etc/pam.d/system-auth"
-PASSWORD_AUTH="/etc/pam.d/password-auth"
-FAILLOCK_CONF="/etc/security/faillock.conf"
-
-if [ $(grep -c "^\s*auth.*pam_unix.so" $SYSTEM_AUTH) > 1 ] || \
-   [ $(grep -c "^\s*auth.*pam_unix.so" $PASSWORD_AUTH) > 1 ]; then
-   echo "Skipping remediation because there are more pam_unix.so entries than expected."
-   false
-fi
-
-if [ -f $FAILLOCK_CONF ]; then
+{{% macro remediation() -%}}
+elif [ -f $FAILLOCK_CONF ]; then
     if $(grep -q '^\s*fail_interval\s*=' $FAILLOCK_CONF); then
         sed -i --follow-symlinks "s/^\s*\(fail_interval\s*\)=.*$/\1 = $var_accounts_passwords_pam_faillock_fail_interval/g" $FAILLOCK_CONF
     else
@@ -31,4 +22,6 @@ else
         authselect enable-feature with-faillock
     fi
     {{{ bash_set_faillock_option("fail_interval", "$var_accounts_passwords_pam_faillock_fail_interval") }}}
-fi
+{{%- endmacro %}}
+
+{{{ pam_faillock_stuff(remediation)  }}}
