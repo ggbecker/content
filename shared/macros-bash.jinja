@@ -260,7 +260,7 @@ do
 
                 # Split concrete_rule into head, perm, and tail sections using hash '#' delimiter
                 rule_head=$(cut -d '#' -f 1 <<< "$concrete_rule")
-                rule_perm=$(cut -d '#' -f 2 <<< "$concrete_rule")
+                # rule_perm=$(cut -d '#' -f 2 <<< "$concrete_rule")  # not needed in the remediation, but that's what is stored there
                 rule_tail=$(cut -d '#' -f 3 <<< "$concrete_rule")
 
                 # Remove permissions section from existing rule in the file
@@ -275,8 +275,14 @@ do
         #   searched all of the files from /etc/audit/rules.d/*.rules location (since that audit rule can be defined
         #   in any of those files and if not, we want it to be inserted only once into /etc/audit/rules.d/privileged.rules file)
         #
-        elif [ "{{{ tool }}}" == "auditctl" ] || [[ "{{{ tool }}}" == "augenrules" && $count_of_inspected_files -eq "${#files_to_inspect[@]}" ]]
+	{{% if tool in ("augenrules", "auditctl") -%}}
+	{{% if tool == "augenrules" -%}}
+        elif [[ $count_of_inspected_files -eq "${#files_to_inspect[@]}" ]]
         then
+	{{%- endif %}}
+	{{% if tool == "auditctl" -%}}
+        else
+	{{%- endif %}}
             # Check if this sbinary wasn't already handled in some of the previous afile iterations
             # Return match only if whole sbinary definition matched (not in the case just prefix matched!!!)
             if [[ ! $(sed -ne "\|${sbinary}|p" <<< "${sbinaries_to_skip[*]}") ]]
@@ -286,6 +292,7 @@ do
                 echo "$expected_rule" >> "$output_audit_file"
             fi
             continue
+	{{%- endif %}}
         fi
     done
 done
@@ -1026,7 +1033,8 @@ printf '%s\n' "{{{ message | replace('"', '\\"') }}}" >&2
 
 {{%- macro set_config_file(path, parameter, value, create, insert_after, insert_before, insensitive=true, separator=" ", separator_regex="\s\+", prefix_regex="^\s*", sed_path_separator="/") -%}}
     {{%- set new_line = parameter+separator+value -%}}
-    {{%- set line_regex = prefix_regex + ((parameter | escape_regex) | replace("/", "\/")) + separator_regex -%}}
+    {{#- An escaped dollar in the parameter is escaped because of its significance for the shell, so when making a regex out of the parameter, we remove the shell escape, as the regex escape will do its thing. -#}}
+    {{%- set line_regex = prefix_regex + ((parameter | replace("\\$", "$") | escape_regex) | replace("/", "\/")) + separator_regex -%}}
 if [ -e "{{{ path }}}" ] ; then
     {{{ lineinfile_absent(path, line_regex, insensitive, sed_path_separator=sed_path_separator) | indent(4) }}}
 else
@@ -1514,9 +1522,6 @@ then
 fi
 {{%- endif %}}
 
-# Indicator that we want to append $full_rule into $audit_file or edit a rule in it
-append_expected_rule=0
-
 # After converting to jinja, we cannot return; therefore we skip the rest of the macro if needed instead
 skip=1
 
@@ -1579,7 +1584,7 @@ do
         done
     else
         # If there is any candidate rule, it is compliant; skip rest of macro
-        if [[ $candidate_rules ]]
+        if [ "${#candidate_rules[@]}" -gt 0 ]
         then
             skip=0
         fi
@@ -1599,7 +1604,7 @@ if [ "$skip" -ne 0 ]; then
     if [ -z ${rule_to_edit+x} ]
     then
         # Build full_rule while avoid adding double spaces when other_filters is empty
-        if [[ ${syscall_a} ]]
+        if [ "${#syscall_a[@]}" -gt 0 ]
         then
             syscall_string=""
             for syscall in "${syscall_a[@]}"
@@ -1635,5 +1640,49 @@ if [ "$skip" -ne 0 ]; then
         # Group the syscall in the rule
         sed -i -e "\#${rule_to_edit}#s#${rule_syscalls_to_edit}#${new_grouped_syscalls}#" "$file_to_edit"
     fi
+fi
+{{%- endmacro %}}
+
+
+{{% macro pam_faillock_stuff(remediation)  %}}
+SYSTEM_AUTH="/etc/pam.d/system-auth"
+PASSWORD_AUTH="/etc/pam.d/password-auth"
+FAILLOCK_CONF="/etc/security/faillock.conf"
+
+if [ $(grep -c "^\s*auth.*pam_unix.so" $SYSTEM_AUTH) -gt 1 ] || \
+   [ $(grep -c "^\s*auth.*pam_unix.so" $PASSWORD_AUTH) -gt 1 ]; then
+   echo "Skipping remediation because there are more pam_unix.so entries than expected."
+   false
+{{{ remediation() }}}
+fi
+{{%- endmacro %}}
+
+
+{{% macro pam_pwhistory_remember_remediation(pamfile)  %}}
+pamFile="{{{ pamfile }}}"
+# control required is for rhel8, while requisite is for other distros
+CONTROL=${var_password_pam_remember_control_flag}
+
+if [ ! -f $pamFile ]; then
+	true  # indeed don't do anything
+# is 'password required|requisite pam_pwhistory.so' here?
+elif grep -q "^password.*pam_pwhistory.so.*" $pamFile; then
+	# is the remember option set?
+	option=$(sed -rn 's/^(.*pam_pwhistory\.so.*)(remember=[0-9]+)(.*)$/\2/p' $pamFile)
+	if [[ -z $option ]]; then
+		# option is not set, append to module
+		sed -i --follow-symlinks "/pam_pwhistory.so/ s/$/ remember=$var_password_pam_remember/" $pamFile
+	else
+		# option is set, replace value
+		sed -r -i --follow-symlinks "s/^(.*pam_pwhistory\.so.*)(remember=[0-9]+)(.*)$/\1remember=$var_password_pam_remember\3/" $pamFile
+	fi
+	# ensure corect control is being used per os requirement
+	if ! grep -q "^password.*$CONTROL.*pam_pwhistory.so.*" $pamFile; then
+		#replace incorrect value
+		sed -r -i --follow-symlinks "s/(^password.*)(required|requisite)(.*pam_pwhistory\.so.*)$/\1$CONTROL\3/" $pamFile
+	fi
+else
+	# no 'password required|requisite pam_pwhistory.so', add it
+	sed -i --follow-symlinks "/^password.*pam_unix.so.*/i password $CONTROL pam_pwhistory.so use_authtok remember=$var_password_pam_remember" $pamFile
 fi
 {{%- endmacro %}}

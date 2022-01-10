@@ -22,9 +22,9 @@ done
 
 if ! $found ; then
 	SSSD_CONF="/etc/sssd/conf.d/certificate_verification.conf"
-	mkdir -p $( dirname $SSSD_CONF )
-	touch $SSSD_CONF
-	chown root:root $SSSD_CONF
-	chmod 600 $SSSD_CONF
-	echo -e "[sssd]\ncertificate_verification = ocsp_dgst = $var_sssd_certificate_verification_digest_function" >> $SSSD_CONF
+	mkdir -p "$( dirname "$SSSD_CONF" )"
+	touch "$SSSD_CONF"
+	chown root:root "$SSSD_CONF"
+	chmod 600 "$SSSD_CONF"
+	echo -e "[sssd]\ncertificate_verification = ocsp_dgst = $var_sssd_certificate_verification_digest_function" >> "$SSSD_CONF"
 fi
