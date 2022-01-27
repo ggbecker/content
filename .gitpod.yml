@@ -22,3 +22,4 @@ tasks:
     init: |
       ssh-keygen -N '' -f ~/.ssh/id_rsa
       docker build --build-arg "CLIENT_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" -t ssg_test_suite -f Dockerfiles/test_suite-fedora .
+      
