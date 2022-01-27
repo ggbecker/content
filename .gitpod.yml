@@ -1,0 +1,24 @@
+# Commands to start on workspace startup
+image:
+  file: .gitpod.Dockerfile
+
+vscode:
+  extensions:
+    - ggbecker.content-navigator
+
+tasks:
+  - name: Copy launch.json
+    init: mkdir -p .vscode && cp .gitpod.launch.json .vscode/launch.json
+  - name: Download oscap-ssh
+    init: |
+      wget https://raw.githubusercontent.com/OpenSCAP/openscap/maint-1.2/utils/oscap-ssh
+      sudo chmod 755 oscap-ssh
+      sudo mv -v oscap-ssh /usr/local/bin
+      sudo chown root:root /usr/local/bin/oscap-ssh
+      rm -f oscap-ssh
+  - name: Build content
+    init: ./build_product fedora --datastream-only
+  - name: Build container
+    init: |
+      ssh-keygen -N '' -f ~/.ssh/id_rsa
+      docker build --build-arg "CLIENT_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" -t ssg_test_suite -f Dockerfiles/test_suite-fedora .
