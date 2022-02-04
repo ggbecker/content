@@ -16,11 +16,11 @@
 <th>STIG ids missing rule</th>
 </tr></thead>
 <tbody><tr>
-<td>381</td>
-<td>37</td>
-<td>344</td>
-<td>90.29%</td>
-<td>RHEL-08-010090RHEL-08-010100RHEL-08-010163RHEL-08-010560RHEL-08-010572RHEL-08-010710RHEL-08-010731RHEL-08-010741RHEL-08-020011RHEL-08-020013RHEL-08-020014RHEL-08-020015RHEL-08-020017RHEL-08-020018RHEL-08-020019RHEL-08-020020RHEL-08-020021RHEL-08-020023RHEL-08-020025RHEL-08-020026RHEL-08-020027RHEL-08-020028RHEL-08-020031RHEL-08-020032RHEL-08-020080RHEL-08-020081RHEL-08-020082RHEL-08-020332RHEL-08-030590RHEL-08-030620RHEL-08-030630RHEL-08-030640RHEL-08-040020RHEL-08-040090RHEL-08-040137RHEL-08-040150RHEL-08-040259</td>
+<td>371</td>
+<td>45</td>
+<td>326</td>
+<td>87.87%</td>
+<td>RHEL-08-010090RHEL-08-010100RHEL-08-010121RHEL-08-010163RHEL-08-010379RHEL-08-010385RHEL-08-010572RHEL-08-010710RHEL-08-010731RHEL-08-010741RHEL-08-020011RHEL-08-020013RHEL-08-020014RHEL-08-020015RHEL-08-020017RHEL-08-020018RHEL-08-020019RHEL-08-020020RHEL-08-020021RHEL-08-020023RHEL-08-020025RHEL-08-020026RHEL-08-020027RHEL-08-020028RHEL-08-020031RHEL-08-020032RHEL-08-020080RHEL-08-020081RHEL-08-020082RHEL-08-020101RHEL-08-020102RHEL-08-020103RHEL-08-020104RHEL-08-020221RHEL-08-020332RHEL-08-030590RHEL-08-030620RHEL-08-030630RHEL-08-030640RHEL-08-040020RHEL-08-040090RHEL-08-040137RHEL-08-040150RHEL-08-040259RHEL-08-040321</td>
 </tr></tbody>
 </table></div>
 <style type="text/css">
@@ -474,10 +474,21 @@ this is a finding.</td>
 <td>accounts_password_all_shadowed_sha512</td>
 </tr>
 <tr>
+<td>V-251706</td>
+<td></td>
+<td>high</td>
+<td>The RHEL 8 operating system must not have accounts configured with blank or null passwords.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-010121</td>
+<td>Missing Rule</td>
+</tr>
+<tr>
 <td>V-230233</td>
 <td>196</td>
 <td>medium</td>
-<td>The RHEL 8 password-auth file must be configured to use a sufficient number of hashing rounds.</td>
+<td>The RHEL 8 shadow password suite must be configured to use a sufficient number of hashing rounds.</td>
 <td>Using a higher number of rounds makes password cracking attacks more difficult.</td>
 <td>To verify the number of rounds for the password hashing algorithm is compliant, run the following command:
 $ grep rounds /etc/pam.d/password-auth
@@ -494,28 +505,6 @@ to the <code>pam_unix.so</code> file, as shown below:
 The system's default number of rounds is 5000.</td>
 <td>RHEL-08-010130</td>
 <td>accounts_password_pam_unix_rounds_password_auth</td>
-</tr>
-<tr>
-<td>V-244520</td>
-<td>196</td>
-<td>medium</td>
-<td>The RHEL 8 system-auth file must be configured to use a sufficient number of hashing rounds.</td>
-<td>Using a higher number of rounds makes password cracking attacks more difficult.</td>
-<td>To verify the number of rounds for the password hashing algorithm is compliant, run the following command:
-$ grep rounds /etc/pam.d/system-auth
-The output should show the following match:
-rounds=
-      Is it the case that it does not set the appropriate number of hashing rounds?
-      </td>
-<td>Configure the number or rounds for the password hashing algorithm. This can be
-accomplished by using the <code>rounds</code> option for the <code>pam_unix</code> PAM module.
-<br><br>
-In file <code>/etc/pam.d/system-auth</code> append <code>rounds=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_password_pam_unix_rounds"></xccdf-1.1:sub></code>
-to the <code>pam_unix.so</code> file, as shown below:
-<pre>password sufficient pam_unix.so <i>...existing_options...</i> rounds=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_password_pam_unix_rounds"></xccdf-1.1:sub></pre>
-The system's default number of rounds is 5000.</td>
-<td>RHEL-08-010131</td>
-<td>accounts_password_pam_unix_rounds_system_auth</td>
 </tr>
 <tr>
 <td>V-230234</td>
@@ -1453,6 +1442,49 @@ its permission with the following command:
 <td>file_permissions_library_dirs</td>
 </tr>
 <tr>
+<td>V-251707</td>
+<td>1499</td>
+<td>medium</td>
+<td>RHEL 8 library directories must have mode 755 or less permissive.</td>
+<td>If the operating system were to allow any user to make changes to software libraries,
+then those changes might be implemented without undergoing the appropriate testing
+and approvals that are part of a robust change management process.
+
+This requirement applies to operating systems with software libraries that are accessible
+and configurable, as in the case of interpreted languages. Software libraries also include
+privileged programs which execute with escalated privileges. Only qualified and authorized
+individuals must be allowed to obtain access to information system components for purposes
+of initiating changes, including upgrades and modifications.</td>
+<td>Shared libraries are stored in the following directories:
+/lib
+/lib64
+/usr/lib
+/usr/lib64
+
+To find shared libraries that are group-writable or world-writable,
+run the following command for each directory DIR which contains shared libraries:
+$ sudo find -L DIR -perm /022 -type d
+      Is it the case that any of these files are group-writable or world-writable?
+      </td>
+<td>System-wide shared library directories, which contain are linked to executables
+during process load time or run time, are stored in the following directories
+by default:
+<pre>/lib
+/lib64
+/usr/lib
+/usr/lib64
+</pre>
+Kernel modules, which can be added to the kernel during runtime, are
+stored in <code>/lib/modules</code>. All sub-directories in these directories
+should not be group-writable or world-writable. If any file in these
+directories is found to be group-writable or world-writable, correct
+its permission with the following command:
+<pre>$ sudo chmod go-w <i>DIR</i></pre>
+</td>
+<td>RHEL-08-010331</td>
+<td>dir_permissions_library_dirs</td>
+</tr>
+<tr>
 <td>V-230261</td>
 <td>1499</td>
 <td>medium</td>
@@ -1489,6 +1521,43 @@ ownership with the following command:
 <td>file_ownership_library_dirs</td>
 </tr>
 <tr>
+<td>V-251708</td>
+<td>1499</td>
+<td>medium</td>
+<td>RHEL 8 library directories must be owned by root.</td>
+<td>Files from shared library directories are loaded into the address
+space of processes (including privileged ones) or of the kernel itself at
+runtime. Proper ownership of library directories is necessary to protect
+the integrity of the system.</td>
+<td>Shared libraries are stored in the following directories:
+/lib
+/lib64
+/usr/lib
+/usr/lib64
+For each of these directories, run the following command to find files not
+owned by root:
+$ sudo find -L $DIR ! -user root -type d -exec chown root {} \;
+      Is it the case that any of these directories are not owned by root?
+      </td>
+<td>System-wide shared library files, which are linked to executables
+during process load time or run time, are stored in the following directories
+by default:
+<pre>/lib
+/lib64
+/usr/lib
+/usr/lib64
+</pre>
+Kernel modules, which can be added to the kernel during runtime, are also
+stored in <code>/lib/modules</code>. All files in these directories should be
+owned by the <code>root</code> user. If the  directories, is found to be owned
+by a user other than root correct its
+ownership with the following command:
+<pre>$ sudo chown root <i>DIR</i></pre>
+</td>
+<td>RHEL-08-010341</td>
+<td>dir_ownership_library_dirs</td>
+</tr>
+<tr>
 <td>V-230262</td>
 <td>1499</td>
 <td>medium</td>
@@ -1511,7 +1580,7 @@ for purposes of initiating changes, including upgrades and modifications.</td>
 To find if system-wide library files stored in these directories are not group-owned by
 root run the following command for each directory DIR:
 $ sudo find -L DIR ! -group root -type f 
-      Is it the case that system wide library files are not group owned by root?
+      Is it the case that system wide library files are not group-owned by root?
       </td>
 <td>System-wide library files are stored in the following directories
 by default:
@@ -1521,12 +1590,65 @@ by default:
 /usr/lib64
 </pre>
 All system-wide shared library files should be protected from unauthorised
-access. If any of these files is not owned by root, correct its owner with
+access. If any of these files is not group-owned by root, correct its group-owner with
 the following command:
 <pre>$ sudo chgrp root <i>FILE</i></pre>
 </td>
 <td>RHEL-08-010350</td>
 <td>root_permissions_syslibrary_files</td>
+</tr>
+<tr>
+<td>V-251709</td>
+<td>1499</td>
+<td>medium</td>
+<td>RHEL 8 library directories must be group-owned by root or a system account.</td>
+<td>Files from shared library directories are loaded into the address
+space of processes (including privileged ones) or of the kernel itself at
+runtime. Proper ownership of library directories is necessary to protect
+the integrity of the system.</td>
+<td>Shared libraries are stored in the following directories:
+/lib
+/lib64
+/usr/lib
+/usr/lib64
+For each of these directories, run the following command to find files not
+owned by root:
+$ sudo find -L $DIR ! -user root -type d -exec chgrp root {} \;
+      Is it the case that any of these directories are not group-owned by root?
+      </td>
+<td>System-wide shared library files, which are linked to executables
+during process load time or run time, are stored in the following directories
+by default:
+<pre>/lib
+/lib64
+/usr/lib
+/usr/lib64
+</pre>
+Kernel modules, which can be added to the kernel during runtime, are also
+stored in <code>/lib/modules</code>. All files in these directories should be
+group-owned by the <code>root</code> user. If the  directories, is found to be owned
+by a user other than root correct its
+ownership with the following command:
+<pre>$ sudo chgrp root <i>DIR</i></pre>
+</td>
+<td>RHEL-08-010351</td>
+<td>dir_group_ownership_library_dirs</td>
+</tr>
+<tr>
+<td>V-251710</td>
+<td>2696</td>
+<td>medium</td>
+<td>The RHEL 8 operating system must use a file integrity tool to verify correct operation of all security functions.</td>
+<td>The AIDE package must be installed if it is to be available for integrity checking.</td>
+<td>Run the following command to determine if the aide package is installed: $ rpm -q aide
+      Is it the case that the package is not installed?
+      </td>
+<td>The <code>aide</code> package can be installed with the following command:
+<pre>
+$ sudo yum install aide</pre>
+</td>
+<td>RHEL-08-010359</td>
+<td>package_aide_installed</td>
 </tr>
 <tr>
 <td>V-230263</td>
@@ -1806,6 +1928,17 @@ To make sure that the setting is persistent, add the following line to a file in
 <td>sysctl_kernel_perf_event_paranoid</td>
 </tr>
 <tr>
+<td>V-251711</td>
+<td></td>
+<td>medium</td>
+<td>RHEL 8 must specify the default "include" directory for the /etc/sudoers file.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-010379</td>
+<td>Missing Rule</td>
+</tr>
+<tr>
 <td>V-230271</td>
 <td>2038</td>
 <td>medium</td>
@@ -1927,6 +2060,17 @@ If the value is set to an integer less than 0, the user's time stamp will not ex
 and the user will not have to re-authenticate for privileged actions until the user's session is terminated.</td>
 <td>RHEL-08-010384</td>
 <td>sudo_require_reauthentication</td>
+</tr>
+<tr>
+<td>V-251712</td>
+<td></td>
+<td>medium</td>
+<td>The RHEL 8 operating system must not be configured to bypass password requirements for privilege escalation.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-010385</td>
+<td>Missing Rule</td>
 </tr>
 <tr>
 <td>V-230273</td>
@@ -2632,17 +2776,6 @@ To disable root login via SSH, add or correct the following line in
 </td>
 <td>RHEL-08-010550</td>
 <td>sshd_disable_root_login</td>
-</tr>
-<tr>
-<td>V-230297</td>
-<td></td>
-<td>medium</td>
-<td>The auditd service must be running in RHEL 8.</td>
-<td></td>
-<td></td>
-<td></td>
-<td>RHEL-08-010560</td>
-<td>Missing Rule</td>
 </tr>
 <tr>
 <td>V-230298</td>
@@ -4118,9 +4251,9 @@ domains = testing.test
 </tr>
 <tr>
 <td>V-230356</td>
-<td>192</td>
+<td>366</td>
 <td>medium</td>
-<td>RHEL 8 must ensure a password complexity module is enabled.</td>
+<td>RHEL 8 must ensure the password complexity module is enabled in the password-auth file.</td>
 <td>Setting the password retry prompts that are permitted on a per-session basis to a low value
 requires some software, such as SSH, to re-connect. This can slow down and
 draw additional attention to some types of password-guessing attacks. Note that this
@@ -4145,6 +4278,50 @@ policy is more restrictive. The DoD requirement is a maximum of 3 prompts
 per session.</td>
 <td>RHEL-08-020100</td>
 <td>accounts_password_pam_retry</td>
+</tr>
+<tr>
+<td>V-251713</td>
+<td></td>
+<td>medium</td>
+<td>RHEL 8 must ensure the password complexity module is enabled in the system-auth file.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-020101</td>
+<td>Missing Rule</td>
+</tr>
+<tr>
+<td>V-251714</td>
+<td></td>
+<td>medium</td>
+<td>RHEL 8 systems below version 8.4 must ensure the password complexity module in the system-auth file is configured for three retries or less.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-020102</td>
+<td>Missing Rule</td>
+</tr>
+<tr>
+<td>V-251715</td>
+<td></td>
+<td>medium</td>
+<td>RHEL 8 systems below version 8.4 must ensure the password complexity module in the password-auth file is configured for three retries or less.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-020103</td>
+<td>Missing Rule</td>
+</tr>
+<tr>
+<td>V-251716</td>
+<td></td>
+<td>medium</td>
+<td>RHEL 8 systems, version 8.4 and above, must ensure the password complexity module is configured for three retries or less.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-020104</td>
+<td>Missing Rule</td>
 </tr>
 <tr>
 <td>V-230357</td>
@@ -4468,7 +4645,7 @@ restriction by running the following command:
 <td>V-230368</td>
 <td>200</td>
 <td>medium</td>
-<td>RHEL 8 passwords must be prohibited from reuse for a minimum of five generations.</td>
+<td>RHEL 8 must be configured in the password-auth file to prohibit password reuse for a minimum of five generations.</td>
 <td>Preventing re-use of previous passwords helps ensure that a compromised password is not re-used by a user.</td>
 <td>Check that the operating system prohibits the reuse of a password for
 a minimum of  generations with the following command:
@@ -4491,6 +4668,17 @@ for the <code>remember</code> parameter is <xccdf-1.1:sub xmlns:xccdf-1.1="http:
 The DoD STIG requirement is 5 passwords.</td>
 <td>RHEL-08-020220</td>
 <td>accounts_password_pam_pwhistory_remember_system_auth</td>
+</tr>
+<tr>
+<td>V-251717</td>
+<td></td>
+<td>medium</td>
+<td>RHEL 8 must be configured in the system-auth file to prohibit password reuse for a minimum of five generations.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-020221</td>
+<td>Missing Rule</td>
 </tr>
 <tr>
 <td>V-230369</td>
@@ -5129,41 +5317,6 @@ determined. Details regarding all possible values for <i>ACTION</i> are describe
 <td>auditd_data_disk_error_action</td>
 </tr>
 <tr>
-<td>V-230391</td>
-<td>140</td>
-<td>medium</td>
-<td>The RHEL 8 System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) must be alerted when the audit storage volume is full.</td>
-<td>Automatically rotating logs (by setting this to <code>rotate</code>)
-minimizes the chances of the system unexpectedly running out of disk space by
-being overwhelmed with log data. However, for systems that must never discard
-log data, or which use external processes to transfer it and reclaim space,
-<code>keep_logs</code> can be employed.</td>
-<td>Inspect /etc/audit/auditd.conf and locate the following line to
-determine if the system is configured to rotate logs when they reach their
-maximum size:
-$ sudo grep max_log_file_action /etc/audit/auditd.conf
-max_log_file_action rotate
-      Is it the case that the system has not been properly configured to rotate audit logs?
-      </td>
-<td>The default action to take when the logs reach their maximum size
-is to rotate the log files, discarding the oldest one. To configure the action taken
-by <code>auditd</code>, add or correct the line in <code>/etc/audit/auditd.conf</code>:
-<pre>max_log_file_action = <i>ACTION</i></pre>
-Possible values for <i>ACTION</i> are described in the <code>auditd.conf</code> man
-page. These include:
-<ul>
-<li><code>ignore</code></li>
-<li><code>syslog</code></li>
-<li><code>suspend</code></li>
-<li><code>rotate</code></li>
-<li><code>keep_logs</code></li>
-</ul>
-Set the <code><i>ACTION</i></code> to <code>rotate</code> to ensure log rotation
-occurs. This is the default. The setting is case-insensitive.</td>
-<td>RHEL-08-030050</td>
-<td>auditd_data_retention_max_log_file_action</td>
-</tr>
-<tr>
 <td>V-230392</td>
 <td>140</td>
 <td>medium</td>
@@ -5761,7 +5914,7 @@ form to <code>/etc/audit/audit.rules</code>:
 <td>V-230413</td>
 <td>169</td>
 <td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the lremovexattr system call.</td>
+<td>The RHEL 8 audit system must be configured to audit any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.</td>
 <td>The changing of file permissions could indicate that a user is attempting to
 gain access to information that would otherwise be disallowed. Auditing DAC modifications
 can facilitate the identification of patterns of abuse among both authorized and
@@ -5799,167 +5952,6 @@ If the system is 64 bit then also add the following line:
 </td>
 <td>RHEL-08-030200</td>
 <td>audit_rules_dac_modification_lremovexattr</td>
-</tr>
-<tr>
-<td>V-230414</td>
-<td>169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the removexattr system call.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-removexattr system call, run the following command:
-$ sudo grep "removexattr" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root.
-<br><br>
-If the <code>auditd</code> daemon is configured to use the <code>augenrules</code>
-program to read audit rules during daemon startup (the default), add the
-following line to a file with suffix <code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S removexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S removexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S removexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S removexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S removexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S removexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S removexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S removexattr -F auid=0 -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030210</td>
-<td>audit_rules_dac_modification_removexattr</td>
-</tr>
-<tr>
-<td>V-230415</td>
-<td>169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the lsetxattr system call.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-lsetxattr system call, run the following command:
-$ sudo grep "lsetxattr" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S lsetxattr -F auid=0 -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S lsetxattr -F auid=0 -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S lsetxattr -F auid=0 -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S lsetxattr -F auid=0 -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030220</td>
-<td>audit_rules_dac_modification_lsetxattr</td>
-</tr>
-<tr>
-<td>V-230416</td>
-<td>169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the fsetxattr system call.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-fsetxattr system call, run the following command:
-$ sudo grep "fsetxattr" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S fsetxattr -F auid=0 -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S fsetxattr -F auid=0 -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S fsetxattr -F auid=0 -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S fsetxattr -F auid=0 -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030230</td>
-<td>audit_rules_dac_modification_fsetxattr</td>
-</tr>
-<tr>
-<td>V-230417</td>
-<td>169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the fremovexattr system call.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-fremovexattr system call, run the following command:
-$ sudo grep "fremovexattr" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root.
-<br><br>
-If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S fremovexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S fremovexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S fremovexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S fremovexattr -F auid=0 -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030240</td>
-<td>audit_rules_dac_modification_fremovexattr</td>
 </tr>
 <tr>
 <td>V-230418</td>
@@ -6030,44 +6022,6 @@ utility to read audit rules during daemon startup, add the following lines to
 </td>
 <td>RHEL-08-030260</td>
 <td>audit_rules_execution_chcon</td>
-</tr>
-<tr>
-<td>V-230420</td>
-<td>169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the setxattr system call.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-setxattr system call, run the following command:
-$ sudo grep "setxattr" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S setxattr -F auid=0 -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S setxattr -F auid=0 -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S setxattr -F auid=0 -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S setxattr -F auid=0 -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030270</td>
-<td>audit_rules_dac_modification_setxattr</td>
 </tr>
 <tr>
 <td>V-230421</td>
@@ -6663,7 +6617,7 @@ form to <code>/etc/audit/audit.rules</code>:
 <td>V-230438</td>
 <td>169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the init_module command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the init_module and finit_module system calls in RHEL 8 must generate an audit record.</td>
 <td>The addition of kernel modules can be used to alter the behavior of
 the kernel and potentially introduce malicious code into kernel space. It is important
 to have an audit trail of modules that have been introduced into the kernel.</td>
@@ -6691,7 +6645,7 @@ add the line to file <code>/etc/audit/audit.rules</code>.</td>
 <td>V-230439</td>
 <td>169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the rename command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the rename, unlink, rmdir, renameat, and unlinkat system calls in RHEL 8 must generate an audit record.</td>
 <td>Auditing file deletions will create an audit trail for files that are removed
 from the system. The audit trail could aid in system troubleshooting, as well as, detecting
 malicious processes that attempt to delete log files to conceal their presence.</td>
@@ -6717,130 +6671,6 @@ appropriate for your system:
 </td>
 <td>RHEL-08-030361</td>
 <td>audit_rules_file_deletion_events_rename</td>
-</tr>
-<tr>
-<td>V-230440</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the renameat command in RHEL 8 must generate an audit record.</td>
-<td>Auditing file deletions will create an audit trail for files that are removed
-from the system. The audit trail could aid in system troubleshooting, as well as, detecting
-malicious processes that attempt to delete log files to conceal their presence.</td>
-<td>To determine if the system is configured to audit calls to the
-renameat system call, run the following command:
-$ sudo grep "renameat" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file deletion events
-for all users and root. If the <code>auditd</code> daemon is configured to use the
-<code>augenrules</code> program to read audit rules during daemon startup (the
-default), add the following line to a file with suffix <code>.rules</code> in the
-directory <code>/etc/audit/rules.d</code>, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S renameat -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S renameat -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-</td>
-<td>RHEL-08-030362</td>
-<td>audit_rules_file_deletion_events_renameat</td>
-</tr>
-<tr>
-<td>V-230441</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the rmdir command in RHEL 8 must generate an audit record.</td>
-<td>Auditing file deletions will create an audit trail for files that are removed
-from the system. The audit trail could aid in system troubleshooting, as well as, detecting
-malicious processes that attempt to delete log files to conceal their presence.</td>
-<td>To determine if the system is configured to audit calls to the
-rmdir system call, run the following command:
-$ sudo grep "rmdir" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file deletion events
-for all users and root. If the <code>auditd</code> daemon is configured to use the
-<code>augenrules</code> program to read audit rules during daemon startup (the
-default), add the following line to a file with suffix <code>.rules</code> in the
-directory <code>/etc/audit/rules.d</code>, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S rmdir -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S rmdir -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-</td>
-<td>RHEL-08-030363</td>
-<td>audit_rules_file_deletion_events_rmdir</td>
-</tr>
-<tr>
-<td>V-230442</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the unlink command in RHEL 8 must generate an audit record.</td>
-<td>Auditing file deletions will create an audit trail for files that are removed
-from the system. The audit trail could aid in system troubleshooting, as well as, detecting
-malicious processes that attempt to delete log files to conceal their presence.</td>
-<td>To determine if the system is configured to audit calls to the
-unlink system call, run the following command:
-$ sudo grep "unlink" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file deletion events
-for all users and root. If the <code>auditd</code> daemon is configured to use the
-<code>augenrules</code> program to read audit rules during daemon startup (the
-default), add the following line to a file with suffix <code>.rules</code> in the
-directory <code>/etc/audit/rules.d</code>, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S unlink -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S unlink -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-</td>
-<td>RHEL-08-030364</td>
-<td>audit_rules_file_deletion_events_unlink</td>
-</tr>
-<tr>
-<td>V-230443</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the unlinkat command in RHEL 8 must generate an audit record.</td>
-<td>Auditing file deletions will create an audit trail for files that are removed
-from the system. The audit trail could aid in system troubleshooting, as well as, detecting
-malicious processes that attempt to delete log files to conceal their presence.</td>
-<td>To determine if the system is configured to audit calls to the
-unlinkat system call, run the following command:
-$ sudo grep "unlinkat" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file deletion events
-for all users and root. If the <code>auditd</code> daemon is configured to use the
-<code>augenrules</code> program to read audit rules during daemon startup (the
-default), add the following line to a file with suffix <code>.rules</code> in the
-directory <code>/etc/audit/rules.d</code>, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S unlinkat -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file, setting ARCH to either b32 or b64 as
-appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S unlinkat -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
-</td>
-<td>RHEL-08-030365</td>
-<td>audit_rules_file_deletion_events_unlinkat</td>
 </tr>
 <tr>
 <td>V-230444</td>
@@ -6876,35 +6706,6 @@ form to <code>/etc/audit/audit.rules</code>:
 </td>
 <td>RHEL-08-030370</td>
 <td>audit_rules_privileged_commands_gpasswd</td>
-</tr>
-<tr>
-<td>V-230445</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the finit_module command in RHEL 8 must generate an audit record.</td>
-<td>The addition/removal of kernel modules can be used to alter the behavior of
-the kernel and potentially introduce malicious code into kernel space. It is important
-to have an audit trail of modules that have been introduced into the kernel.</td>
-<td>To determine if the system is configured to audit calls to the
-finit_module system call, run the following command:
-$ sudo grep "finit_module" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>If the <code>auditd</code> daemon is configured to use the <code>augenrules</code> program
-to read audit rules during daemon startup (the default), add the following lines to a file
-with suffix <code>.rules</code> in the directory <code>/etc/audit/rules.d</code> to capture kernel module
-loading and unloading events, setting ARCH to either b32 or b64 as appropriate for your system:
-<pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code> utility to read audit
-rules during daemon startup, add the following lines to <code>/etc/audit/audit.rules</code> file
-in order to capture kernel module loading and unloading events, setting ARCH to either b32 or
-b64 as appropriate for your system:
-<pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
-</td>
-<td>RHEL-08-030380</td>
-<td>audit_rules_kernel_module_loading_finit</td>
 </tr>
 <tr>
 <td>V-230446</td>
@@ -7008,7 +6809,7 @@ form to <code>/etc/audit/audit.rules</code>:
 <td>V-230449</td>
 <td>169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the truncate command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls in RHEL 8 must generate an audit record.</td>
 <td>Unsuccessful attempts to access files could be an indicator of malicious activity on a system. Auditing
 these events could serve as evidence of potential system compromise.</td>
 <td>To determine if the system is configured to audit calls to the
@@ -7046,209 +6847,10 @@ If the system is 64 bit then also add the following lines:
 <td>audit_rules_unsuccessful_file_modification_truncate</td>
 </tr>
 <tr>
-<td>V-230450</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the openat system call in RHEL 8 must generate an audit record.</td>
-<td>Unsuccessful attempts to access files could be an indicator of malicious activity on a system. Auditing
-these events could serve as evidence of potential system compromise.</td>
-<td>To determine if the system is configured to audit calls to the
-openat system call, run the following command:
-$ sudo grep "openat" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect unauthorized file
-accesses for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following lines to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following lines to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-</td>
-<td>RHEL-08-030430</td>
-<td>audit_rules_unsuccessful_file_modification_openat</td>
-</tr>
-<tr>
-<td>V-230451</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the open system call in RHEL 8 must generate an audit record.</td>
-<td>Unsuccessful attempts to access files could be an indicator of malicious activity on a system. Auditing
-these events could serve as evidence of potential system compromise.</td>
-<td>To determine if the system is configured to audit calls to the
-open system call, run the following command:
-$ sudo grep "open" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect unauthorized file
-accesses for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following lines to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following lines to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-</td>
-<td>RHEL-08-030440</td>
-<td>audit_rules_unsuccessful_file_modification_open</td>
-</tr>
-<tr>
-<td>V-230452</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the open_by_handle_at system call in RHEL 8 must generate an audit record.</td>
-<td>Unsuccessful attempts to access files could be an indicator of malicious activity on a system. Auditing
-these events could serve as evidence of potential system compromise.</td>
-<td>To determine if the system is configured to audit calls to the
-open_by_handle_at system call, run the following command:
-$ sudo grep "open_by_handle_at" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect unauthorized file
-accesses for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following lines to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following lines to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-</td>
-<td>RHEL-08-030450</td>
-<td>audit_rules_unsuccessful_file_modification_open_by_handle_at</td>
-</tr>
-<tr>
-<td>V-230453</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the ftruncate command in RHEL 8 must generate an audit record.</td>
-<td>Unsuccessful attempts to access files could be an indicator of malicious activity on a system. Auditing
-these events could serve as evidence of potential system compromise.</td>
-<td>To determine if the system is configured to audit calls to the
-ftruncate system call, run the following command:
-$ sudo grep "ftruncate" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect unauthorized file
-accesses for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following lines to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S ftruncate -F exiu=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following lines to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-</td>
-<td>RHEL-08-030460</td>
-<td>audit_rules_unsuccessful_file_modification_ftruncate</td>
-</tr>
-<tr>
-<td>V-230454</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the creat system call in RHEL 8 must generate an audit record.</td>
-<td>Unsuccessful attempts to access files could be an indicator of malicious activity on a system. Auditing
-these events could serve as evidence of potential system compromise.</td>
-<td>To determine if the system is configured to audit calls to the
-creat system call, run the following command:
-$ sudo grep "creat" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect unauthorized file
-accesses for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following lines to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following lines to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-If the system is 64 bit then also add the following lines:
-<pre>
--a always,exit -F arch=b64 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=access</pre>
-</td>
-<td>RHEL-08-030470</td>
-<td>audit_rules_unsuccessful_file_modification_creat</td>
-</tr>
-<tr>
 <td>V-230455</td>
 <td>169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the chown command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls in RHEL 8 must generate an audit record.</td>
 <td>The changing of file permissions could indicate that a user is attempting to
 gain access to information that would otherwise be disallowed. Auditing DAC modifications
 can facilitate the identification of patterns of abuse among both authorized and
@@ -7282,7 +6884,7 @@ If the system is 64 bit then also add the following line:
 <td>V-230456</td>
 <td>169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the chmod command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls in RHEL 8 must generate an audit record.</td>
 <td>The changing of file permissions could indicate that a user is attempting to
 gain access to information that would otherwise be disallowed. Auditing DAC modifications
 can facilitate the identification of patterns of abuse among both authorized and
@@ -7311,179 +6913,6 @@ If the system is 64 bit then also add the following line:
 </td>
 <td>RHEL-08-030490</td>
 <td>audit_rules_dac_modification_chmod</td>
-</tr>
-<tr>
-<td>V-230457</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the lchown system call in RHEL 8 must generate an audit record.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-lchown system call, run the following command:
-$ sudo grep "lchown" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030500</td>
-<td>audit_rules_dac_modification_lchown</td>
-</tr>
-<tr>
-<td>V-230458</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchownat system call in RHEL 8 must generate an audit record.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-fchownat system call, run the following command:
-$ sudo grep "fchownat" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S fchownat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchownat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S fchownat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchownat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030510</td>
-<td>audit_rules_dac_modification_fchownat</td>
-</tr>
-<tr>
-<td>V-230459</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchown system call in RHEL 8 must generate an audit record.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-fchown system call, run the following command:
-$ sudo grep "fchown" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured
-to use the <code>augenrules</code> program to read audit rules during daemon
-startup (the default), add the following line to a file with suffix
-<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S fchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S fchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030520</td>
-<td>audit_rules_dac_modification_fchown</td>
-</tr>
-<tr>
-<td>V-230460</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchmodat system call in RHEL 8 must generate an audit record.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-fchmodat system call, run the following command:
-$ sudo grep "fchmodat" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured to
-use the <code>augenrules</code> program to read audit rules during daemon startup
-(the default), add the following line to a file with suffix <code>.rules</code> in
-the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030530</td>
-<td>audit_rules_dac_modification_fchmodat</td>
-</tr>
-<tr>
-<td>V-230461</td>
-<td>169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchmod system call in RHEL 8 must generate an audit record.</td>
-<td>The changing of file permissions could indicate that a user is attempting to
-gain access to information that would otherwise be disallowed. Auditing DAC modifications
-can facilitate the identification of patterns of abuse among both authorized and
-unauthorized users.</td>
-<td>To determine if the system is configured to audit calls to the
-fchmod system call, run the following command:
-$ sudo grep "fchmod" /etc/audit/audit.*
-If the system is configured to audit this activity, it will return a line.
-
-      Is it the case that no line is returned?
-      </td>
-<td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured to
-use the <code>augenrules</code> program to read audit rules during daemon startup
-(the default), add the following line to a file with suffix <code>.rules</code> in
-the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S fchmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
-utility to read audit rules during daemon startup, add the following line to
-<code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S fchmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S fchmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-</td>
-<td>RHEL-08-030540</td>
-<td>audit_rules_dac_modification_fchmod</td>
 </tr>
 <tr>
 <td>V-230462</td>
@@ -10316,6 +9745,17 @@ Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/syst
 </td>
 <td>RHEL-08-040320</td>
 <td>xwindows_remove_packages</td>
+</tr>
+<tr>
+<td>V-251718</td>
+<td></td>
+<td>medium</td>
+<td>The graphical display manager must not be the default target on RHEL 8 unless approved.</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RHEL-08-040321</td>
+<td>Missing Rule</td>
 </tr>
 <tr>
 <td>V-230554</td>

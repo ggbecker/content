@@ -1,2 +1,0 @@
-encrypt_partitions
-libreswan_approved_tunnels

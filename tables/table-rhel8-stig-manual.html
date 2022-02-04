@@ -16,9 +16,9 @@
 <th>STIG ids missing rule</th>
 </tr></thead>
 <tbody><tr>
-<td>381</td>
+<td>371</td>
 <td>0</td>
-<td>381</td>
+<td>371</td>
 <td>100.00%</td>
 <td></td>
 </tr></tbody>
@@ -198,12 +198,12 @@ $ sudo blkid
 
 /dev/mapper/rhel-root:  UUID="67b7d7fe-de60-6fd0-befb-e6748cf97743" TYPE="crypto_LUKS"
 
-Every persistent disk partition present must be of type "crypto_LUKS". If any partitions other than pseudo file systems (such as /proc or /sys) are not type "crypto_LUKS", ask the administrator to indicate how the partitions are encrypted.  If there is no evidence that all local disk partitions are encrypted, this is a finding.</td>
+Every persistent disk partition present must be of type "crypto_LUKS". If any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not type "crypto_LUKS", ask the administrator to indicate how the partitions are encrypted.  If there is no evidence that these partitions are encrypted, this is a finding.</td>
 <td>Configure RHEL 8 to prevent unauthorized modification of all information at rest by using disk encryption. 
 
 Encrypting a partition in an already installed system is more difficult, because existing partitions will need to be resized and changed. To encrypt an entire partition, dedicate a partition for encryption in the partition layout.</td>
 <td>RHEL-08-010030</td>
-<td>SV-230224r627750_rule</td>
+<td>SV-230224r809268_rule</td>
 </tr>
 <tr>
 <td>V-230225</td>
@@ -482,11 +482,11 @@ Certificate:
 If the root ca file is not a DoD-issued certificate with a valid date and installed in the /etc/sssd/pki/sssd_auth_ca_db.pem location, this is a finding.</td>
 <td>Configure RHEL 8, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
 
-Obtain a valid copy of the DoD root CA file from the PKI CA certificate bundle from cyber.mil and copy the DoD_PKE_CA_chain.pem into the following file:
+Obtain a valid copy of the DoD root CA file from the PKI CA certificate bundle at cyber.mil and copy into the following file:
 
 /etc/sssd/pki/sssd_auth_ca_db.pem</td>
 <td>RHEL-08-010090</td>
-<td>SV-230229r627750_rule</td>
+<td>SV-230229r809270_rule</td>
 </tr>
 <tr>
 <td>V-230230</td>
@@ -557,24 +557,24 @@ Password hashes "!" or "*" indicate inactive accounts not available for logon an
 <td>V-230233</td>
 <td>CCI-000196</td>
 <td>medium</td>
-<td>The RHEL 8 password-auth file must be configured to use a sufficient number of hashing rounds.</td>
+<td>The RHEL 8 shadow password suite must be configured to use a sufficient number of hashing rounds.</td>
 <td>The system must use a strong hashing algorithm to store the password. The system must use a sufficient number of hashing rounds to ensure the required level of entropy.
 
 Passwords need to be protected at all times, and encryption is the standard method for protecting passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised.</td>
 <td>Check that a minimum number of hash rounds is configured by running the following command:
 
-$ sudo grep rounds /etc/pam.d/password-auth
+$ sudo egrep "^SHA_CRYPT_" /etc/login.defs
 
-password sufficient pam_unix.so sha512 rounds=5000
+If only one of "SHA_CRYPT_MIN_ROUNDS" or "SHA_CRYPT_MAX_ROUNDS" is set, and this value is below "5000", this is a finding.
 
-If "rounds" has a value below "5000", or is commented out, this is a finding.</td>
+If both "SHA_CRYPT_MIN_ROUNDS" and "SHA_CRYPT_MAX_ROUNDS" are set, and the highest value for either is below "5000", this is a finding.</td>
 <td>Configure RHEL 8 to encrypt all stored passwords with a strong cryptographic hash.
 
-Edit/modify the following line in the "/etc/pam.d/password-auth" file and set "rounds" to a value no lower than "5000":
+Edit/modify the following line in the "/etc/login.defs" file and set "SHA_CRYPT_MIN_ROUNDS" to a value no lower than "5000":
 
-password sufficient pam_unix.so sha512 rounds=5000</td>
+SHA_CRYPT_MIN_ROUNDS 5000</td>
 <td>RHEL-08-010130</td>
-<td>SV-230233r743919_rule</td>
+<td>SV-230233r809273_rule</td>
 </tr>
 <tr>
 <td>V-230234</td>
@@ -661,16 +661,16 @@ Check that the pam_unix.so module is configured to use sha512 in /etc/pam.d/pass
 
 $ sudo grep password /etc/pam.d/password-auth | grep pam_unix
 
-password sufficient pam_unix.so sha512 rounds=5000
+password sufficient pam_unix.so sha512
 
 If "sha512" is missing, or is commented out, this is a finding.</td>
 <td>Configure RHEL 8 to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.
 
 Edit/modify the following line in the "/etc/pam.d/password-auth" file to include the sha512 option for pam_unix.so:
 
-password sufficient pam_unix.so sha512 rounds=5000</td>
+password sufficient pam_unix.so sha512</td>
 <td>RHEL-08-010160</td>
-<td>SV-230237r743931_rule</td>
+<td>SV-230237r809276_rule</td>
 </tr>
 <tr>
 <td>V-230238</td>
@@ -1105,18 +1105,33 @@ RHEL 8 incorporates system-wide crypto policies by default.  The employed algori
 Satisfies: SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00174, SRG-OS-000125-GPOS-00065</td>
 <td>Verify the OpenSSL library is configured to use only DoD-approved TLS encryption:
 
+For versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:
+
 $ sudo grep -i  MinProtocol /etc/crypto-policies/back-ends/opensslcnf.config
 
 MinProtocol = TLSv1.2
 
-If the "MinProtocol" is set to anything older than "TLSv1.2", this is a finding.</td>
+If the "MinProtocol" is set to anything older than "TLSv1.2", this is a finding.
+
+For version crypto-policies-20210617-1.gitc776d3e.el8.noarch and newer:
+
+$ sudo grep -i  MinProtocol /etc/crypto-policies/back-ends/opensslcnf.config
+
+TLS.MinProtocol = TLSv1.2
+DTLS.MinProtocol = DTLSv1.2
+
+If the "TLS.MinProtocol" is set to anything older than "TLSv1.2" or the "DTLS.MinProtocol" is set to anything older than DTLSv1.2, this is a finding.</td>
 <td>Configure the RHEL 8 OpenSSL library to use only DoD-approved TLS encryption by editing the following line in the "/etc/crypto-policies/back-ends/opensslcnf.config" file:
 
+For versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:
 MinProtocol = TLSv1.2
 
+For version crypto-policies-20210617-1.gitc776d3e.el8.noarch and newer:
+TLS.MinProtocol = TLSv1.2
+DTLS.MinProtocol = DTLSv1.2
 A reboot is required for the changes to take effect.</td>
 <td>RHEL-08-010294</td>
-<td>SV-230255r627750_rule</td>
+<td>SV-230255r809382_rule</td>
 </tr>
 <tr>
 <td>V-230256</td>
@@ -1739,7 +1754,7 @@ If the certificate_verification line is missing from the [sssd] section, or is m
 
 Review the "/etc/sssd/sssd.conf" file to determine if the system is configured to prevent OCSP or certificate verification.
 
-Add the following line to the "/etc/sssd/sssd.conf" file:
+Add the following line to the [sssd] section of the "/etc/sssd/sssd.conf" file:
 
 certificate_verification = ocsp_dgst=sha1
 
@@ -1747,7 +1762,7 @@ The "sssd" service must be restarted for the changes to take effect. To restart 
 
 $ sudo systemctl restart sssd.service</td>
 <td>RHEL-08-010400</td>
-<td>SV-230274r743945_rule</td>
+<td>SV-230274r809281_rule</td>
 </tr>
 <tr>
 <td>V-230275</td>
@@ -2344,33 +2359,6 @@ The SSH daemon must be restarted for the changes to take effect. To restart the 
 $ sudo systemctl restart sshd.service</td>
 <td>RHEL-08-010550</td>
 <td>SV-230296r627750_rule</td>
-</tr>
-<tr>
-<td>V-230297</td>
-<td>CCI-000366</td>
-<td>medium</td>
-<td>The auditd service must be running in RHEL 8.</td>
-<td>Configuring RHEL 8 to implement organization-wide security implementation guides and security checklists ensures compliance with federal standards and establishes a common security baseline across the DoD that reflects the most restrictive security posture consistent with operational requirements.
-
-Configuration settings are the set of parameters that can be changed in hardware, software, or firmware components of the system that affect the security posture and/or functionality of the system. Security-related parameters are those parameters impacting the security state of the system, including the parameters required to satisfy other security control requirements. Security-related parameters include, for example: registry settings; account, file, directory permission settings; and settings for functions, ports, protocols, services, and remote connections.</td>
-<td>Verify the audit service is enabled and active with the following commands:
-
-$ sudo systemctl is-enabled auditd
-
-enabled
-
-$ sudo systemctl is-active auditd
-
-active
-
-If the service is not "enabled" and "active" this is a finding.</td>
-<td>Start the auditd service, and enable the auditd service with the following commands:
-
-$ sudo systemctl start auditd.service
-
-$ sudo systemctl enable auditd.service</td>
-<td>RHEL-08-010560</td>
-<td>SV-230297r627750_rule</td>
 </tr>
 <tr>
 <td>V-230298</td>
@@ -3835,20 +3823,38 @@ The session lock is implemented at the point where session activity can be deter
 Tmux is a terminal multiplexer that enables a number of terminals to be created, accessed, and controlled from a single screen.  Red Hat endorses tmux as the recommended session controlling package.
 
 Satisfies: SRG-OS-000028-GPOS-00009, SRG-OS-000030-GPOS-00011</td>
-<td>Verify the operating system shell initialization file is configured to start each shell with the tmux terminal multiplexer with the following command:
+<td>Verify the operating system shell initialization file is configured to start each shell with the tmux terminal multiplexer with the following commands:
 
-$ sudo grep -i tmux /etc/bashrc
+Determine if tmux is currently running:
+$ sudo ps all | grep tmux | grep -v grep
 
-[ -n "$PS1" -a -z "$TMUX" ] &amp;&amp; exec tmux
+If the command does not produce output, this is a finding.
+ 
+Determine the location of the tmux script:
+$ sudo grep tmux /etc/bashrc/etc/profile.d/*
 
-If "tmux" is not configured as the example above, is commented out, or missing from the "/etc/bashrc" initialization file, this is a finding.</td>
-<td>Configure the operating system to initialize the tmux terminal multiplexer as each shell is called by adding the following line to the end of the "/etc/bashrc" configuration file:
+/etc/profile.d/tmux.sh:  case "$name" in (sshd|login) exec tmux ;; esac
 
-[ -n "$PS1" -a -z "$TMUX" ] &amp;&amp; exec tmux
+Review the tmux script by using the following example:
+$ sudo cat /etc/profile.d/tmux.sh
+If [ "$PS1" ]; then
+parent=$(ps -o ppid= -p $$)
+name=$(ps -o comm= -p $parent)
+case "$name" in (sshd|login) exec tmux ;; esac
+fi
+
+If "tmux" is not configured as the example above, is commented out, or is missing, this is a finding.</td>
+<td>Configure the operating system to initialize the tmux terminal multiplexer as each shell is called by adding the following lines to a custom.sh shell script in the /etc/profile.d/ directory:
+
+If [ "$PS1" ]; then
+parent=$(ps -o ppid= -p $$)
+name=$(ps -o comm= -p $parent)
+case "$name" in (sshd|login) exec tmux ;; esac
+fi
 
 This setting will take effect at next logon.</td>
 <td>RHEL-08-020041</td>
-<td>SV-230349r627750_rule</td>
+<td>SV-230349r810020_rule</td>
 </tr>
 <tr>
 <td>V-230350</td>
@@ -4061,38 +4067,30 @@ $ sudo systemctl restart sssd.service</td>
 </tr>
 <tr>
 <td>V-230356</td>
-<td>CCI-000192</td>
+<td>CCI-000366</td>
 <td>medium</td>
-<td>RHEL 8 must ensure a password complexity module is enabled.</td>
+<td>RHEL 8 must ensure the password complexity module is enabled in the password-auth file.</td>
 <td>Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
 
 RHEL 8 utilizes "pwquality" as a mechanism to enforce password complexity. This is set in both:
 /etc/pam.d/password-auth
-/etc/pam.d/system-auth
-
-Note the value of "retry" set in these configuration files should be between "1" and "3". Manual changes to the listed files may be overwritten by the "authselect" program.</td>
+/etc/pam.d/system-auth</td>
 <td>Verify the operating system uses "pwquality" to enforce the password complexity rules. 
 
-Check for the use of "pwquality" with the following commands:
+Check for the use of "pwquality" in the password-auth file with the following command:
 
 $ sudo cat /etc/pam.d/password-auth | grep pam_pwquality
 
-password required pam_pwquality.so retry=3
+password required pam_pwquality.so 
 
-$ sudo cat /etc/pam.d/system-auth | grep pam_pwquality
-
-password required pam_pwquality.so retry=3
-
-If both commands do not return a line containing the value "pam_pwquality.so", or the line is commented out, this is a finding.
-
-If the value of "retry" is set to "0" or greater than "3", this is a finding.</td>
+If the command does not return a line containing the value "pam_pwquality.so", or the line is commented out, this is a finding.</td>
 <td>Configure the operating system to use "pwquality" to enforce password complexity rules.
 
-Add the following line to both "/etc/pam.d/password-auth" and "/etc/pam.d/system-auth" (or modify the line to have the required value):
+Add the following line to the "/etc/pam.d/password-auth" file (or modify the line to have the required value):
 
-password required pam_pwquality.so retry=3</td>
+password required pam_pwquality.so</td>
 <td>RHEL-08-020100</td>
-<td>SV-230356r627750_rule</td>
+<td>SV-230356r809379_rule</td>
 </tr>
 <tr>
 <td>V-230357</td>
@@ -4185,14 +4183,14 @@ $ sudo grep maxclassrepeat /etc/security/pwquality.conf
 
 maxclassrepeat = 4
 
-If the value of "maxclassrepeat" is set to more than "4" or is commented out, this is a finding.</td>
+If the value of "maxclassrepeat" is set to "0", more than "4" or is commented out, this is a finding.</td>
 <td>Configure the operating system to require the change of the number of repeating characters of the same character class when passwords are changed by setting the "maxclassrepeat" option.
 
 Add the following line to "/etc/security/pwquality.conf" conf (or modify the line to have the required value):
 
 maxclassrepeat = 4</td>
 <td>RHEL-08-020140</td>
-<td>SV-230360r627750_rule</td>
+<td>SV-230360r809289_rule</td>
 </tr>
 <tr>
 <td>V-230361</td>
@@ -4350,30 +4348,30 @@ $ sudo chage -M 60 [user]</td>
 <td>V-230368</td>
 <td>CCI-000200</td>
 <td>medium</td>
-<td>RHEL 8 passwords must be prohibited from reuse for a minimum of five generations.</td>
+<td>RHEL 8 must be configured in the password-auth file to prohibit password reuse for a minimum of five generations.</td>
 <td>Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. If the information system or application allows the user to reuse their password consecutively when that password has exceeded its defined lifetime, the end result is a password that is not changed per policy requirements.
 
-RHEL 8 utilizes "pwquality" consecutively as a mechanism to enforce password complexity. This is set in both:
+RHEL 8 uses "pwhistory" consecutively as a mechanism to prohibit password reuse. This is set in both:
 /etc/pam.d/password-auth
 /etc/pam.d/system-auth.
 
 Note that manual changes to the listed files may be overwritten by the "authselect" program.</td>
-<td>Verify the operating system prohibits password reuse for a minimum of five generations.
+<td>Verify the operating system is configured in the password-auth file to prohibit password reuse for a minimum of five generations.
 
-Check for the value of the "remember" argument in "/etc/pam.d/system-auth" and "/etc/pam.d/password-auth" with the following command:
+Check for the value of the "remember" argument in "/etc/pam.d/password-auth" with the following command:
 
-$ sudo grep -i remember /etc/pam.d/system-auth /etc/pam.d/password-auth
+$ sudo grep -i remember /etc/pam.d/password-auth
 
 password required pam_pwhistory.so use_authtok remember=5 retry=3
 
 If the line containing "pam_pwhistory.so" does not have the "remember" module argument set, is commented out, or the value of the "remember" module argument is set to less than "5", this is a finding.</td>
-<td>Configure the operating system to prohibit password reuse for a minimum of five generations.
+<td>Configure the operating system in the password-auth file to prohibit password reuse for a minimum of five generations.
 
-Add the following line in "/etc/pam.d/system-auth" and "/etc/pam.d/password-auth" (or modify the line to have the required value):
+Add the following line in "/etc/pam.d/password-auth" (or modify the line to have the required value):
 
 password required pam_pwhistory.so use_authtok remember=5 retry=3</td>
 <td>RHEL-08-020220</td>
-<td>SV-230368r627750_rule</td>
+<td>SV-230368r810414_rule</td>
 </tr>
 <tr>
 <td>V-230369</td>
@@ -4990,33 +4988,6 @@ If availability has been determined to be more important, and this decision is d
 <td>SV-230390r627750_rule</td>
 </tr>
 <tr>
-<td>V-230391</td>
-<td>CCI-000140</td>
-<td>medium</td>
-<td>The RHEL 8 System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) must be alerted when the audit storage volume is full.</td>
-<td>It is critical that when RHEL 8 is at risk of failing to process audit logs as required, it takes action to mitigate the failure. Audit processing failures include software/hardware errors; failures in the audit capturing mechanisms; and audit storage capacity being reached or exceeded. Responses to audit failure depend upon the nature of the failure mode.
-
-When availability is an overriding concern, other approved actions in response to an audit failure are as follows:
-
-1) If the failure was caused by the lack of audit record storage capacity, RHEL 8 must continue generating audit records if possible (automatically restarting the audit service if necessary) and overwriting the oldest audit records in a first-in-first-out manner.
-
-2) If audit records are sent to a centralized collection server and communication with this server is lost or the server fails, RHEL 8 must queue audit records locally until communication is restored or until the audit records are retrieved manually. Upon restoration of the connection to the centralized collection server, action should be taken to synchronize the local audit data with the collection server.</td>
-<td>Verify that the SA and ISSO (at a minimum) are notified when the audit storage volume is full.
-
-Check which action RHEL 8 takes when the audit storage volume is full with the following command:
-
-$ sudo grep max_log_file_action /etc/audit/auditd.conf
-
-max_log_file_action=syslog
-
-If the value of the "max_log_file_action" option is set to "ignore", "rotate", or "suspend", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit storage volume is full.  If there is no evidence of appropriate action, this is a finding.</td>
-<td>Configure RHEL 8 to notify the System Administrator (SA) and Information System Security Officer (ISSO) when the audit storage volume is full by configuring the "max_log_file_action" parameter in the "/etc/audit/auditd.conf" file with the a value of "syslog" or "keep_logs":
-
-max_log_file_action = syslog</td>
-<td>RHEL-08-030050</td>
-<td>SV-230391r743998_rule</td>
-</tr>
-<tr>
 <td>V-230392</td>
 <td>CCI-000140</td>
 <td>medium</td>
@@ -5623,176 +5594,45 @@ The audit daemon must be restarted for the changes to take effect.</td>
 <td>V-230413</td>
 <td>CCI-000169</td>
 <td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the lremovexattr system call.</td>
+<td>The RHEL 8 audit system must be configured to audit any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.</td>
 <td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). "Lremovexattr" is a system call that removes extended attributes. This is used for removal of extended attributes from symbolic links.
+Audit records can be generated from various components within the information system (e.g., module or policy filter). 
+
+"Setxattr" is a system call used to set an extended attribute value.
+"Fsetxattr" is a system call used to set an extended attribute value. This is used to set extended attributes on a file.
+"Lsetxattr" is a system call used to set an extended attribute value. This is used to set extended attributes on a symbolic link.
+"Removexattr" is a system call that removes extended attributes.
+"Fremovexattr" is a system call that removes extended attributes. This is used for removal of extended attributes from a file.
+"Lremovexattr" is a system call that removes extended attributes. This is used for removal of extended attributes from symbolic links.
 
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215, SRG-OS-000474-GPOS-00219, SRG-OS-000466-GPOS-00210</td>
-<td>Verify if RHEL 8 is configured to audit the execution of the "lremovexattr" system call, by running the following command:
+The system call rules are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. The performance can be helped, however, by combining syscalls into one rule whenever possible.
 
-$ sudo grep -w lremovexattr /etc/audit/audit.rules
+Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172, SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215, SRG-OS-000474-GPOS-00219, SRG-OS-000466-GPOS-00210</td>
+<td>Verify if RHEL 8 is configured to audit the execution of the "setxattr", "fsetxattr", "lsetxattr", "removexattr", "fremovexattr", and "lremovexattr" system calls by running the following command:
 
--a always,exit -F arch=b32 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
+$ sudo grep xattr /etc/audit/audit.rules
 
--a always,exit -F arch=b32 -S lremovexattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S lremovexattr -F auid=0 -k perm_mod
+-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
 
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure RHEL 8 to audit the execution of the "lremovexattr" system call, by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
+-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod
 
--a always,exit -F arch=b32 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
+If the command does not return an audit rule for "setxattr", "fsetxattr", "lsetxattr", "removexattr", "fremovexattr", and "lremovexattr" or any of the lines returned are commented out, this is a finding.</td>
+<td>Configure RHEL 8 to audit the execution of the "setxattr", "fsetxattr", "lsetxattr", "removexattr", "fremovexattr", and "lremovexattr" system calls by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
 
--a always,exit -F arch=b32 -S lremovexattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S lremovexattr -F auid=0 -k perm_mod
+-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
+
+-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod
 
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030200</td>
-<td>SV-230413r627750_rule</td>
-</tr>
-<tr>
-<td>V-230414</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the removexattr system call.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). "Removexattr" is a system call that removes extended attributes.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215, SRG-OS-000474-GPOS-00219, SRG-OS-000466-GPOS-00210</td>
-<td>Verify if RHEL 8 is configured to audit the execution of the "removexattr" system call, by running the following command:
-
-$ sudo grep -w removexattr /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S removexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S removexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S removexattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S removexattr -F auid=0 -k perm_mod 
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure RHEL 8 to audit the execution of the "removexattr" system call, by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
-
--a always,exit -F arch=b32 -S removexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S removexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S removexattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S removexattr -F auid=0 -k perm_mod 
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030210</td>
-<td>SV-230414r627750_rule</td>
-</tr>
-<tr>
-<td>V-230415</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the lsetxattr system call.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). "Lsetxattr" is a system call used to set an extended attribute value. This is used to set extended attributes on a symbolic link.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215, SRG-OS-000474-GPOS-00219</td>
-<td>Verify if RHEL 8 is configured to audit the execution of the "lsetxattr" system call, by running the following command:
-
-$ sudo grep -w lsetxattr /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S lsetxattr -F auid=0 -k perm_mod 
--a always,exit -F arch=b64 -S lsetxattr -F auid=0 -k perm_mod
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure RHEL 8 to audit the execution of the "lsetxattr" system call, by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
-
--a always,exit -F arch=b32 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S lsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S lsetxattr -F auid=0 -k perm_mod 
--a always,exit -F arch=b64 -S lsetxattr -F auid=0 -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030220</td>
-<td>SV-230415r627750_rule</td>
-</tr>
-<tr>
-<td>V-230416</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the fsetxattr system call.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). "Fsetxattr" is a system call used to set an extended attribute value. This is used to set extended attributes on a file.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The auid representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215, SRG-OS-000474-GPOS-00219</td>
-<td>Verify if RHEL 8 is configured to audit the execution of the "fsetxattr" system call, by running the following command:
-
-$ sudo grep -w fsetxattr /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S fsetxattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S fsetxattr -F auid=0 -k perm_mod
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure RHEL 8 to audit the execution of the "fsetxattr" system call, by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
-
--a always,exit -F arch=b32 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fsetxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S fsetxattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S fsetxattr -F auid=0 -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030230</td>
-<td>SV-230416r627750_rule</td>
-</tr>
-<tr>
-<td>V-230417</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the fremovexattr system call.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). "Fremovexattr" is a system call that removes extended attributes. This is used for removal of extended attributes from a file.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000471-GPOS-00215, SRG-OS-000474-GPOS-00219, SRG-OS-000466-GPOS-00210</td>
-<td>Verify if RHEL 8 is configured to audit the execution of the "fremovexattr" system call, by running the following command:
-
-$ sudo grep -w fremovexattr /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S fremovexattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S fremovexattr -F auid=0 -k perm_mod 
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure RHEL 8 to audit the execution of the "fremovexattr" system call by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
-
--a always,exit -F arch=b32 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fremovexattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S fremovexattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S fremovexattr -F auid=0 -k perm_mod 
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030240</td>
-<td>SV-230417r627750_rule</td>
+<td>SV-230413r810463_rule</td>
 </tr>
 <tr>
 <td>V-230418</td>
@@ -5847,41 +5687,6 @@ If the command does not return a line, or the line is commented out, this is a f
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030260</td>
 <td>SV-230419r627750_rule</td>
-</tr>
-<tr>
-<td>V-230420</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>The RHEL 8 audit system must be configured to audit any usage of the setxattr system call.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). "Setxattr" is a system call used to set an extended attribute value.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify if RHEL 8 is configured to audit the execution of the "setxattr" system call, by running the following command:
-
-$ sudo grep -w setxattr /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S setxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S setxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S setxattr -F auid=0 -k perm_mod 
--a always,exit -F arch=b64 -S setxattr -F auid=0 -k perm_mod 
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure RHEL 8 to audit the execution of the "setxattr" system call, by adding or updating the following lines to "/etc/audit/rules.d/audit.rules":
-
--a always,exit -F arch=b32 -S setxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S setxattr -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
--a always,exit -F arch=b32 -S setxattr -F auid=0 -k perm_mod
--a always,exit -F arch=b64 -S setxattr -F auid=0 -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030270</td>
-<td>SV-230420r627750_rule</td>
 </tr>
 <tr>
 <td>V-230421</td>
@@ -6348,175 +6153,68 @@ The audit daemon must be restarted for the changes to take effect.</td>
 <td>V-230438</td>
 <td>CCI-000169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the init_module command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the init_module and finit_module system calls in RHEL 8 must generate an audit record.</td>
 <td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "init_module" command is used to load a kernel module.
+Audit records can be generated from various components within the information system (e.g., module or policy filter). The "init_module" and "finit_module" system calls are used to load a kernel module.
 
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "init_module" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
+The system call rules are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. The performance can be helped, however, by combining syscalls into one rule whenever possible.
 
-$ sudo grep -w "init_module" /etc/audit/audit.rules
+Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
+<td>Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the "init_module" and "finit_module" system calls by using the following command to check the file system rules in "/etc/audit/audit.rules":
 
--a always,exit -F arch=b32 -S init_module -F auid&gt;=1000 -F auid!=unset -k module_chng
--a always,exit -F arch=b64 -S init_module -F auid&gt;=1000 -F auid!=unset -k module_chng
+$ sudo grep init_module /etc/audit/audit.rules
 
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "init_module" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
+-a always,exit -F arch=b32 -S init_module,finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
+-a always,exit -F arch=b64 -S init_module,finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
 
--a always,exit -F arch=b32 -S init_module -F auid&gt;=1000 -F auid!=unset -k module_chng
--a always,exit -F arch=b64 -S init_module -F auid&gt;=1000 -F auid!=unset -k module_chng
+If the command does not return an audit rule for "init_module" and "finit_module" or any of the lines returned are commented out, this is a finding.</td>
+<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "init_module" and "finit_module" system calls by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
+
+-a always,exit -F arch=b32 -S init_module,finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
+-a always,exit -F arch=b64 -S init_module,finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
 
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030360</td>
-<td>SV-230438r627750_rule</td>
+<td>SV-230438r810464_rule</td>
 </tr>
 <tr>
 <td>V-230439</td>
 <td>CCI-000169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the rename command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the rename, unlink, rmdir, renameat, and unlinkat system calls in RHEL 8 must generate an audit record.</td>
 <td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "rename" command will rename the specified files by replacing the first occurrence of expression in their name by replacement.
+Audit records can be generated from various components within the information system (e.g., module or policy filter). The "rename" system call will rename the specified files by replacing the first occurrence of expression in their name by replacement.
+
+The "unlink" system call deletes a name from the filesystem. If that name was the last link to a file and no processes have the file open, the file is deleted and the space it was using is made available for reuse.
+The "rmdir" system call removes empty directories.
+The "renameat" system call renames a file, moving it between directories if required.
+The "unlinkat" system call operates in exactly the same way as either "unlink" or "rmdir" except for the differences described in the manual page.
 
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "rename" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
+The system call rules are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. Performance can be helped, however, by combining syscalls into one rule whenever possible.
 
-$ sudo grep -w "rename" /etc/audit/audit.rules
+Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
+<td>Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the "rename", "unlink", "rmdir", "renameat", and "unlinkat" system calls by using the following command to check the file system rules in "/etc/audit/audit.rules":
 
--a always,exit -F arch=b32 -S rename -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S rename -F auid&gt;=1000 -F auid!=unset -k delete
+$ sudo grep 'rename\|unlink\|rmdir' /etc/audit/audit.rules
 
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "rename" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
+-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
+-a always,exit -F arch=b64 -S rename,unlink,rmdir,renameat,unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
 
--a always,exit -F arch=b32 -S rename -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S rename -F auid&gt;=1000 -F auid!=unset -k delete
+If the command does not return an audit rule for "rename", "unlink", "rmdir", "renameat", and "unlinkat" or any of the lines returned are commented out, this is a finding.</td>
+<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "rename", "unlink", "rmdir", "renameat", and "unlinkat" system calls by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
+
+-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
+-a always,exit -F arch=b64 -S rename,unlink,rmdir,renameat,unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
 
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030361</td>
-<td>SV-230439r627750_rule</td>
-</tr>
-<tr>
-<td>V-230440</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the renameat command in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "renameat" command renames a file, moving it between directories if required.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "renameat" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w "renameat" /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S renameat -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S renameat -F auid&gt;=1000 -F auid!=unset -k delete
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "renameat" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S renameat -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S renameat -F auid&gt;=1000 -F auid!=unset -k delete
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030362</td>
-<td>SV-230440r627750_rule</td>
-</tr>
-<tr>
-<td>V-230441</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the rmdir command in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "rmdir" command removes empty directories.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "rmdir" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w "rmdir" /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S rmdir -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S rmdir -F auid&gt;=1000 -F auid!=unset -k delete
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "rmdir" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S rmdir -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S rmdir -F auid&gt;=1000 -F auid!=unset -k delete
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030363</td>
-<td>SV-230441r627750_rule</td>
-</tr>
-<tr>
-<td>V-230442</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the unlink command in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "unlink" command deletes a name from the filesystem.  If that name was the last link to a file and no processes have the file open, the file is deleted and the space it was using is made available for reuse. 
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "unlink" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w "unlink" /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S unlink -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S unlink -F auid&gt;=1000 -F auid!=unset -k delete
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "unlink" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S unlink -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S unlink -F auid&gt;=1000 -F auid!=unset -k delete
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030364</td>
-<td>SV-230442r627750_rule</td>
-</tr>
-<tr>
-<td>V-230443</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the unlinkat command in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "unlinkat" system call operates in exactly the same way as either "unlink" or "rmdir" except for the differences described in the manual page.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "unlinkat" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w "unlinkat" /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "unlinkat" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
--a always,exit -F arch=b64 -S unlinkat -F auid&gt;=1000 -F auid!=unset -k delete
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030365</td>
-<td>SV-230443r627750_rule</td>
+<td>SV-230439r810465_rule</td>
 </tr>
 <tr>
 <td>V-230444</td>
@@ -6544,35 +6242,6 @@ If the command does not return a line, or the line is commented out, this is a f
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030370</td>
 <td>SV-230444r627750_rule</td>
-</tr>
-<tr>
-<td>V-230445</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the finit_module command in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "finit_module" command is used to load a kernel module.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "finit_module" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w "finit_module" /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
--a always,exit -F arch=b64 -S finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "finit_module" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
--a always,exit -F arch=b64 -S finit_module -F auid&gt;=1000 -F auid!=unset -k module_chng
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030380</td>
-<td>SV-230445r627750_rule</td>
 </tr>
 <tr>
 <td>V-230446</td>
@@ -6661,414 +6330,114 @@ The audit daemon must be restarted for the changes to take effect.</td>
 <td>V-230449</td>
 <td>CCI-000169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the truncate command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls in RHEL 8 must generate an audit record.</td>
 <td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
 Audit records can be generated from various components within the information system (e.g., module or policy filter). The "truncate" and "ftruncate" functions are used to truncate a file to a specified length. 
 
+The "creat" system call is used to open and possibly create a file or device.
+The "open" system call opens a file specified by a pathname. If the specified file does not exist, it may optionally be created by "open".
+The "openat" system call opens a file specified by a relative pathname.
+The "name_to_handle_at" and "open_by_handle_at" system calls split the functionality of "openat" into two parts: "name_to_handle_at" returns an opaque handle that corresponds to a specified file; "open_by_handle_at" opens the file corresponding to a handle returned by a previous call to "name_to_handle_at" and returns an open file descriptor.
+
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "truncate" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
+The system call rules are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. The performance can be helped, however, by combining syscalls into one rule whenever possible.
 
-$ sudo grep -iw truncate /etc/audit/audit.rules
+Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
+<td>Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the "truncate", "ftruncate", "creat", "open", "openat", and "open_by_handle_at" system calls by using the following command to check the file system rules in "/etc/audit/audit.rules":
 
--a always,exit -F arch=b32 -S truncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S truncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
+$ sudo grep 'open\|truncate\|creat' /etc/audit/audit.rules
 
--a always,exit -F arch=b32 -S truncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S truncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
+-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
+-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
 
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "truncate" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
+-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
+-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
 
--a always,exit -F arch=b32 -S truncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S truncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
+If the output does not produce rules containing "-F exit=-EPERM", this is a finding.
+If the output does not produce rules containing "-F exit=-EACCES", this is a finding.
+If the command does not return an audit rule for "truncate", "ftruncate", "creat", "open", "openat", and "open_by_handle_at" or any of the lines returned are commented out, this is a finding.</td>
+<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "truncate", "ftruncate", "creat", "open", "openat", and "open_by_handle_at" system calls by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
 
--a always,exit -F arch=b32 -S truncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S truncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
+-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
+-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
+
+-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
+-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
 
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030420</td>
-<td>SV-230449r627750_rule</td>
-</tr>
-<tr>
-<td>V-230450</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the openat system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "openat" system call opens a file specified by a relative pathname.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "openat" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -iw openat /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "openat" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S openat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S openat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030430</td>
-<td>SV-230450r627750_rule</td>
-</tr>
-<tr>
-<td>V-230451</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the open system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "open system" call opens a file specified by a pathname. If the specified file does not exist, it may optionally be created by "open".
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "open" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -iw open /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "open" system call by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030440</td>
-<td>SV-230451r627750_rule</td>
-</tr>
-<tr>
-<td>V-230452</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the open_by_handle_at system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "name_to_handle_at" and "open_by_handle_at" system calls split the functionality of openat into two parts: "name_to_handle_at" returns an opaque handle that corresponds to a specified file; "open_by_handle_at" opens the file corresponding to a handle returned by a previous call to "name_to_handle_at" and returns an open file descriptor.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "open_by_handle_at" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -iw open_by_handle_at /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "open_by_handle_at" system call by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030450</td>
-<td>SV-230452r627750_rule</td>
-</tr>
-<tr>
-<td>V-230453</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the ftruncate command in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "truncate" and "ftruncate" functions are used to truncate a file to a specified length.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "ftruncate" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -iw ftruncate /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "ftruncate" command by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S ftruncate -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S ftruncate -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030460</td>
-<td>SV-230453r627750_rule</td>
-</tr>
-<tr>
-<td>V-230454</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the creat system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "creat" system call is used to open and possibly create a file or device.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "creat" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -iw creat /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-If the command does not return all lines, or the lines are commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "creat" system call by adding or updating the following rules in the "/etc/audit/rules.d/audit.rules" file:
-
--a always,exit -F arch=b32 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S creat -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -k perm_access
-
--a always,exit -F arch=b32 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
--a always,exit -F arch=b64 -S creat -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -k perm_access
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030470</td>
-<td>SV-230454r627750_rule</td>
+<td>SV-230449r810455_rule</td>
 </tr>
 <tr>
 <td>V-230455</td>
 <td>CCI-000169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the chown command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls in RHEL 8 must generate an audit record.</td>
 <td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
 Audit records can be generated from various components within the information system (e.g., module or policy filter). The "chown" command is used to change file owner and group.
 
+The "fchown" system call is used to change the ownership of a file referred to by the open file descriptor.
+The "fchownat" system call is used to change ownership of a file relative to a directory file descriptor.
+The "lchown" system call is used to change the ownership of the file specified by a path, which does not dereference symbolic links.
+
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "chown" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
+The system call rules are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. The performance can be helped, however, by combining syscalls into one rule whenever possible.
 
-$ sudo grep -w chown /etc/audit/audit.rules
+Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
+<td>Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the "chown", "fchown", "fchownat" and "lchown" system calls by using the following command to check the file system rules in "/etc/audit/audit.rules":
 
--a always,exit -F arch=b32 -S chown -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S chown -F auid&gt;=1000 -F auid!=unset -k perm_mod
+$ sudo grep chown /etc/audit/audit.rules
 
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "chown" command by adding or updating the following line to "/etc/audit/rules.d/audit.rules":
+-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
 
--a always,exit -F arch=b32 -S chown -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S chown -F auid&gt;=1000 -F auid!=unset -k perm_mod
+If audit rules are not defined for "chown", "fchown", "fchownat", and "lchown" or any of the lines returned are commented out, this is a finding.</td>
+<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "chown", "fchown", "fchownat", and "lchown" system calls by adding or updating the following line to "/etc/audit/rules.d/audit.rules":
+
+-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
 
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030480</td>
-<td>SV-230455r627750_rule</td>
+<td>SV-230455r810459_rule</td>
 </tr>
 <tr>
 <td>V-230456</td>
 <td>CCI-000169</td>
 <td>medium</td>
-<td>Successful/unsuccessful uses of the chmod command in RHEL 8 must generate an audit record.</td>
+<td>Successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls in RHEL 8 must generate an audit record.</td>
 <td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "chmod" command changes the file mode bits of each given file according to mode, which can be either a symbolic representation of changes to make, or an octal number representing the bit pattern for the new mode bits.
+Audit records can be generated from various components within the information system (e.g., module or policy filter). The "chmod" system call changes the file mode bits of each given file according to mode, which can be either a symbolic representation of changes to make, or an octal number representing the bit pattern for the new mode bits.
+
+The "fchmod" system call is used to change permissions of a file.
+The "fchmodat" system call is used to change permissions of a file relative to a directory file descriptor.
 
 When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
 
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "chmod" command by performing the following command to check the file system rules in "/etc/audit/audit.rules":
+The system call rules are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit. Performance can be helped, however, by combining syscalls into one rule whenever possible.
 
-$ sudo grep -w chmod /etc/audit/audit.rules
+Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
+<td>Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the "chmod", "fchmod", and "fchmodat" syscalls by using the following command to check the file system rules in "/etc/audit/audit.rules":
 
--a always,exit -F arch=b32 -S chmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S chmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
+$ sudo grep chmod /etc/audit/audit.rules
 
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "chmod" command by adding or updating the following line to "/etc/audit/rules.d/audit.rules": 
+-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
 
--a always,exit -F arch=b32 -S chmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S chmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
+If the command does not return an audit rule for "chmod", "fchmod", and "fchmodat", or any of the lines returned are commented out, this is a finding.</td>
+<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "chmod", "fchmod", and "fchmodat" syscalls by adding or updating the following line to "/etc/audit/rules.d/audit.rules": 
+
+-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
 
 The audit daemon must be restarted for the changes to take effect.</td>
 <td>RHEL-08-030490</td>
-<td>SV-230456r627750_rule</td>
-</tr>
-<tr>
-<td>V-230457</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the lchown system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "lchown" system call is used to change the ownership of the file specified by a path, which does not dereference symbolic links.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "lchown" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w lchown /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "lchown" system call by adding or updating the following lines to "/etc/audit/rules.d/audit.rules": 
-
--a always,exit -F arch=b32 -S lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S lchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030500</td>
-<td>SV-230457r627750_rule</td>
-</tr>
-<tr>
-<td>V-230458</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchownat system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "fchownat" system call is used to change ownership of a file relative to a directory file descriptor.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "fchownat" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w fchownat /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S fchownat -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchownat -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "fchownat" system call by adding or updating the following lines to "/etc/audit/rules.d/audit.rules": 
-
--a always,exit -F arch=b32 -S fchownat -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchownat -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030510</td>
-<td>SV-230458r627750_rule</td>
-</tr>
-<tr>
-<td>V-230459</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchown system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "fchown" system call is used to change the ownership of a file referred to by the open file descriptor.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "fchown" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w fchown /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S fchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "fchown" system call by adding or updating the following line to "/etc/audit/rules.d/audit.rules": 
-
--a always,exit -F arch=b32 -S fchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchown -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030520</td>
-<td>SV-230459r627750_rule</td>
-</tr>
-<tr>
-<td>V-230460</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchmodat system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "fchmodat" system call is used to change permissions of a file relative to a directory file descriptor.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "fchmodat" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w fchmodat /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "fchmodat" system call by adding or updating the following lines to "/etc/audit/rules.d/audit.rules": 
-
--a always,exit -F arch=b32 -S fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchmodat -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030530</td>
-<td>SV-230460r627750_rule</td>
-</tr>
-<tr>
-<td>V-230461</td>
-<td>CCI-000169</td>
-<td>medium</td>
-<td>Successful/unsuccessful uses of the fchmod system call in RHEL 8 must generate an audit record.</td>
-<td>Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
-
-Audit records can be generated from various components within the information system (e.g., module or policy filter). The "fchmod" system call is used to change permissions of a file.
-
-When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
-
-Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210</td>
-<td>Verify RHEL 8 generates an audit record when successful/unsuccessful attempts to use the "fchmod" system call by performing the following command to check the file system rules in "/etc/audit/audit.rules":
-
-$ sudo grep -w fchmod /etc/audit/audit.rules
-
--a always,exit -F arch=b32 -S fchmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-If the command does not return a line, or the line is commented out, this is a finding.</td>
-<td>Configure the audit system to generate an audit event for any successful/unsuccessful use of the "fchmod" system call by adding or updating the following line to "/etc/audit/rules.d/audit.rules": 
-
--a always,exit -F arch=b32 -S fchmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S fchmod -F auid&gt;=1000 -F auid!=unset -k perm_mod
-
-The audit daemon must be restarted for the changes to take effect.</td>
-<td>RHEL-08-030540</td>
-<td>SV-230461r627750_rule</td>
+<td>SV-230456r810462_rule</td>
 </tr>
 <tr>
 <td>V-230462</td>
@@ -7585,7 +6954,7 @@ The task of allocating audit record storage capacity is usually performed during
 
 Determine to which partition the audit records are being written with the following command:
 
-$ sudo grep log_file /etc/audit/auditd.conf
+$ sudo grep -iw log_file /etc/audit/auditd.conf
 log_file = /var/log/audit/audit.log
 
 Check the size of the partition to which audit records are written (with the example being /var/log/audit/) with the following command:
@@ -7607,7 +6976,7 @@ If audit records are stored on a partition made specifically for audit records, 
 
 If audit records are not stored on a partition made specifically for audit records, a new partition with sufficient space will need be to be created.</td>
 <td>RHEL-08-030660</td>
-<td>SV-230476r627750_rule</td>
+<td>SV-230476r809313_rule</td>
 </tr>
 <tr>
 <td>V-230477</td>
@@ -8073,45 +7442,31 @@ For a built-in camera, the camera must be protected by a camera cover (e.g., lap
 
 If the camera is not disconnected, covered, or physically disabled, determine if it is being disabled via software with the following commands:
 
-Determine if the camera is disabled via blacklist with the following command:
+Verify the operating system disables the ability to load the uvcvideo kernel module.
 
-$ sudo grep blacklist /etc/modprobe.d/*
+$ sudo grep -r uvcvideo /etc/modprobe.d/* | grep "/bin/true"
 
-/etc/modprobe.d/blacklist.conf:blacklist uvcvideo
+install uvcvideo /bin/true
 
-Determine if a camera driver is in use with the following command:
+If the command does not return any output, or the line is commented out, and the collaborative computing device has not been authorized for use, this is a finding.
 
-$ sudo dmesg | grep -i video
+Verify the camera is disabled via blacklist with the following command:
 
-[ 44.630131] ACPI: Video Device [VGA]
-[ 46.655714] input: Video Bus as /devices/LNXSYSTM:00/LNXSYBUS:00/LNXVIDEO:00/input/input7
-[ 46.670133] videodev: Linux video capture interface: v2.00
-[ 47.226424] uvcvideo: Found UVC 1.00 device WebCam (0402:7675)
-[ 47.235752] usbcore: registered new interface driver uvcvideo
-[ 47.235756] USB Video Class driver (1.1.1)
+$ sudo grep -r uvcvideo /etc/modprobe.d/* | grep "blacklist"
 
-If the camera driver blacklist is missing, a camera driver is determined to be in use, and the collaborative computing device has not been authorized for use, this is a finding.</td>
+blacklist uvcvideo
+
+If the command does not return any output or the output is not "blacklist uvcvideo", and the collaborative computing device has not been authorized for use, this is a finding.</td>
 <td>Configure the operating system to disable the built-in or attached camera when not in use.
 
-First determine the driver being used by the camera with the following command:
+Build or modify the "/etc/modprobe.d/blacklist.conf" file by using the following example:
 
-$ sudo dmesg | grep -i video
-
-[ 44.630131] ACPI: Video Device [VGA]
-[ 46.655714] input: Video Bus as /devices/LNXSYSTM:00/LNXSYBUS:00/LNXVIDEO:00/input/input7
-[ 46.670133] videodev: Linux video capture interface: v2.00
-[ 47.226424] uvcvideo: Found UVC 1.00 device WebCam (0402:7675)
-[ 47.235752] usbcore: registered new interface driver uvcvideo
-[ 47.235756] USB Video Class driver (1.1.1)
-
-Next, build or modify the "/etc/modprobe.d/blacklist.conf" file by using the following example:
-
-##Disable WebCam
+install uvcvideo /bin/true
 blacklist uvcvideo
 
 Reboot the system for the settings to take effect.</td>
 <td>RHEL-08-040020</td>
-<td>SV-230493r627750_rule</td>
+<td>SV-230493r809316_rule</td>
 </tr>
 <tr>
 <td>V-230494</td>
@@ -8428,26 +7783,17 @@ $ sudo grep usb-storage /etc/modprobe.d/* | grep -i "blacklist"
 
 blacklist usb-storage
 
-If the command does not return any output or the output is not "blacklist usb-storage", and use of USB storage devices is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.</td>
-<td>Configure the operating system to disable the ability to use the USB Storage kernel module.
+If the command does not return any output or the output is not "blacklist usb-storage" and use of USB storage devices is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.</td>
+<td>Configure the operating system to disable the ability to use the USB Storage kernel module and the ability to use USB mass storage devices.
 
-Create a file under "/etc/modprobe.d" with the following command:
-
-$ sudo touch /etc/modprobe.d/usb-storage.conf
-
-Add the following line to the created file:
+Add or update the following lines in the file "/etc/modprobe.d/blacklist.conf":
 
 install usb-storage /bin/true
+blacklist usb-storage
 
-Configure the operating system to disable the ability to use USB mass storage devices.
-
-$ sudo vi /etc/modprobe.d/blacklist.conf
-
-Add or update the line:
-
-blacklist usb-storage</td>
+Reboot the system for the settings to take effect.</td>
 <td>RHEL-08-040080</td>
-<td>SV-230503r627750_rule</td>
+<td>SV-230503r809319_rule</td>
 </tr>
 <tr>
 <td>V-230504</td>
@@ -8479,13 +7825,22 @@ $ sudo firewall-cmd --permanent --new-zone=[custom]
 
 $ sudo cp /usr/lib/firewalld/zones/drop.xml /etc/firewalld/zones/[custom].xml
 
-This will provide a clean configuration file to work with that employs a deny-all approach. Next, add the exceptions that are required for mission functionality.
+This will provide a clean configuration file to work with that employs a deny-all approach. Note: Add the exceptions that are required for mission functionality and update the short title in the xml file to match the [custom] zone name.
 
+Reload the firewall rules to make the new [custom] zone available to load:
+$ sudo firewall-cmd --reload 
+
+Set the default zone to the new [custom] zone:
 $ sudo firewall-cmd --set-default-zone=[custom]
 
-Note: This is a runtime and permanent change.</td>
+Note: This is a runtime and permanent change.
+Add any interfaces to the new [custom] zone:
+$ sudo firewall-cmd --permanent --zone=[custom] --change-interface=ens33
+
+Reload the firewall rules for changes to take effect:
+$ sudo firewall-cmd --reload</td>
 <td>RHEL-08-040090</td>
-<td>SV-230504r627750_rule</td>
+<td>SV-230504r809321_rule</td>
 </tr>
 <tr>
 <td>V-230505</td>
@@ -10146,14 +9501,7 @@ If AIDE is installed, ensure the "acl" rule is present on all file and directory
 <td>medium</td>
 <td>The graphical display manager must not be installed on RHEL 8 unless approved.</td>
 <td>Internet services that are not required for system or application processes must not be active to decrease the attack surface of the system. Graphical display managers have a long history of security vulnerabilities and must not be used, unless approved and documented.</td>
-<td>Verify that the system is configured to boot to the command line:
-
-$ systemctl get-default
-multi-user.target
-
-If the system default target is not set to "multi-user.target" and the Information System Security Officer (ISSO) lacks a documented requirement for a graphical user interface, this is a finding.
-
-Verify that a graphical user interface is not installed:
+<td>Verify that a graphical user interface is not installed:
 
 $ rpm -qa | grep xorg | grep server
 
@@ -10164,13 +9512,11 @@ If the use of a graphical user interface on the system is not documented with th
 
 Open an SSH session and enter the following commands:
 
-$ sudo systemctl set-default multi-user.target
-
 $ sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils xorg-x11-server-Xwayland
 
 A reboot is required for the changes to take effect.</td>
 <td>RHEL-08-040320</td>
-<td>SV-230553r646886_rule</td>
+<td>SV-230553r809324_rule</td>
 </tr>
 <tr>
 <td>V-230554</td>
@@ -10419,7 +9765,8 @@ $ sudo egrep -i '(!rootpw|!targetpw|!runaspw)' /etc/sudoers /etc/sudoers.d/* | g
 /etc/sudoers:Defaults !rootpw
 /etc/sudoers:Defaults !runaspw
 
-If no results are returned, this is a finding
+If no results are returned, this is a finding.
+If results are returned from more than one file location, this is a finding.
 If "Defaults !targetpw" is not defined, this is a finding.
 If "Defaults !rootpw" is not defined, this is a finding.
 If "Defaults !runaspw" is not defined, this is a finding.</td>
@@ -10428,7 +9775,7 @@ Defaults !targetpw
 Defaults !rootpw
 Defaults !runaspw</td>
 <td>RHEL-08-010383</td>
-<td>SV-237642r646896_rule</td>
+<td>SV-237642r809326_rule</td>
 </tr>
 <tr>
 <td>V-237643</td>
@@ -10445,6 +9792,8 @@ If the value is set to an integer less than 0, the user's time stamp will not ex
 $ sudo grep -i 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/*
 /etc/sudoers:Defaults timestamp_timeout=0
 
+If results are returned from more than one file location, this is a finding.
+
 If "timestamp_timeout" is set to a negative number, is commented out, or no results are returned, this is a finding.</td>
 <td>Configure the "sudo" command to require re-authentication.
 Edit the /etc/sudoers file:
@@ -10454,7 +9803,7 @@ Add or modify the following line:
 Defaults timestamp_timeout=[value]
 Note: The "[value]" must be a number that is greater than or equal to "0".</td>
 <td>RHEL-08-010384</td>
-<td>SV-237643r792980_rule</td>
+<td>SV-237643r809328_rule</td>
 </tr>
 <tr>
 <td>V-244519</td>
@@ -10496,29 +9845,6 @@ Run the following command to update the database:
 $ sudo dconf update</td>
 <td>RHEL-08-010049</td>
 <td>SV-244519r743806_rule</td>
-</tr>
-<tr>
-<td>V-244520</td>
-<td>CCI-000196</td>
-<td>medium</td>
-<td>The RHEL 8 system-auth file must be configured to use a sufficient number of hashing rounds.</td>
-<td>The system must use a strong hashing algorithm to store the password. The system must use a sufficient number of hashing rounds to ensure the required level of entropy.
-
-Passwords need to be protected at all times, and encryption is the standard method for protecting passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised.</td>
-<td>Check that a minimum number of hash rounds is configured by running the following command:
-
-$ sudo grep rounds /etc/pam.d/system-auth
-
-password sufficient pam_unix.so sha512 rounds=5000
-
-If "rounds" has a value below "5000", or is commented out, this is a finding.</td>
-<td>Configure RHEL 8 to encrypt all stored passwords with a strong cryptographic hash.
-
-Edit/modify the following line in the "etc/pam.d/system-auth" file and set "rounds" to a value no lower than "5000":
-
-password sufficient pam_unix.so sha512 rounds=5000</td>
-<td>RHEL-08-010131</td>
-<td>SV-244520r743809_rule</td>
 </tr>
 <tr>
 <td>V-244521</td>
@@ -10617,16 +9943,16 @@ Check that pam_unix.so module is configured to use sha512 in /etc/pam.d/system-a
 
 $ sudo grep password /etc/pam.d/system-auth | grep pam_unix
 
-password sufficient pam_unix.so sha512 rounds=5000
+password sufficient pam_unix.so sha512
 
 If "sha512" is missing, or is commented out, this is a finding.</td>
 <td>Configure RHEL 8 to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.
 
 Edit/modify the following line in the "/etc/pam.d/system-auth" file to include the sha512 option for pam_unix.so:
 
-password sufficient pam_unix.so sha512 rounds=5000</td>
+password sufficient pam_unix.so sha512</td>
 <td>RHEL-08-010159</td>
-<td>SV-244524r743821_rule</td>
+<td>SV-244524r809331_rule</td>
 </tr>
 <tr>
 <td>V-244525</td>
@@ -10678,18 +10004,18 @@ RHEL 8 incorporates system-wide crypto policies by default. The SSH configuratio
 Satisfies: SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00174, SRG-OS-000125-GPOS-00065</td>
 <td>Verify that system-wide crypto policies are in effect:
 
-$ sudo grep -i crypto_policy /etc/sysconfig/sshd
+$ sudo grep CRYPTO_POLICY /etc/sysconfig/sshd
 
-# crypto_policy=
+# CRYPTO_POLICY=
 
-If the "crypto_policy" is uncommented, this is a finding.</td>
+If the "CRYPTO_POLICY " is uncommented, this is a finding.</td>
 <td>Configure the RHEL 8 SSH daemon to use system-wide crypto policies by adding the following line to /etc/sysconfig/sshd:
 
-# crypto_policy=
+# CRYPTO_POLICY=
 
 A reboot is required for the changes to take effect.</td>
 <td>RHEL-08-010287</td>
-<td>SV-244526r743827_rule</td>
+<td>SV-244526r809334_rule</td>
 </tr>
 <tr>
 <td>V-244527</td>
@@ -10768,12 +10094,12 @@ Verify the /boot/efi directory is mounted with the "nosuid" option with the foll
 
 $ sudo mount | grep '\s/boot/efi\s'
 
-/dev/sda1 on /boot/efi type xfs (rw,nosuid,relatime,seclabe,attr2,inode64,noquota)
+/dev/sda1 on /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)
 
 If the /boot/efi file system does not have the "nosuid" option set, this is a finding.</td>
 <td>Configure the "/etc/fstab" to use the "nosuid" option on the /boot/efi directory.</td>
 <td>RHEL-08-010572</td>
-<td>SV-244530r743839_rule</td>
+<td>SV-244530r809336_rule</td>
 </tr>
 <tr>
 <td>V-244531</td>
@@ -11251,7 +10577,7 @@ $ sudo grep permissive /etc/fapolicyd/fapolicyd.conf
 
 permissive = 0
 
-Check that fapolicyd employs a deny-all policy on system mounts with the following commands:
+Check that fapolicyd employs a deny-all policy on system mounts with the following command:
 
 $ sudo tail /etc/fapolicyd/fapolicyd.rules
 
@@ -11259,23 +10585,8 @@ allow exe=/usr/bin/python3.7 : ftype=text/x-python
 deny_audit perm=any pattern=ld_so : all
 deny perm=any all : all
 
-$ sudo cat /etc/fapolicyd/fapolicyd.mounts
-
-/dev/shm
-/run
-/sys/fs/cgroup
-/
-/home
-/boot
-/run/user/42
-/run/user/1000
-
-If fapolicyd is not running in enforcement mode on all system mounts with a deny-all, permit-by-exception policy, this is a finding.</td>
-<td>Configure RHEL 8 to employ a deny-all, permit-by-exception application whitelisting policy with "fapolicyd" using the following command:
-
-Note: Running this command requires a root shell
-
-# mount | egrep '^tmpfs| ext4| ext3| xfs' | awk '{ printf "%s\n", $3 }' &gt;&gt; /etc/fapolicyd/fapolicyd.mounts
+If fapolicyd is not running in enforcement mode with a deny-all, permit-by-exception policy, this is a finding.</td>
+<td>Configure RHEL 8 to employ a deny-all, permit-by-exception application whitelisting policy with "fapolicyd".
 
 With the "fapolicyd" installed and enabled, configure the daemon to function in permissive mode until the whitelist is built correctly to avoid system lockout. Do this by editing the "/etc/fapolicyd/fapolicyd.conf" file with the following line:
 
@@ -11287,7 +10598,7 @@ Once it is determined the whitelist is built correctly, set the fapolicyd to enf
 
 permissive = 0</td>
 <td>RHEL-08-040137</td>
-<td>SV-244546r743887_rule</td>
+<td>SV-244546r809339_rule</td>
 </tr>
 <tr>
 <td>V-244547</td>
@@ -11766,6 +11077,346 @@ Load settings from all system configuration files with the following command:
 $ sudo sysctl --system</td>
 <td>RHEL-08-040259</td>
 <td>SV-250317r793008_rule</td>
+</tr>
+<tr>
+<td>V-251706</td>
+<td>CCI-000366</td>
+<td>high</td>
+<td>The RHEL 8 operating system must not have accounts configured with blank or null passwords.</td>
+<td>If an account has an empty password, anyone could log on and run commands with the privileges of that account. Accounts with empty passwords should never be used in operational environments.</td>
+<td>Check the "/etc/shadow" file for blank passwords with the following command:
+
+$ sudo awk -F: '!$2 {print $1}' /etc/shadow
+
+If the command returns any results, this is a finding.</td>
+<td>Configure all accounts on the system to have a password or lock the account with the following commands:
+
+Perform a password reset:
+$ sudo passwd [username]
+Lock an account:
+$ sudo passwd -l [username]</td>
+<td>RHEL-08-010121</td>
+<td>SV-251706r809342_rule</td>
+</tr>
+<tr>
+<td>V-251707</td>
+<td>CCI-001499</td>
+<td>medium</td>
+<td>RHEL 8 library directories must have mode 755 or less permissive.</td>
+<td>If RHEL 8 were to allow any user to make changes to software libraries, then those changes might be implemented without undergoing the appropriate testing and approvals that are part of a robust change management process.
+
+This requirement applies to RHEL 8 with software libraries that are accessible and configurable, as in the case of interpreted languages. Software libraries also include privileged programs that execute with escalated privileges. Only qualified and authorized individuals will be allowed to obtain access to information system components for purposes of initiating changes, including upgrades and modifications.</td>
+<td>Verify the system-wide shared library directories within "/lib", "/lib64", "/usr/lib" and "/usr/lib64" have mode "755" or less permissive with the following command:
+
+$ sudo find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c "%n %a" '{}' \;
+
+If any system-wide shared library directories are found to be group-writable or world-writable, this is a finding.</td>
+<td>Configure the library directories to be protected from unauthorized access. Run the following command, replacing "[DIRECTORY]" with any library directory with a mode more permissive than 755.
+
+$ sudo chmod 755 [DIRECTORY]</td>
+<td>RHEL-08-010331</td>
+<td>SV-251707r809345_rule</td>
+</tr>
+<tr>
+<td>V-251708</td>
+<td>CCI-001499</td>
+<td>medium</td>
+<td>RHEL 8 library directories must be owned by root.</td>
+<td>If RHEL 8 were to allow any user to make changes to software libraries, then those changes might be implemented without undergoing the appropriate testing and approvals that are part of a robust change management process.
+
+This requirement applies to RHEL 8 with software libraries that are accessible and configurable, as in the case of interpreted languages. Software libraries also include privileged programs that execute with escalated privileges. Only qualified and authorized individuals will be allowed to obtain access to information system components for purposes of initiating changes, including upgrades and modifications.</td>
+<td>Verify the system-wide shared library directories are owned by "root" with the following command:
+
+$ sudo find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%n %U" '{}' \;
+
+If any system-wide shared library directory is returned, this is a finding.</td>
+<td>Configure the system-wide shared library directories within (/lib, /lib64, /usr/lib and /usr/lib64) to be protected from unauthorized access.
+
+Run the following command, replacing "[DIRECTORY]" with any library directory not owned by "root".
+
+$ sudo chown root [DIRECTORY]</td>
+<td>RHEL-08-010341</td>
+<td>SV-251708r810012_rule</td>
+</tr>
+<tr>
+<td>V-251709</td>
+<td>CCI-001499</td>
+<td>medium</td>
+<td>RHEL 8 library directories must be group-owned by root or a system account.</td>
+<td>If RHEL 8 were to allow any user to make changes to software libraries, then those changes might be implemented without undergoing the appropriate testing and approvals that are part of a robust change management process.
+
+This requirement applies to RHEL 8 with software libraries that are accessible and configurable, as in the case of interpreted languages. Software libraries also include privileged programs that execute with escalated privileges. Only qualified and authorized individuals will be allowed to obtain access to information system components for purposes of initiating changes, including upgrades and modifications.</td>
+<td>Verify the system-wide shared library directories are group-owned by "root" with the following command:
+
+$ sudo find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c "%n %G" '{}' \;
+
+If any system-wide shared library directory is returned and is not group-owned by a required system account, this is a finding.</td>
+<td>Configure the system-wide shared library directories (/lib, /lib64, /usr/lib and /usr/lib64) to be protected from unauthorized access.
+
+Run the following command, replacing "[DIRECTORY]" with any library directory not group-owned by "root".
+
+$ sudo chgrp root [DIRECTORY]</td>
+<td>RHEL-08-010351</td>
+<td>SV-251709r810014_rule</td>
+</tr>
+<tr>
+<td>V-251710</td>
+<td>CCI-002696</td>
+<td>medium</td>
+<td>The RHEL 8 operating system must use a file integrity tool to verify correct operation of all security functions.</td>
+<td>Without verification of the security functions, security functions may not operate correctly, and the failure may go unnoticed. Security function is defined as the hardware, software, and/or firmware of the information system responsible for enforcing the system security policy and supporting the isolation of code and data on which the protection is based. Security functionality includes, but is not limited to, establishing system accounts, configuring access authorizations (i.e., permissions, privileges), setting events to be audited, and setting intrusion detection parameters.
+
+This requirement applies to the RHEL 8 operating system performing security function verification/testing and/or systems and environments that require this functionality.</td>
+<td>Verify that Advanced Intrusion Detection Environment (AIDE) is installed and verifies the correct operation of all security functions.
+
+Check that the AIDE package is installed with the following command:
+
+$ sudo rpm -q aide
+
+aide-0.16-14.el8.x86_64
+
+If AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system. 
+
+If there is no application installed to perform integrity checks, this is a finding.</td>
+<td>Install the AIDE package by running the following command:
+
+$ sudo yum install aide</td>
+<td>RHEL-08-010359</td>
+<td>SV-251710r809354_rule</td>
+</tr>
+<tr>
+<td>V-251711</td>
+<td>CCI-000366</td>
+<td>medium</td>
+<td>RHEL 8 must specify the default "include" directory for the /etc/sudoers file.</td>
+<td>The "sudo" command allows authorized users to run programs (including shells) as other users, system users, and root. The "/etc/sudoers" file is used to configure authorized "sudo" users as well as the programs they are allowed to run. Some configuration options in the "/etc/sudoers" file allow configured users to run programs without re-authenticating. Use of these configuration options makes it easier for one compromised account to be used to compromise other accounts.
+
+It is possible to include other sudoers files from within the sudoers file currently being parsed using the #include and #includedir directives. When sudo reaches this line it will suspend processing of the current file (/etc/sudoers) and switch to the specified file/directory. Once the end of the included file(s) is reached, the rest of /etc/sudoers will be processed. Files that are included may themselves include other files. A hard limit of 128 nested include files is enforced to prevent include file loops.</td>
+<td>Verify the operating system specifies only the default "include" directory for the /etc/sudoers file with the following command:
+
+$ sudo grep include /etc/sudoers
+
+#includedir /etc/sudoers.d
+
+If the results are not "/etc/sudoers.d" or additional files or directories are specified, this is a finding.
+
+Verify the operating system does not have nested "include" files or directories within the /etc/sudoers.d directory with the following command:
+
+$ sudo grep include /etc/sudoers.d/*
+
+If results are returned, this is a finding.</td>
+<td>Configure the /etc/sudoers file to only include the /etc/sudoers.d directory.
+
+Edit the /etc/sudoers file with the following command:
+
+$ sudo visudo
+
+Add or modify the following line:
+#includedir /etc/sudoers.d</td>
+<td>RHEL-08-010379</td>
+<td>SV-251711r810015_rule</td>
+</tr>
+<tr>
+<td>V-251712</td>
+<td>CCI-002038</td>
+<td>medium</td>
+<td>The RHEL 8 operating system must not be configured to bypass password requirements for privilege escalation.</td>
+<td>Without re-authentication, users may access resources or perform tasks for which they do not have authorization. 
+
+When operating systems provide the capability to escalate a functional capability, it is critical the user re-authenticate.
+
+Satisfies: SRG-OS-000373-GPOS-00156, SRG-OS-000373-GPOS-00157, SRG-OS-000373-GPOS-00158</td>
+<td>Verify the operating system is not be configured to bypass password requirements for privilege escalation.
+
+Check the configuration of the "/etc/pam.d/sudo" file with the following command:
+
+$ sudo grep pam_succeed_if /etc/pam.d/sudo
+
+If any occurrences of "pam_succeed_if" is returned from the command, this is a finding.</td>
+<td>Configure the operating system to require users to supply a password for privilege escalation.
+
+Check the configuration of the "/etc/ pam.d/sudo" file with the following command:
+$ sudo vi /etc/pam.d/sudo
+
+Remove any occurrences of "pam_succeed_if" in the file.</td>
+<td>RHEL-08-010385</td>
+<td>SV-251712r810017_rule</td>
+</tr>
+<tr>
+<td>V-251713</td>
+<td>CCI-000366</td>
+<td>medium</td>
+<td>RHEL 8 must ensure the password complexity module is enabled in the system-auth file.</td>
+<td>Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
+
+RHEL 8 uses "pwquality" as a mechanism to enforce password complexity. This is set in both:
+/etc/pam.d/password-auth
+/etc/pam.d/system-auth</td>
+<td>Verify the operating system uses "pwquality" to enforce the password complexity rules. 
+
+Check for the use of "pwquality" in the system-auth file with the following command:
+
+$ sudo cat /etc/pam.d/system-auth | grep pam_pwquality
+
+password required pam_pwquality.so
+
+If the command does not return a line containing the value "pam_pwquality.so", or the line is commented out, this is a finding.</td>
+<td>Configure the operating system to use "pwquality" to enforce password complexity rules.
+
+Add the following line to the "/etc/pam.d/system-auth" file(or modify the line to have the required value):
+
+password required pam_pwquality.so</td>
+<td>RHEL-08-020101</td>
+<td>SV-251713r810407_rule</td>
+</tr>
+<tr>
+<td>V-251714</td>
+<td>CCI-000366</td>
+<td>medium</td>
+<td>RHEL 8 systems below version 8.4 must ensure the password complexity module in the system-auth file is configured for three retries or less.</td>
+<td>Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
+
+RHEL 8 uses "pwquality" as a mechanism to enforce password complexity. This is set in both:
+/etc/pam.d/password-auth
+/etc/pam.d/system-auth
+
+By limiting the number of attempts to meet the pwquality module complexity requirements before returning with an error, the system will audit abnormal attempts at password changes.</td>
+<td>Note: This requirement applies to RHEL versions 8.0 through 8.3. If the system is RHEL version 8.4 or newer, this requirement is not applicable.
+
+Verify the operating system is configured to limit the "pwquality" retry option to 3. 
+
+Check for the use of the "pwquality" retry option in the system-auth file with the following command:
+
+$ sudo cat /etc/pam.d/system-auth | grep pam_pwquality
+
+password required pam_pwquality.so retry=3
+
+If the value of "retry" is set to "0" or greater than "3", this is a finding.</td>
+<td>Configure the operating system to limit the "pwquality" retry option to 3.
+
+Add the following line to the "/etc/pam.d/system-auth" file (or modify the line to have the required value):
+
+password required pam_pwquality.so retry=3</td>
+<td>RHEL-08-020102</td>
+<td>SV-251714r810410_rule</td>
+</tr>
+<tr>
+<td>V-251715</td>
+<td>CCI-000366</td>
+<td>medium</td>
+<td>RHEL 8 systems below version 8.4 must ensure the password complexity module in the password-auth file is configured for three retries or less.</td>
+<td>Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
+
+RHEL 8 uses "pwquality" as a mechanism to enforce password complexity. This is set in both:
+/etc/pam.d/password-auth
+/etc/pam.d/system-auth
+
+By limiting the number of attempts to meet the pwquality module complexity requirements before returning with an error, the system will audit abnormal attempts at password changes.</td>
+<td>Note: This requirement applies to RHEL versions 8.0 through 8.3. If the system is RHEL version 8.4 or newer, this requirement is not applicable.
+
+Verify the operating system is configured to limit the "pwquality" retry option to 3. 
+
+Check for the use of the "pwquality" retry option in the password-auth file with the following command:
+
+$ sudo cat /etc/pam.d/password-auth | grep pam_pwquality
+
+password required pam_pwquality.so retry=3
+
+If the value of "retry" is set to "0" or greater than "3", this is a finding.</td>
+<td>Configure the operating system to limit the "pwquality" retry option to 3.
+
+Add the following line to the "/etc/pam.d/password-auth" file (or modify the line to have the required value):
+
+password required pam_pwquality.so retry=3</td>
+<td>RHEL-08-020103</td>
+<td>SV-251715r810412_rule</td>
+</tr>
+<tr>
+<td>V-251716</td>
+<td>CCI-000366</td>
+<td>medium</td>
+<td>RHEL 8 systems, version 8.4 and above, must ensure the password complexity module is configured for three retries or less.</td>
+<td>Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
+
+RHEL 8 utilizes "pwquality" as a mechanism to enforce password complexity. This is set in both:
+/etc/pam.d/password-auth
+/etc/pam.d/system-auth
+By limiting the number of attempts to meet the pwquality module complexity requirements before returning with an error, the system will audit abnormal attempts at password changes.</td>
+<td>Note: This requirement applies to RHEL versions 8.4 or newer. If the system is RHEL below version 8.4, this requirement is not applicable.
+
+Verify the operating system is configured to limit the "pwquality" retry option to 3. 
+
+Check for the use of the "pwquality" retry option with the following command:
+
+$ sudo grep retry /etc/security/pwquality.conf
+
+retry = 3
+
+If the value of "retry" is set to "0" or greater than "3", is commented out or missing, this is a finding.
+
+Check for the use of the "pwquality" retry option in the system-auth and password-auth files with the following command:
+
+$ sudo grep retry /etc/pam.d/system-auth /etc/pam.d/password-auth
+
+If the command returns any results, this is a finding.</td>
+<td>Configure the operating system to limit the "pwquality" retry option to 3.
+
+Add the following line to the "/etc/security/pwquality.conf" file(or modify the line to have the required value):
+
+retry = 3</td>
+<td>RHEL-08-020104</td>
+<td>SV-251716r809372_rule</td>
+</tr>
+<tr>
+<td>V-251717</td>
+<td>CCI-000200</td>
+<td>medium</td>
+<td>RHEL 8 must be configured in the system-auth file to prohibit password reuse for a minimum of five generations.</td>
+<td>Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. If the information system or application allows the user to reuse their password consecutively when that password has exceeded its defined lifetime, the end result is a password that is not changed per policy requirements.
+
+RHEL 8 uses "pwhistory" consecutively as a mechanism to prohibit password reuse. This is set in both:
+/etc/pam.d/password-auth
+/etc/pam.d/system-auth.
+
+Note that manual changes to the listed files may be overwritten by the "authselect" program.</td>
+<td>Verify the operating system is configured in the system-auth file to prohibit password reuse for a minimum of five generations.
+
+Check for the value of the "remember" argument in "/etc/pam.d/password-auth" with the following command:
+
+$ sudo grep -i remember /etc/pam.d/password-auth
+
+password required pam_pwhistory.so use_authtok remember=5 retry=3
+
+If the line containing "pam_pwhistory.so" does not have the "remember" module argument set, is commented out, or the value of the "remember" module argument is set to less than "5", this is a finding.</td>
+<td>Configure the operating system in the system-auth file to prohibit password reuse for a minimum of five generations.
+
+Add the following line in "/etc/pam.d/system-auth" (or modify the line to have the required value):
+
+password required pam_pwhistory.so use_authtok remember=5 retry=3</td>
+<td>RHEL-08-020221</td>
+<td>SV-251717r810415_rule</td>
+</tr>
+<tr>
+<td>V-251718</td>
+<td>CCI-000366</td>
+<td>medium</td>
+<td>The graphical display manager must not be the default target on RHEL 8 unless approved.</td>
+<td>Internet services that are not required for system or application processes must not be active to decrease the attack surface of the system. Graphical display managers have a long history of security vulnerabilities and must not be used, unless approved and documented.</td>
+<td>Verify that the system is configured to boot to the command line:
+
+$ systemctl get-default
+multi-user.target
+
+If the system default target is not set to "multi-user.target" and the Information System Security Officer (ISSO) lacks a documented requirement for a graphical user interface, this is a finding.</td>
+<td>Document the requirement for a graphical user interface with the ISSO or reinstall the operating system without the graphical user interface. If reinstallation is not feasible, then continue with the following procedure:
+
+Open an SSH session and enter the following commands:
+
+$ sudo systemctl set-default multi-user.target
+
+A reboot is required for the changes to take effect.</td>
+<td>RHEL-08-040321</td>
+<td>SV-251718r809378_rule</td>
 </tr>
 </table>
 </body>

@@ -1,3 +1,0 @@
-java_jre_clean_previous_version
-java_jre_configure_crypto_policy
-java_jre_updated

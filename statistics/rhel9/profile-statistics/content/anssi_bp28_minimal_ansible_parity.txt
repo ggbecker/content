@@ -1,3 +1,0 @@
-dnf-automatic_apply_updates
-dnf-automatic_security_updates_only
-set_password_hashing_algorithm_systemauth

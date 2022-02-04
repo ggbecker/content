@@ -8798,7 +8798,7 @@ following command:
 </td>
 </tr>
 <tr>
-<td></td>
+<td>CCE-89021-0</td>
 <td>Verify that Shared Library Directories Have Root Ownership</td>
 <td xml:lang="en-US">System-wide shared library files, which are linked to executables
 during process load time or run time, are stored in the following directories
@@ -8946,7 +8946,7 @@ its permission with the following command:
 <tr>
 <td>CCE-86523-8</td>
 <td>Verify the system-wide library files in directories
-"/lib", "/lib64", "/usr/lib/" and "/usr/lib64" are owned by root.</td>
+"/lib", "/lib64", "/usr/lib/" and "/usr/lib64" are group-owned by root.</td>
 <td xml:lang="en-US">System-wide library files are stored in the following directories
 by default:
 <pre>/lib
@@ -8955,7 +8955,7 @@ by default:
 /usr/lib64
 </pre>
 All system-wide shared library files should be protected from unauthorised
-access. If any of these files is not owned by root, correct its owner with
+access. If any of these files is not group-owned by root, correct its group-owner with
 the following command:
 <pre>$ sudo chgrp root <i>FILE</i></pre>
 </td>
