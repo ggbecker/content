@@ -33,7 +33,6 @@ references:
 template:
     name: sshd_lineinfile
     vars:
-        missing_parameter_pass: 'false'
         parameter: PubkeyAuthentication
         rule_id: sshd_enable_pubkey_auth
         value: 'yes'
