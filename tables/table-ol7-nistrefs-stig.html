@@ -2082,12 +2082,12 @@ accepted.
 To specify the number of days after a password expires (which
 signifies inactivity) until an account is permanently disabled, add or correct
 the following line in <tt>/etc/default/useradd</tt>:
-<pre>INACTIVE=<i><tt>0</tt></i></pre>
+<pre>INACTIVE=<i><tt>35</tt></i></pre>
 If a password is currently on the verge of expiration, then
-<tt><tt>0</tt></tt>
+<tt><tt>35</tt></tt>
 day(s) remain(s) until the account is automatically
 disabled. However, if the password will not expire for another 60 days, then 60
-days plus <tt><tt>0</tt></tt> day(s) could
+days plus <tt><tt>35</tt></tt> day(s) could
 elapse until the account would be automatically disabled. See the
 <tt>useradd</tt> man page for more information.
   </td>
@@ -2096,7 +2096,7 @@ Disabling inactive accounts ensures that accounts which may not
 have been responsibly removed are not available to attackers
 who may have compromised their credentials.
   </td>
-  <td>var_account_disable_post_pw_expiration=0</td>
+  <td>var_account_disable_post_pw_expiration=35</td>
 </tr>
 <tr>
   <td>AC-4<br/>CM-7(b)<br/>CA-3(5)<br/>SC-7(21)<br/>CM-6(a)</td>
@@ -3033,11 +3033,11 @@ to distinguish.
   <td>Configure Time Service Maxpoll Interval</td>
   <td xml:lang="en-US">
 The <tt>maxpoll</tt> should be configured to
-<tt>system_default</tt> in <tt>/etc/ntp.conf</tt> or
+<tt>18_hours</tt> in <tt>/etc/ntp.conf</tt> or
 <tt>/etc/chrony.conf</tt> to continuously poll time servers. To configure
 <tt>maxpoll</tt> in <tt>/etc/ntp.conf</tt> or <tt>/etc/chrony.conf</tt>
 add the following:
-<pre>maxpoll <tt>system_default</tt></pre>
+<pre>maxpoll <tt>18_hours</tt></pre>
 to <pre>server</pre> directives. If using chrony any <pre>pool</pre> directives
 should be configured too.
   </td>
@@ -3048,7 +3048,7 @@ time a particular event occurred on a system is critical when conducting
 forensic analysis and investigating system events. Sources outside the
 configured acceptable allowance (drift) may be inaccurate.
   </td>
-  <td>var_time_service_set_maxpoll=system_default</td>
+  <td>var_time_service_set_maxpoll=18_hours</td>
 </tr>
 <tr>
   <td>CM-6(a)<br/>AC-6(1)<br/>CM-7(b)</td>
@@ -4097,14 +4097,6 @@ This prevents the system from being accidentally or maliciously booted into a <t
 mode. To do so, run the following command:
 
 <pre>sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils</pre>
-
-Additionally, setting the system's default target to
-<tt>multi-user.target</tt> will prevent automatic startup of the X server.
-To do so, run:
-<pre>$ systemctl set-default multi-user.target</pre>
-You should see the following output:
-<pre>Removed symlink /etc/systemd/system/default.target.
-Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/system/multi-user.target.</pre>
   </td>
   <td xml:lang="en-US">
 Unnecessary service packages must not be installed to decrease the attack surface of the system. X windows has a long history of security

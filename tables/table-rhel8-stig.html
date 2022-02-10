@@ -17,10 +17,10 @@
 </tr></thead>
 <tbody><tr>
 <td>371</td>
-<td>45</td>
-<td>326</td>
-<td>87.87%</td>
-<td>RHEL-08-010090RHEL-08-010100RHEL-08-010121RHEL-08-010163RHEL-08-010379RHEL-08-010385RHEL-08-010572RHEL-08-010710RHEL-08-010731RHEL-08-010741RHEL-08-020011RHEL-08-020013RHEL-08-020014RHEL-08-020015RHEL-08-020017RHEL-08-020018RHEL-08-020019RHEL-08-020020RHEL-08-020021RHEL-08-020023RHEL-08-020025RHEL-08-020026RHEL-08-020027RHEL-08-020028RHEL-08-020031RHEL-08-020032RHEL-08-020080RHEL-08-020081RHEL-08-020082RHEL-08-020101RHEL-08-020102RHEL-08-020103RHEL-08-020104RHEL-08-020221RHEL-08-020332RHEL-08-030590RHEL-08-030620RHEL-08-030630RHEL-08-030640RHEL-08-040020RHEL-08-040090RHEL-08-040137RHEL-08-040150RHEL-08-040259RHEL-08-040321</td>
+<td>43</td>
+<td>328</td>
+<td>88.41%</td>
+<td>RHEL-08-010090RHEL-08-010100RHEL-08-010121RHEL-08-010163RHEL-08-010379RHEL-08-010385RHEL-08-010572RHEL-08-010710RHEL-08-010731RHEL-08-010741RHEL-08-020011RHEL-08-020013RHEL-08-020014RHEL-08-020015RHEL-08-020017RHEL-08-020018RHEL-08-020019RHEL-08-020020RHEL-08-020021RHEL-08-020023RHEL-08-020025RHEL-08-020026RHEL-08-020027RHEL-08-020028RHEL-08-020031RHEL-08-020032RHEL-08-020080RHEL-08-020081RHEL-08-020082RHEL-08-020101RHEL-08-020102RHEL-08-020103RHEL-08-020104RHEL-08-020332RHEL-08-030590RHEL-08-030620RHEL-08-030630RHEL-08-030640RHEL-08-040020RHEL-08-040090RHEL-08-040137RHEL-08-040150RHEL-08-040259</td>
 </tr></tbody>
 </table></div>
 <style type="text/css">
@@ -173,7 +173,8 @@ Output will be similar to:
 /dev/sda2: UUID=" bc98d7ef-6g54-321h-1d24-9870de2ge1a2
 " TYPE="crypto_LUKS"
 
-Pseudo-file systems, such as /proc, /sys, and tmpfs, are not required to use disk encryption and are not a finding.
+The boot partition and pseudo-file systems, such as /proc, /sys, and tmpfs,
+are not required to use disk encryption and are not a finding.
       Is it the case that partitions do not have a type of crypto_LUKS?
       </td>
 <td>Red Hat Enterprise Linux 8 natively supports partition encryption through the
@@ -4422,7 +4423,7 @@ more complex a password, the greater the number of possible combinations that ne
 password is compromised.</td>
 <td>To check the value for maximum consecutive repeating characters, run the following command:
 $ grep maxclassrepeat /etc/security/pwquality.conf
-For DoD systems, the output should show maxclassrepeat=4.
+For DoD systems, the output should show maxclassrepeat=4 or less but greater than zero.
       Is it the case that that is not the case?
       </td>
 <td>The pam_pwquality module's <code>maxclassrepeat</code> parameter controls requirements for
@@ -4671,14 +4672,31 @@ The DoD STIG requirement is 5 passwords.</td>
 </tr>
 <tr>
 <td>V-251717</td>
-<td></td>
+<td>200</td>
 <td>medium</td>
 <td>RHEL 8 must be configured in the system-auth file to prohibit password reuse for a minimum of five generations.</td>
-<td></td>
-<td></td>
-<td></td>
+<td>Preventing re-use of previous passwords helps ensure that a compromised password is not re-used by a user.</td>
+<td>Check that the operating system prohibits the reuse of a password for
+a minimum of  generations with the following command:
+# grep pam_pwhistory.so /etc/pam.d/password-auth
+password  pam_pwhistory.so remember= use_authtok
+If the command does not return a result, or the returned line is commented
+out, has a second column value different from , does not contain
+"remember" value, or the value is less than
+, this is a finding.
+      Is it the case that the value of remember is not set equal to or greater than &lt;sub idref="var_password_pam_remember" /&gt;?
+      </td>
+<td>Do not allow users to reuse recent passwords. This can be
+accomplished by using the <code>remember</code> option for the
+<code>pam_pwhistory</code> PAM modules.
+<br><br>
+In the file <code>/etc/pam.d/password-auth</code>, make sure the parameter
+<code>remember</code> is present, and that the value
+for the <code>remember</code> parameter is <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_password_pam_remember"></xccdf-1.1:sub> or greater. For example:
+<pre>password <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_password_pam_remember_control_flag"></xccdf-1.1:sub> pam_pwhistory.so <i>...existing_options...</i> remember=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_password_pam_remember"></xccdf-1.1:sub> use_authtok</pre>
+The DoD STIG requirement is 5 passwords.</td>
 <td>RHEL-08-020221</td>
-<td>Missing Rule</td>
+<td>accounts_password_pam_pwhistory_remember_password_auth</td>
 </tr>
 <tr>
 <td>V-230369</td>
@@ -5920,38 +5938,33 @@ gain access to information that would otherwise be disallowed. Auditing DAC modi
 can facilitate the identification of patterns of abuse among both authorized and
 unauthorized users.</td>
 <td>To determine if the system is configured to audit calls to the
-lremovexattr system call, run the following command:
-$ sudo grep "lremovexattr" /etc/audit/audit.*
+setxattr system call, run the following command:
+$ sudo grep "setxattr" /etc/audit/audit.*
 If the system is configured to audit this activity, it will return a line.
 
       Is it the case that no line is returned?
       </td>
 <td>At a minimum, the audit system should collect file permission
-changes for all users and root.
-<br><br>
-If the <code>auditd</code> daemon is configured
+changes for all users and root. If the <code>auditd</code> daemon is configured
 to use the <code>augenrules</code> program to read audit rules during daemon
 startup (the default), add the following line to a file with suffix
 <code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S lremovexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
+<pre>-a always,exit -F arch=b32 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b32 -S setxattr -F auid=0 -F key=perm_mod</pre>
 If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S lremovexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
+<pre>-a always,exit -F arch=b64 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S setxattr -F auid=0 -F key=perm_mod</pre>
 If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
 utility to read audit rules during daemon startup, add the following line to
 <code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b32 -S lremovexattr -F auid=0 -F key=perm_mod</pre>
-<br><br>
+<pre>-a always,exit -F arch=b32 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b32 -S setxattr -F auid=0 -F key=perm_mod</pre>
 If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S lremovexattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
-<pre>-a always,exit -F arch=b64 -S lremovexattr -F auid=0 -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S setxattr -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S setxattr -F auid=0 -F key=perm_mod</pre>
 </td>
 <td>RHEL-08-030200</td>
-<td>audit_rules_dac_modification_lremovexattr</td>
+<td>audit_rules_dac_modification_setxattr</td>
 </tr>
 <tr>
 <td>V-230418</td>
@@ -6650,8 +6663,8 @@ add the line to file <code>/etc/audit/audit.rules</code>.</td>
 from the system. The audit trail could aid in system troubleshooting, as well as, detecting
 malicious processes that attempt to delete log files to conceal their presence.</td>
 <td>To determine if the system is configured to audit calls to the
-rename system call, run the following command:
-$ sudo grep "rename" /etc/audit/audit.*
+unlinkat system call, run the following command:
+$ sudo grep "unlinkat" /etc/audit/audit.*
 If the system is configured to audit this activity, it will return a line.
 
       Is it the case that no line is returned?
@@ -6662,15 +6675,15 @@ for all users and root. If the <code>auditd</code> daemon is configured to use t
 default), add the following line to a file with suffix <code>.rules</code> in the
 directory <code>/etc/audit/rules.d</code>, setting ARCH to either b32 or b64 as
 appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S rename -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
+<pre>-a always,exit -F arch=ARCH -S unlinkat -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
 If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
 utility to read audit rules during daemon startup, add the following line to
 <code>/etc/audit/audit.rules</code> file, setting ARCH to either b32 or b64 as
 appropriate for your system:
-<pre>-a always,exit -F arch=ARCH -S rename -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
+<pre>-a always,exit -F arch=ARCH -S unlinkat -F auid&gt;=1000 -F auid!=unset -F key=delete</pre>
 </td>
 <td>RHEL-08-030361</td>
-<td>audit_rules_file_deletion_events_rename</td>
+<td>audit_rules_file_deletion_events_unlinkat</td>
 </tr>
 <tr>
 <td>V-230444</td>
@@ -6856,29 +6869,29 @@ gain access to information that would otherwise be disallowed. Auditing DAC modi
 can facilitate the identification of patterns of abuse among both authorized and
 unauthorized users.</td>
 <td>To determine if the system is configured to audit calls to the
-chown system call, run the following command:
-$ sudo grep "chown" /etc/audit/audit.*
+lchown system call, run the following command:
+$ sudo grep "lchown" /etc/audit/audit.*
 If the system is configured to audit this activity, it will return a line.
 
       Is it the case that no line is returned?
       </td>
 <td>At a minimum, the audit system should collect file permission
-changes for all users and root. If the <code>auditd</code> daemon is configured to
-use the <code>augenrules</code> program to read audit rules during daemon startup
-(the default), add the following line to a file with suffix <code>.rules</code> in
-the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S chown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+changes for all users and root. If the <code>auditd</code> daemon is configured
+to use the <code>augenrules</code> program to read audit rules during daemon
+startup (the default), add the following line to a file with suffix
+<code>.rules</code> in the directory <code>/etc/audit/rules.d</code>:
+<pre>-a always,exit -F arch=b32 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S chown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
 utility to read audit rules during daemon startup, add the following line to
 <code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S chown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b32 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S chown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S lchown -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 </td>
 <td>RHEL-08-030480</td>
-<td>audit_rules_dac_modification_chown</td>
+<td>audit_rules_dac_modification_lchown</td>
 </tr>
 <tr>
 <td>V-230456</td>
@@ -6890,8 +6903,8 @@ gain access to information that would otherwise be disallowed. Auditing DAC modi
 can facilitate the identification of patterns of abuse among both authorized and
 unauthorized users.</td>
 <td>To determine if the system is configured to audit calls to the
-chmod system call, run the following command:
-$ sudo grep "chmod" /etc/audit/audit.*
+fchmodat system call, run the following command:
+$ sudo grep "fchmodat" /etc/audit/audit.*
 If the system is configured to audit this activity, it will return a line.
 
       Is it the case that no line is returned?
@@ -6901,18 +6914,18 @@ changes for all users and root. If the <code>auditd</code> daemon is configured 
 use the <code>augenrules</code> program to read audit rules during daemon startup
 (the default), add the following line to a file with suffix <code>.rules</code> in
 the directory <code>/etc/audit/rules.d</code>:
-<pre>-a always,exit -F arch=b32 -S chmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b32 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S chmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 If the <code>auditd</code> daemon is configured to use the <code>auditctl</code>
 utility to read audit rules during daemon startup, add the following line to
 <code>/etc/audit/audit.rules</code> file:
-<pre>-a always,exit -F arch=b32 -S chmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b32 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 If the system is 64 bit then also add the following line:
-<pre>-a always,exit -F arch=b64 -S chmod -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
+<pre>-a always,exit -F arch=b64 -S fchmodat -F auid&gt;=1000 -F auid!=unset -F key=perm_mod</pre>
 </td>
 <td>RHEL-08-030490</td>
-<td>audit_rules_dac_modification_chmod</td>
+<td>audit_rules_dac_modification_fchmodat</td>
 </tr>
 <tr>
 <td>V-230462</td>
@@ -9734,28 +9747,36 @@ This prevents the system from being accidentally or maliciously booted into a <c
 mode. To do so, run the following command:
 
 <pre>sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils xorg-x11-server-Xwayland</pre>
-
-Additionally, setting the system's default target to
-<code>multi-user.target</code> will prevent automatic startup of the X server.
-To do so, run:
-<pre>$ systemctl set-default multi-user.target</pre>
-You should see the following output:
-<pre>Removed symlink /etc/systemd/system/default.target.
-Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/system/multi-user.target.</pre>
 </td>
 <td>RHEL-08-040320</td>
 <td>xwindows_remove_packages</td>
 </tr>
 <tr>
 <td>V-251718</td>
-<td></td>
+<td>366</td>
 <td>medium</td>
 <td>The graphical display manager must not be the default target on RHEL 8 unless approved.</td>
-<td></td>
-<td></td>
-<td></td>
+<td>Services that are not required for system and application processes
+must not be active to decrease the attack surface of the system. X windows has a
+long history of security vulnerabilities and should not be used unless approved
+and documented.</td>
+<td>To verify the default target is multi-user, run the following command:
+$ systemctl get-default
+The output should show the following:
+multi-user.target
+      Is it the case that the X windows display server is running and/or has not been disabled?
+      </td>
+<td>Systems that do not require a graphical user interface should only boot by
+default into <code>multi-user.target</code> mode. This prevents accidental booting of the system
+into a <code>graphical.target</code> mode. Setting the system's default target to
+<code>multi-user.target</code> will prevent automatic startup of the X server. To do so, run:
+<pre>$ systemctl set-default multi-user.target</pre>
+You should see the following output:
+<pre>Removed symlink /etc/systemd/system/default.target.
+Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/system/multi-user.target.</pre>
+</td>
 <td>RHEL-08-040321</td>
-<td>Missing Rule</td>
+<td>xwindows_runlevel_target</td>
 </tr>
 <tr>
 <td>V-230554</td>

@@ -17103,10 +17103,14 @@ This prevents the system from being accidentally or maliciously booted into a <c
 mode. To do so, run the following command:
 
 <pre>sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils xorg-x11-server-Xwayland</pre>
-
-Additionally, setting the system's default target to
-<code>multi-user.target</code> will prevent automatic startup of the X server.
-To do so, run:
+</td>
+</tr></table>
+<table><tr>
+<td>Disable X Windows Startup By Setting Default Target</td>
+<td xml:lang="en-US">Systems that do not require a graphical user interface should only boot by
+default into <code>multi-user.target</code> mode. This prevents accidental booting of the system
+into a <code>graphical.target</code> mode. Setting the system's default target to
+<code>multi-user.target</code> will prevent automatic startup of the X server. To do so, run:
 <pre>$ systemctl set-default multi-user.target</pre>
 You should see the following output:
 <pre>Removed symlink /etc/systemd/system/default.target.

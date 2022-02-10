@@ -5622,7 +5622,11 @@ then install the Oracle GPG key from trusted media such as
 the Oracle installation CD-ROM or DVD. Assuming the disc is mounted
 in <tt>/media/cdrom</tt>, use the following command as the root user to import
 it into the keyring:
-<pre>$ sudo rpm --import /media/cdrom/RPM-GPG-KEY</pre>
+<pre>$ sudo rpm --import /media/cdrom/RPM-GPG-KEY-oracle</pre>
+
+Alternatively, the key may be pre-loaded during the Oracle installation. In
+such cases, the key can be installed by running the following command:
+<pre>sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-oracle</pre>
   </td>
   <td xml:lang="en-US">
 Changes to software components can have significant effects on the
@@ -6118,14 +6122,6 @@ This prevents the system from being accidentally or maliciously booted into a <t
 mode. To do so, run the following command:
 
 <pre>sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils xorg-x11-server-Xwayland</pre>
-
-Additionally, setting the system's default target to
-<tt>multi-user.target</tt> will prevent automatic startup of the X server.
-To do so, run:
-<pre>$ systemctl set-default multi-user.target</pre>
-You should see the following output:
-<pre>Removed symlink /etc/systemd/system/default.target.
-Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/system/multi-user.target.</pre>
   </td>
   <td xml:lang="en-US">
 Unnecessary service packages must not be installed to decrease the attack surface of the system. X windows has a long history of security
