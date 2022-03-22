@@ -48,6 +48,7 @@ avahi_disable_publishing
 bios_assign_password
 bios_disable_usb_boot
 bios_enable_execution_restrictions
+chronyd_server_directive
 configure_user_data_backups
 coreos_enable_selinux_kernel_argument
 dconf_gnome_disable_power_settings
@@ -59,6 +60,7 @@ dir_perms_world_writable_system_owned_group
 directory_permissions_var_log_audit
 disable_anacron
 disable_logwatch_for_logserver
+disallow_bypass_password_sudo
 enable_dconf_user_profile
 enable_dracut_fips_module
 etc_system_fips_exists

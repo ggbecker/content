@@ -102,7 +102,6 @@ install_PAE_kernel_on_x86-32
 journald_compress
 journald_storage
 kernel_module_udf_disabled
-kernel_module_vfat_disabled
 mount_option_dev_shm_nodev
 mount_option_dev_shm_noexec
 mount_option_dev_shm_nosuid
@@ -175,4 +174,3 @@ sysctl_net_ipv6_conf_all_forwarding
 sysctl_net_ipv6_conf_default_accept_ra
 sysctl_net_ipv6_conf_default_accept_redirects
 sysctl_net_ipv6_conf_default_accept_source_route
-use_pam_wheel_for_su

@@ -23,6 +23,7 @@ auditd_overflow_action
 avahi_disable_publishing
 banner_etc_motd
 bios_enable_execution_restrictions
+chronyd_server_directive
 configure_etc_hosts_deny
 configure_user_data_backups
 coreos_enable_selinux_kernel_argument
@@ -94,4 +95,3 @@ sudo_vdsm_nopasswd
 sudoers_explicit_command_args
 sudoers_no_command_negation
 sudoers_no_root_target
-use_pam_wheel_for_su

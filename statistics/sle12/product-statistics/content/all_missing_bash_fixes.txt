@@ -4,15 +4,12 @@ account_unique_id
 account_unique_name
 account_use_centralized_automated_auth
 accounts_logon_fail_delay
-accounts_maximum_age_login_defs
 accounts_password_all_shadowed
 accounts_password_all_shadowed_sha512
 accounts_password_minlen_login_defs
 accounts_root_gid_zero
 accounts_root_path_dirs_no_write
-accounts_umask_etc_bashrc
 accounts_user_home_paths_only
-aide_build_database
 audit_rules_file_deletion_events
 audit_rules_file_deletion_events_rename
 audit_rules_file_deletion_events_renameat
@@ -30,6 +27,7 @@ auditd_overflow_action
 avahi_disable_publishing
 banner_etc_motd
 bios_enable_execution_restrictions
+chronyd_server_directive
 configure_user_data_backups
 dhcp_client_restrict_options
 dhcp_server_minimize_served_info
@@ -79,8 +77,6 @@ policy_temp_passwords_immediate_change
 postfix_client_configure_relayhost
 postfix_network_listening_disabled
 prefer_64bit_os
-require_emergency_target_auth
-require_singleuser_auth
 root_path_no_dot
 rsyslog_accept_remote_messages_tcp
 rsyslog_accept_remote_messages_udp
@@ -89,7 +85,6 @@ rsyslog_files_groupownership
 rsyslog_files_ownership
 run_chkstat
 selinux_state
-set_password_hashing_algorithm_systemauth
 set_password_hashing_min_rounds_logindefs
 smartcard_configure_ca
 smartcard_pam_enabled
@@ -104,4 +99,3 @@ sudoers_no_command_negation
 sudoers_no_root_target
 susefirewall2_ddos_protection
 susefirewall2_only_required_services
-use_pam_wheel_for_su

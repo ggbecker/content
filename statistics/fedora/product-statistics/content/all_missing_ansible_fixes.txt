@@ -58,6 +58,7 @@ chronyd_client_only
 chronyd_no_chronyc_network
 chronyd_or_ntpd_set_maxpoll
 chronyd_or_ntpd_specify_remote_server
+chronyd_server_directive
 configure_bashrc_exec_tmux
 configure_bind_crypto_policy
 configure_usbguard_auditbackend
@@ -73,6 +74,7 @@ dir_perms_world_writable_system_owned_group
 directory_permissions_var_log_audit
 disable_anacron
 disable_logwatch_for_logserver
+disallow_bypass_password_sudo
 enable_dconf_user_profile
 enable_dracut_fips_module
 ensure_fedora_gpgkey_installed

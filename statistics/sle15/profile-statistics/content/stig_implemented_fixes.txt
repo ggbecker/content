@@ -117,6 +117,7 @@ dir_system_commands_group_root_owned
 dir_system_commands_root_owned
 disable_ctrlaltdel_burstaction
 disable_ctrlaltdel_reboot
+disallow_bypass_password_sudo
 display_login_attempts
 enable_dconf_user_profile
 ensure_gpgcheck_globally_activated
@@ -142,6 +143,7 @@ mount_option_noexec_remote_filesystems
 mount_option_nosuid_remote_filesystems
 mount_option_nosuid_removable_partitions
 no_empty_passwords
+no_empty_passwords_etc_shadow
 no_host_based_files
 no_user_host_based_files
 package_aide_installed

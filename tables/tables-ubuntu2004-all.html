@@ -8426,6 +8426,7 @@
     <li><div class="tooltip">file_permissions_sshd_pub_key<span class="tooltiptext">Verify Permissions on SSH Server Public *.pub Key Files</span></div></li>
     <li><div class="tooltip">kernel_module_usb-storage_disabled<span class="tooltiptext">Disable Modprobe Loading of USB Storage Driver</span></div></li>
     <li><div class="tooltip">no_empty_passwords<span class="tooltiptext">Prevent Login to Accounts With Empty Password</span></div></li>
+    <li><div class="tooltip">no_empty_passwords_etc_shadow<span class="tooltiptext">Ensure There Are No Accounts With Blank or Null Passwords</span></div></li>
     <li><div class="tooltip">no_files_unowned_by_user<span class="tooltiptext">Ensure All Files Are Owned by a User</span></div></li>
     <li><div class="tooltip">no_shelllogin_for_systemaccounts<span class="tooltiptext">Ensure that System Accounts Do Not Run a Shell Upon Login</span></div></li>
     <li><div class="tooltip">package_MFEhiplsm_installed<span class="tooltiptext">Install the Host Intrusion Prevention System (HIPS) Module</span></div></li>
@@ -8953,6 +8954,7 @@
   <li class="collapsible">CCI-001891</li>
     <ul class="content">
     <li><div class="tooltip">chronyd_or_ntpd_set_maxpoll<span class="tooltiptext">Configure Time Service Maxpoll Interval</span></div></li>
+    <li><div class="tooltip">chronyd_server_directive<span class="tooltiptext">Ensure Chrony is only configured with the server directive</span></div></li>
     <li><div class="tooltip">chronyd_specify_remote_server<span class="tooltiptext">A remote time server for Chrony is configured</span></div></li>
     </ul>
   <li class="collapsible">CCI-001914</li>
@@ -8997,6 +8999,7 @@
     </ul>
   <li class="collapsible">CCI-002038</li>
     <ul class="content">
+    <li><div class="tooltip">disallow_bypass_password_sudo<span class="tooltiptext">Disallow Configuration to Bypass Password Requirements for Privilege Escalation</span></div></li>
     <li><div class="tooltip">sudo_remove_no_authenticate<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate</span></div></li>
     <li><div class="tooltip">sudo_remove_nopasswd<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo NOPASSWD</span></div></li>
     <li><div class="tooltip">sudo_require_authentication<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo</span></div></li>
@@ -24674,6 +24677,7 @@
     </ul>
   <li class="collapsible">CM-6(b)</li>
     <ul class="content">
+    <li><div class="tooltip">no_empty_passwords_etc_shadow<span class="tooltiptext">Ensure There Are No Accounts With Blank or Null Passwords</span></div></li>
     <li><div class="tooltip">no_shelllogin_for_systemaccounts<span class="tooltiptext">Ensure that System Accounts Do Not Run a Shell Upon Login</span></div></li>
     <li><div class="tooltip">sshd_disable_x11_forwarding<span class="tooltiptext">Disable X11 Forwarding</span></div></li>
     <li><div class="tooltip">sshd_x11_use_localhost<span class="tooltiptext">Prevent remote hosts from connecting to the proxy display</span></div></li>
@@ -24683,6 +24687,7 @@
     </ul>
   <li class="collapsible">CM-6.1(iv)</li>
     <ul class="content">
+    <li><div class="tooltip">no_empty_passwords_etc_shadow<span class="tooltiptext">Ensure There Are No Accounts With Blank or Null Passwords</span></div></li>
     <li><div class="tooltip">no_shelllogin_for_systemaccounts<span class="tooltiptext">Ensure that System Accounts Do Not Run a Shell Upon Login</span></div></li>
     <li><div class="tooltip">sysctl_net_ipv6_conf_all_accept_redirects<span class="tooltiptext">Disable Accepting ICMP Redirects for All IPv6 Interfaces</span></div></li>
     <li><div class="tooltip">sysctl_net_ipv6_conf_all_forwarding<span class="tooltiptext">Disable Kernel Parameter for IPv6 Forwarding</span></div></li>
@@ -24858,6 +24863,7 @@
     </ul>
   <li class="collapsible">IA-11</li>
     <ul class="content">
+    <li><div class="tooltip">disallow_bypass_password_sudo<span class="tooltiptext">Disallow Configuration to Bypass Password Requirements for Privilege Escalation</span></div></li>
     <li><div class="tooltip">sudo_remove_no_authenticate<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate</span></div></li>
     <li><div class="tooltip">sudo_remove_nopasswd<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo NOPASSWD</span></div></li>
     <li><div class="tooltip">sudo_require_authentication<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo</span></div></li>
@@ -27929,11 +27935,13 @@
   <li class="collapsible">SRG-OS-000355-GPOS-00143</li>
     <ul class="content">
     <li><div class="tooltip">chronyd_or_ntpd_set_maxpoll<span class="tooltiptext">Configure Time Service Maxpoll Interval</span></div></li>
+    <li><div class="tooltip">chronyd_server_directive<span class="tooltiptext">Ensure Chrony is only configured with the server directive</span></div></li>
     <li><div class="tooltip">package_chrony_installed<span class="tooltiptext">The Chrony package is installed</span></div></li>
     </ul>
   <li class="collapsible">SRG-OS-000356-GPOS-00144</li>
     <ul class="content">
     <li><div class="tooltip">chronyd_or_ntpd_set_maxpoll<span class="tooltiptext">Configure Time Service Maxpoll Interval</span></div></li>
+    <li><div class="tooltip">chronyd_server_directive<span class="tooltiptext">Ensure Chrony is only configured with the server directive</span></div></li>
     </ul>
   <li class="collapsible">SRG-OS-000358-GPOS-00145</li>
     <ul class="content">
@@ -27944,6 +27952,7 @@
     <ul class="content">
     <li><div class="tooltip">audit_rules_suid_privilege_function<span class="tooltiptext">Record Events When Privileged Executables Are Run</span></div></li>
     <li><div class="tooltip">chronyd_or_ntpd_set_maxpoll<span class="tooltiptext">Configure Time Service Maxpoll Interval</span></div></li>
+    <li><div class="tooltip">chronyd_server_directive<span class="tooltiptext">Ensure Chrony is only configured with the server directive</span></div></li>
     <li><div class="tooltip">ensure_rtc_utc_configuration<span class="tooltiptext">Ensure real-time clock is set to UTC</span></div></li>
     <li><div class="tooltip">package_audit_installed<span class="tooltiptext">Ensure the audit Subsystem is Installed</span></div></li>
     </ul>
@@ -27977,6 +27986,7 @@
     </ul>
   <li class="collapsible">SRG-OS-000373-GPOS-00156</li>
     <ul class="content">
+    <li><div class="tooltip">disallow_bypass_password_sudo<span class="tooltiptext">Disallow Configuration to Bypass Password Requirements for Privilege Escalation</span></div></li>
     <li><div class="tooltip">sudo_remove_no_authenticate<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate</span></div></li>
     <li><div class="tooltip">sudo_remove_nopasswd<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo NOPASSWD</span></div></li>
     <li><div class="tooltip">sudo_require_authentication<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo</span></div></li>
@@ -27984,11 +27994,13 @@
     </ul>
   <li class="collapsible">SRG-OS-000373-GPOS-00157</li>
     <ul class="content">
+    <li><div class="tooltip">disallow_bypass_password_sudo<span class="tooltiptext">Disallow Configuration to Bypass Password Requirements for Privilege Escalation</span></div></li>
     <li><div class="tooltip">sudo_remove_no_authenticate<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate</span></div></li>
     <li><div class="tooltip">sudo_remove_nopasswd<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo NOPASSWD</span></div></li>
     </ul>
   <li class="collapsible">SRG-OS-000373-GPOS-00158</li>
     <ul class="content">
+    <li><div class="tooltip">disallow_bypass_password_sudo<span class="tooltiptext">Disallow Configuration to Bypass Password Requirements for Privilege Escalation</span></div></li>
     <li><div class="tooltip">sudo_remove_no_authenticate<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate</span></div></li>
     <li><div class="tooltip">sudo_remove_nopasswd<span class="tooltiptext">Ensure Users Re-Authenticate for Privilege Escalation - sudo NOPASSWD</span></div></li>
     </ul>
@@ -28574,6 +28586,7 @@
     <li><div class="tooltip">file_permissions_sshd_pub_key<span class="tooltiptext">Verify Permissions on SSH Server Public *.pub Key Files</span></div></li>
     <li><div class="tooltip">kernel_module_usb-storage_disabled<span class="tooltiptext">Disable Modprobe Loading of USB Storage Driver</span></div></li>
     <li><div class="tooltip">no_empty_passwords<span class="tooltiptext">Prevent Login to Accounts With Empty Password</span></div></li>
+    <li><div class="tooltip">no_empty_passwords_etc_shadow<span class="tooltiptext">Ensure There Are No Accounts With Blank or Null Passwords</span></div></li>
     <li><div class="tooltip">no_files_unowned_by_user<span class="tooltiptext">Ensure All Files Are Owned by a User</span></div></li>
     <li><div class="tooltip">no_shelllogin_for_systemaccounts<span class="tooltiptext">Ensure that System Accounts Do Not Run a Shell Upon Login</span></div></li>
     <li><div class="tooltip">package_MFEhiplsm_installed<span class="tooltiptext">Install the Host Intrusion Prevention System (HIPS) Module</span></div></li>

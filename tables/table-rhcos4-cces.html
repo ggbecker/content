@@ -102,16 +102,26 @@ the correct values:
 <td></td>
 <td>Build and Test AIDE Database</td>
 <td xml:lang="en-US">Run the following command to generate a new database:
+
 <pre>$ sudo /usr/sbin/aide --init</pre>
-By default, the database will be written to the file <code>/var/lib/aide/aide.db.new.gz</code>.
+
+By default, the database will be written to the file
+
+<code>/var/lib/aide/aide.db.new.gz</code>.
+
 Storing the database, the configuration file <code>/etc/aide.conf</code>, and the binary
-<code>/usr/sbin/aide</code> (or hashes of these files), in a secure location (such as on read-only media) provides additional assurance about their integrity.
+
+<code>/usr/sbin/aide</code>
+
+(or hashes of these files), in a secure location (such as on read-only media) provides additional assurance about their integrity.
 The newly-generated database can be installed as follows:
 
 <pre>$ sudo cp /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz</pre>
 
 To initiate a manual check, run the following command:
+
 <pre>$ sudo /usr/sbin/aide --check</pre>
+
 If this check produces any unexpected output, investigate.</td>
 </tr>
 <tr>
@@ -156,12 +166,11 @@ FIPS mode by automatically configuring the following:
 </li>
 <li>Creating <code>/etc/system-fips</code>
 </li>
-<li>Setting the system crypto policy in <code>/etc/crypto-policies/config</code> to <code>FIPS</code>
+<li>Setting the system crypto policy in <code>/etc/crypto-policies/config</code> to <code><xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_system_crypto_policy"></xccdf-1.1:sub></code>
 </li>
 <li>Loading the Dracut <code>fips</code> module</li>
 </ul>
-This rule also ensures that the system policy is set to <code><xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_system_crypto_policy"></xccdf-1.1:sub></code>.
-Furthermore, the system running in FIPS mode should be FIPS certified by NIST.</td>
+</td>
 </tr>
 <tr>
 <td></td>
@@ -738,6 +747,14 @@ To properly set the permissions of <code>/etc/issue</code>, run the command:
 </tr>
 <tr>
 <td></td>
+<td>Disallow Configuration to Bypass Password Requirements for Privilege Escalation</td>
+<td xml:lang="en-US">Verify the operating system is not configured to bypass password requirements for privilege
+escalation. Check the configuration of the "/etc/pam.d/sudo" file with the following command:
+<pre>$ sudo grep pam_succeed_if /etc/pam.d/sudo</pre>
+If any occurrences of "pam_succeed_if" is returned from the command, this is a finding.</td>
+</tr>
+<tr>
+<td></td>
 <td>Ensure PAM Displays Last Logon/Access Notification</td>
 <td xml:lang="en-US">To configure the system to notify users of last logon/access
 using <code>pam_lastlog</code>, add or correct the <code>pam_lastlog</code>
@@ -926,7 +943,7 @@ The console can now be locked with the following key combination:
 <td>Support session locking with tmux</td>
 <td xml:lang="en-US">The <code>tmux</code> terminal multiplexer is used to implement
 automatic session locking. It should be started from
-<code>/etc/bashrc</code>.</td>
+<code>/etc/bashrc</code> or drop-in files within <code>/etc/profile.d/</code>.</td>
 </tr>
 <tr>
 <td></td>
@@ -1060,11 +1077,22 @@ into the account without authentication. Remove any instances of the
 
 <code>/etc/pam.d/system-auth</code>
 
-to prevent logins with empty passwords.
-Note that this rule is not applicable for systems running within a
-container. Having user with empty password within a container is not
-considered a risk, because it should not be possible to directly login into
-a container anyway.</td>
+to prevent logins with empty passwords.</td>
+</tr>
+<tr>
+<td></td>
+<td>Ensure There Are No Accounts With Blank or Null Passwords</td>
+<td xml:lang="en-US">Check the "/etc/shadow" file for blank passwords with the
+following command:
+<pre>$ sudo awk -F: '!$2 {print $1}' /etc/shadow</pre>
+If the command returns any results, this is a finding.
+Configure all accounts on the system to have a password or lock
+the account with the following commands:
+Perform a password reset:
+<pre>$ sudo passwd [username]</pre>
+Lock an account:
+<pre>$ sudo passwd -l [username]</pre>
+</td>
 </tr>
 <tr>
 <td></td>
@@ -4021,10 +4049,10 @@ This is the default setting.</td>
 
 The following rules configure audit as described above:
 <pre>## Unsuccessful file access (any other opens) This has to go last.
--a always,exit -F arch=b32 -S open,openat,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
--a always,exit -F arch=b64 -S open,openat,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
--a always,exit -F arch=b32 -S open,openat,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
--a always,exit -F arch=b64 -S open,openat,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access    </pre>    
+-a always,exit -F arch=b32 -S open,openat,openat2,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+-a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+-a always,exit -F arch=b32 -S open,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+-a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access    </pre>    
 
 Load new Audit rules into kernel by running:
 <pre>augenrules --load</pre>
@@ -4039,8 +4067,8 @@ Note: This rule utilizes a file provided by <code>Audit</code> package to comply
 The following rules configure audit as described above:
 <pre>## Successful file access (any other opens) This has to go last.
 ## These next two are likely to result in a whole lot of events
--a always,exit -F arch=b32 -S open,openat,open_by_handle_at -F success=1 -F auid&gt;=1000 -F auid!=unset -F key=successful-access
--a always,exit -F arch=b64 -S open,openat,open_by_handle_at -F success=1 -F auid&gt;=1000 -F auid!=unset -F key=successful-access    </pre>
+-a always,exit -F arch=b32 -S open,openat,openat2,open_by_handle_at -F success=1 -F auid&gt;=1000 -F auid!=unset -F key=successful-access
+-a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F success=1 -F auid&gt;=1000 -F auid!=unset -F key=successful-access    </pre>
 
 The <code>Audit</code> package provides pre-configured  rules in <code>/usr/share/audit/sample-rules</code>. The above content can be found in <code>/usr/share/audit/sample-rules/30-ospp-v42-3-access-success.rules</code>.
 To deploy this configuration, it is recommended to copy it over to the <code>/etc/audit/rules.d/</code> directory:
@@ -4351,6 +4379,10 @@ The following rules configure audit as described above:
 
 ## Privilege escalation via su or sudo. This is entirely handled by pam.
 
+## Watch for configuration changes to privilege escalation.
+-a always,exit -F path=/etc/sudoers -F perm=wa -F key=special-config-changes
+-a always,exit -F dir=/etc/sudoers.d/ -F perm=wa -F key=special-config-changes
+
 ## Audit log access
 -a always,exit -F dir=/var/log/audit/ -F perm=r -F auid&gt;=1000 -F auid!=unset -F key=access-audit-trail
 ## Attempts to Alter Process and Session Initiation Information
@@ -4514,7 +4546,151 @@ operating system in <code>/boot/loader/entries/*.conf</code>.</td>
 <td></td>
 <td>IOMMU configuration directive</td>
 <td xml:lang="en-US">On x86 architecture supporting VT-d, the IOMMU manages the access control policy between the hardware devices and some
-    of the system critical units such as the memory.</td>
+    of the system critical units such as the memory.
+Configure the default Grub2 kernel command line to contain iommu=force as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) iommu=force"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Configure L1 Terminal Fault mitigations</td>
+<td xml:lang="en-US">L1 Terminal Fault (L1TF) is a hardware vulnerability which allows unprivileged
+speculative access to data which is available in the Level 1 Data Cache when
+the page table entry isn't present.
+
+Select the appropriate mitigation by adding the argument
+<code>l1tf=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref=""></xccdf-1.1:sub></code> to the default
+GRUB 2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain l1tf=xccdf_value(var_l1tf_options) as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) l1tf=xccdf_value(var_l1tf_options)"</pre>
+
+Since Linux Kernel 4.19 you can check the L1TF vulnerability state with the
+following command:
+<code>cat /sys/devices/system/cpu/vulnerabilities/l1tf</code>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Force kernel panic on uncorrected MCEs</td>
+<td xml:lang="en-US">A Machine Check Exception is an error generated by the CPU itdetects an error
+in itself, memory or I/O devices.
+These errors may be corrected and generate a check log entry, if an error
+cannot be corrected the kernel may panic or SIGBUS.
+
+To force the kernel to panic on any uncorrected error reported by Machine Check
+set the MCE tolerance to zero by adding <code>mce=0</code>
+to the default GRUB 2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain mce=0 as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) mce=0"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Ensure SMAP is not disabled during boot</td>
+<td xml:lang="en-US">The SMAP is used to prevent the supervisor mode from unintentionally reading/writing into
+memory pages in the user space, it is enabled by default since Linux kernel 3.7.
+But it could be disabled through kernel boot parameters.
+
+Ensure that Supervisor Mode Access Prevention (SMAP) is not disabled by
+the <code>nosmap</code> boot paramenter option.
+
+Check that the line <pre>GRUB_CMDLINE_LINUX="..."</pre> within <code>/etc/default/grub</code>
+doesn't contain the argument <code>nosmap</code>.
+Run the following command to update command line for already installed kernels:
+<pre># grubby --update-kernel=ALL --remove-args="nosmap"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Ensure SMEP is not disabled during boot</td>
+<td xml:lang="en-US">The SMEP is used to prevent the supervisor mode from executing user space code,
+it is enabled by default since Linux kernel 3.0. But it could be disabled through
+kernel boot parameters.
+
+Ensure that Supervisor Mode Execution Prevention (SMEP) is not disabled by
+the <code>nosmep</code> boot paramenter option.
+
+Check that the line <pre>GRUB_CMDLINE_LINUX="..."</pre> within <code>/etc/default/grub</code>
+doesn't contain the argument <code>nosmep</code>.
+Run the following command to update command line for already installed kernels:
+<pre># grubby --update-kernel=ALL --remove-args="nosmep"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Configure the confidence in TPM for entropy</td>
+<td xml:lang="en-US">The TPM security chip that is available in most modern systems has a hardware RNG.
+It is also used to feed the entropy pool, but generally not credited entropy.
+
+Use <code>rng_core.default_quality</code> in the kernel command line to set the trust
+level on the hardware generators. The trust level defines the amount of entropy to credit.
+A value of <code>0</code> tells the system not to trust the hardware random number generators
+available, and doesn't credit any entropy to the pool.
+A value of <code>1000</code> assigns full confidence in the generators, and credits all the
+entropy it provides to the pool.
+
+Note that the value of <code>rng_core.default_quality</code> is global, affecting the trust
+on all hardware random number generators.
+
+Select the appropriate confidence by adding the argument
+<code>rng_core.default_quality=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref=""></xccdf-1.1:sub></code> to the default
+GRUB 2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain rng_core.default_quality=xccdf_value(var_rng_core_default_quality) as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) rng_core.default_quality=xccdf_value(var_rng_core_default_quality)"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Disable merging of slabs with similar size</td>
+<td xml:lang="en-US">The kernel may merge similar slabs together to reduce overhead and increase
+cache hotness of objects.
+Disabling merging of slabs keeps the slabs separate and reduces the risk of
+kernel heap overflows overwriting objects in merged caches.
+
+To disable merging of slabs in the Kernel add the argument <code>slab_nomerge=yes</code>
+to the default GRUB 2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain slab_nomerge=yes as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) slab_nomerge=yes"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Configure Speculative Store Bypass Mitigation</td>
+<td xml:lang="en-US">Certain CPUs are vulnerable to an exploit against a common wide industry wide performance
+optimization known as Speculative Store Bypass (SSB).
+
+In such cases, recent stores to the same memory location cannot always be observed by later
+loads during speculative execution. However, such stores are unlikely and thus they can be
+detected prior to instruction retirement at the end of a particular speculation execution
+window.
+
+Since Linux Kernel 4.17 you can check the SSB mitigation state with the following command:
+<code>cat /sys/devices/system/cpu/vulnerabilities/spec_store_bypass</code>
+
+Select the appropriate SSB state by adding the argument
+<code>spec_store_bypass_disable=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref=""></xccdf-1.1:sub></code> to the default
+GRUB 2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain spec_store_bypass_disable=xccdf_value(var_spec_store_bypass_disable_options) as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) spec_store_bypass_disable=xccdf_value(var_spec_store_bypass_disable_options)"</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Enforce Spectre v2 mitigation</td>
+<td xml:lang="en-US">Spectre V2 is an indirect branch poisoning attack that can lead to data leakage.
+An exploit for Spectre V2 tricks the indirect branch predictor into executing
+code from a future indirect branch chosen by the attacker, even if the privilege
+level is different.
+
+Since Linux Kernel 4.15 you can check the Spectre V2 mitigation state with the following command:
+<code>cat /sys/devices/system/cpu/vulnerabilities/spectre_v2</code>
+
+Enforce the Spectre V2 mitigation by adding the argument
+<code>spectre_v2=on</code> to the default
+GRUB 2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain spectre_v2=on) as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) spectre_v2=on)"</pre>
+</td>
 </tr>
 <tr>
 <td>CCE-83540-5</td>
@@ -5039,10 +5215,9 @@ add or correct the following line in
 <td>Ensure IPv6 is disabled through kernel boot parameter</td>
 <td xml:lang="en-US">To disable IPv6 protocol support in the Linux kernel,
 add the argument <code>ipv6.disable=1</code> to the default
-GRUB2 command line for the Linux operating system in
-
-<code>/boot/grub2/grubenv</code>, in the manner below:
-<pre>sudo  grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) ipv6.disable=1"</pre>
+GRUB2 command line for the Linux operating system.
+Configure the default Grub2 kernel command line to contain ipv6.disable=1 as follows:
+<pre># grub2-editenv - set "$(grub2-editenv - list | grep kernelopts) ipv6.disable=1"</pre>
 </td>
 </tr>
 <tr>
@@ -5117,6 +5292,13 @@ To make sure that the setting is persistent, add the following line to a file in
 </td>
 </tr>
 <tr>
+<td></td>
+<td>Disable Accepting Packets Routed Between Local Interfaces</td>
+<td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.accept_local</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.accept_local=0</pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.accept_local = 0</pre>
+</td>
+</tr>
+<tr>
 <td>CCE-82469-8</td>
 <td>Disable Accepting ICMP Redirects for All IPv4 Interfaces</td>
 <td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.accept_redirects</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.accept_redirects=0</pre>
@@ -5131,10 +5313,31 @@ To make sure that the setting is persistent, add the following line to a file in
 </td>
 </tr>
 <tr>
+<td></td>
+<td>Configure ARP filtering for All IPv4 Interfaces</td>
+<td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.arp_filter</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.arp_filter=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_all_arp_filter_value"></xccdf-1.1:sub></pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.arp_filter = <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_all_arp_filter_value"></xccdf-1.1:sub></pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Configure Response Mode of ARP Requests for All IPv4 Interfaces</td>
+<td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.arp_ignore</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.arp_ignore=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_all_arp_ignore_value"></xccdf-1.1:sub></pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.arp_ignore = <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_all_arp_ignore_value"></xccdf-1.1:sub></pre>
+</td>
+</tr>
+<tr>
 <td>CCE-82486-2</td>
 <td>Enable Kernel Parameter to Log Martian Packets on all IPv4 Interfaces</td>
 <td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.log_martians</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.log_martians=1</pre>
 To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.log_martians = 1</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Prevent Routing External Traffic to Local Loopback on All IPv4 Interfaces</td>
+<td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.route_localnet</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.route_localnet=0</pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.route_localnet = 0</pre>
 </td>
 </tr>
 <tr>
@@ -5149,6 +5352,13 @@ To make sure that the setting is persistent, add the following line to a file in
 <td>Disable Kernel Parameter for Accepting Secure ICMP Redirects on all IPv4 Interfaces</td>
 <td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.secure_redirects</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.secure_redirects=0</pre>
 To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.secure_redirects = 0</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Configure Sending and Accepting Shared Media Redirects for All IPv4 Interfaces</td>
+<td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.all.shared_media</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.all.shared_media=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_all_shared_media_value"></xccdf-1.1:sub></pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.all.shared_media = <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_all_shared_media_value"></xccdf-1.1:sub></pre>
 </td>
 </tr>
 <tr>
@@ -5184,6 +5394,13 @@ To make sure that the setting is persistent, add the following line to a file in
 <td>Configure Kernel Parameter for Accepting Secure Redirects By Default</td>
 <td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.default.secure_redirects</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.default.secure_redirects=0</pre>
 To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.default.secure_redirects = 0</pre>
+</td>
+</tr>
+<tr>
+<td></td>
+<td>Configure Sending and Accepting Shared Media Redirects by Default</td>
+<td xml:lang="en-US">To set the runtime status of the <code>net.ipv4.conf.default.shared_media</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w net.ipv4.conf.default.shared_media=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_default_shared_media_value"></xccdf-1.1:sub></pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>net.ipv4.conf.default.shared_media = <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_net_ipv4_conf_default_shared_media_value"></xccdf-1.1:sub></pre>
 </td>
 </tr>
 <tr>
@@ -5383,7 +5600,7 @@ normal usage of the wireless capability.
 
 Configure the system to disable all wireless network interfaces with the
 following command:
-<pre>$ sudo nmcli radio wifi off</pre>
+<pre>$ sudo nmcli radio all off</pre>
 </td>
 </tr>
 <tr>
@@ -6293,6 +6510,13 @@ To make sure that the setting is persistent, add the following line to a file in
 </td>
 </tr>
 <tr>
+<td></td>
+<td>Kernel panic on oops</td>
+<td xml:lang="en-US">To set the runtime status of the <code>kernel.panic_on_oops</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w kernel.panic_on_oops=1</pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>kernel.panic_on_oops = 1</pre>
+</td>
+</tr>
+<tr>
 <td>CCE-82502-6</td>
 <td>Disallow kernel profiling by unprivileged users</td>
 <td xml:lang="en-US">To set the runtime status of the <code>kernel.perf_event_paranoid</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w kernel.perf_event_paranoid=2</pre>
@@ -6375,8 +6599,8 @@ To make sure that the setting is persistent, add the following line to a file in
 <tr>
 <td>CCE-82498-7</td>
 <td>Restrict Exposed Kernel Pointer Addresses Access</td>
-<td xml:lang="en-US">To set the runtime status of the <code>kernel.kptr_restrict</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w kernel.kptr_restrict=1</pre>
-To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>kernel.kptr_restrict = 1</pre>
+<td xml:lang="en-US">To set the runtime status of the <code>kernel.kptr_restrict</code> kernel parameter, run the following command: <pre>$ sudo sysctl -w kernel.kptr_restrict=<xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_kernel_kptr_restrict_value"></xccdf-1.1:sub></pre>
+To make sure that the setting is persistent, add the following line to a file in the directory <code>/etc/sysctl.d</code>: <pre>kernel.kptr_restrict = <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="sysctl_kernel_kptr_restrict_value"></xccdf-1.1:sub></pre>
 </td>
 </tr>
 <tr>
@@ -6933,10 +7157,12 @@ for management connections made by chronyc.</td>
 <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_time_service_set_maxpoll"></xccdf-1.1:sub> in <code>/etc/ntp.conf</code> or
 <code>/etc/chrony.conf</code> to continuously poll time servers. To configure
 <code>maxpoll</code> in <code>/etc/ntp.conf</code> or <code>/etc/chrony.conf</code>
-add the following:
+add the following after each `server`, `pool` or `peer` entry:
 <pre>maxpoll <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_time_service_set_maxpoll"></xccdf-1.1:sub></pre>
 to <pre>server</pre> directives. If using chrony any <pre>pool</pre> directives
 should be configured too.
+If no <code>server</code> or <code>pool</code> directives are configured, the rule evaluates
+to pass.
 
 <p>
 Note that if the remediation shipping with this content is being used, the
@@ -7134,6 +7360,11 @@ spec:
 
 Note that this needs to be done for each <pre>MachineConfigPool</pre>
 </td>
+</tr>
+<tr>
+<td></td>
+<td>Ensure Chrony is only configured with the server directive</td>
+<td xml:lang="en-US">Check that Chrony only has time sources configured with the <code>server</code> directive.</td>
 </tr>
 <tr>
 <td></td>
@@ -7718,8 +7949,14 @@ To explicitly enable LastLog in SSH, add or correct the following line in
 <td xml:lang="en-US">The <code>RekeyLimit</code> parameter specifies how often
 the session key of the is renegotiated, both in terms of
 amount of data that may be transmitted and the time
-elapsed. To decrease the default limits, put line
-<code>RekeyLimit <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_rekey_limit_size"></xccdf-1.1:sub> <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_rekey_limit_time"></xccdf-1.1:sub></code> to file <code>/etc/ssh/sshd_config</code>.</td>
+elapsed.<br>
+To decrease the default limits, add or correct the following line in
+
+
+<code>/etc/ssh/sshd_config</code>:
+
+<pre>RekeyLimit <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_rekey_limit_size"></xccdf-1.1:sub> <xccdf-1.1:sub xmlns:xccdf-1.1="http://checklists.nist.gov/xccdf/1.1" idref="var_rekey_limit_time"></xccdf-1.1:sub></pre>
+</td>
 </tr>
 <tr>
 <td>CCE-82549-7</td>

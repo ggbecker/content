@@ -26,6 +26,7 @@ avahi_disable_publishing
 banner_etc_motd
 bios_enable_execution_restrictions
 chronyd_run_as_chrony_user
+chronyd_server_directive
 configure_user_data_backups
 dhcp_client_restrict_options
 dhcp_server_minimize_served_info
@@ -85,8 +86,6 @@ root_path_no_dot
 rsyslog_accept_remote_messages_tcp
 rsyslog_accept_remote_messages_udp
 rsyslog_encrypt_offload_actionsendstreamdriverauthmode
-rsyslog_encrypt_offload_actionsendstreamdrivermode
-rsyslog_encrypt_offload_defaultnetstreamdriver
 rsyslog_files_groupownership
 rsyslog_files_ownership
 rsyslog_files_permissions
@@ -108,5 +107,4 @@ sudoers_no_command_negation
 sudoers_no_root_target
 susefirewall2_ddos_protection
 susefirewall2_only_required_services
-use_pam_wheel_for_su
 xwindows_remove_packages

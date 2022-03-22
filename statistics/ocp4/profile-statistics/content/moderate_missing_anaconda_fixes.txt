@@ -81,6 +81,7 @@ general_default_namespace_use
 general_default_seccomp_profile
 general_namespaces_in_use
 idp_is_configured
+ingress_controller_certificate
 kubeadmin_removed
 kubelet_configure_tls_cert
 kubelet_configure_tls_key
@@ -100,6 +101,9 @@ rbac_limit_cluster_admin
 rbac_limit_secrets_access
 rbac_pod_creation_access
 rbac_wildcard_use
+resource_requests_limits_in_daemonset
+resource_requests_limits_in_deployment
+resource_requests_limits_in_statefulset
 resource_requests_quota
 route_ip_whitelist
 routes_protected_by_tls
