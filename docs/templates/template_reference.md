@@ -702,7 +702,9 @@ template:
         inserted to the file by the remediation if not present.
 
 #### sshd_lineinfile
--   Checks SSH server configuration items in `/etc/ssh/sshd_config`.
+-   Checks SSH server configuration items in `/etc/ssh/sshd_config` or
+    `/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf` in case
+    of Fedora or RHEL9 and newer.
 
 -   Parameters:
 
@@ -715,6 +717,11 @@ template:
     -   **missing_parameter_pass** - effective only in OVAL checks, if
         set to `"false"` and the parameter is not present in the
         configuration file, the OVAL check will return false (default value: `"false"`).
+
+    -   **is_default_value** - effective only in Ansible and Bash remediation, if
+        set to `"true"`, settings will be remediated into a file
+        called (in case of Fedora or RHEL9 and newer):
+        `/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf`
 
 -   Languages: Ansible, Bash, OVAL, Kubernetes
 
