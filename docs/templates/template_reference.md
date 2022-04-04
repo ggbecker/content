@@ -714,10 +714,6 @@ template:
     -   **value** - value of the SSH configuration option specified by
         **parameter**, eg. `"no"`.
 
-    -   **missing_parameter_pass** - effective only in OVAL checks, if
-        set to `"false"` and the parameter is not present in the
-        configuration file, the OVAL check will return false (default value: `"false"`).
-
     -   **is_default_value** - effective only in Ansible and Bash remediation, if
         set to `"true"`, settings will be remediated into a file
         called (in case of Fedora or RHEL9 and newer):
