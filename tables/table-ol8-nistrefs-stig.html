@@ -696,7 +696,9 @@ malicious processes that attempt to delete log files to conceal their presence.
   <td xml:lang="en-US">
 To capture kernel module unloading events, use following line, setting ARCH to
 either b32 for 32-bit system, or having two lines for both b32 and b64 in case your system is 64-bit:
-<pre>-a always,exit -F arch=<i>ARCH</i> -S delete_module -F key=modules</pre>
+
+<pre>-a always,exit -F arch=<i>ARCH</i> -S delete_module -F auid>=1000 -F auid!=unset -F key=modules</pre>
+
 
 Place to add the line depends on a way <tt>auditd</tt> daemon is configured. If it is configured
 to use the <tt>augenrules</tt> program (the default), add the line to a file with suffix
@@ -721,12 +723,14 @@ If the <tt>auditd</tt> daemon is configured to use the <tt>augenrules</tt> progr
 to read audit rules during daemon startup (the default), add the following lines to a file
 with suffix <tt>.rules</tt> in the directory <tt>/etc/audit/rules.d</tt> to capture kernel module
 loading and unloading events, setting ARCH to either b32 or b64 as appropriate for your system:
-<pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
-If the <tt>auditd</tt> daemon is configured to use the <tt>auditctl</tt> utility to read audit
+
+<pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F auid>=1000 -F auid!=unset -F key=modules</pre>
+    If the <tt>auditd</tt> daemon is configured to use the <tt>auditctl</tt> utility to read audit
 rules during daemon startup, add the following lines to <tt>/etc/audit/audit.rules</tt> file
 in order to capture kernel module loading and unloading events, setting ARCH to either b32 or
 b64 as appropriate for your system:
-<pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
+
+<pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F auid>=1000 -F auid!=unset -F key=modules</pre>
   </td>
   <td xml:lang="en-US">
 The addition/removal of kernel modules can be used to alter the behavior of
@@ -742,7 +746,9 @@ to have an audit trail of modules that have been introduced into the kernel.
   <td xml:lang="en-US">
 To capture kernel module loading events, use following line, setting ARCH to
 either b32 for 32-bit system, or having two lines for both b32 and b64 in case your system is 64-bit:
-<pre>-a always,exit -F arch=<i>ARCH</i> -S init_module -F key=modules</pre>
+
+<pre>-a always,exit -F arch=<i>ARCH</i> -S init_module -F auid>=1000 -F auid!=unset -F key=modules</pre>
+
 
 Place to add the line depends on a way <tt>auditd</tt> daemon is configured. If it is configured
 to use the <tt>augenrules</tt> program (the default), add the line to a file with suffix
@@ -2513,9 +2519,9 @@ the password is compromised.
   <td>N/A</td>
   <td>Set Existing Passwords Maximum Age</td>
   <td xml:lang="en-US">
-Configure non-compliant accounts to enforce a 60-day maximum password lifetime
+Configure non-compliant accounts to enforce a <tt>60</tt>-day maximum password lifetime
 restriction by running the following command:
-<pre>$ sudo chage -M 60 <i>USER</i></pre>
+<pre>$ sudo chage -M <tt>60</tt> <i>USER</i></pre>
   </td>
   <td xml:lang="en-US">
 Any password, no matter how complex, can eventually be cracked. Therefore,
@@ -2524,7 +2530,7 @@ not limit the lifetime of passwords and force users to change their
 passwords, there is the risk that the operating system passwords could be
 compromised.
   </td>
-  <td></td>
+  <td>var_accounts_maximum_age_login_defs=60</td>
 </tr>
 <tr>
   <td>IA-5(f)<br/>IA-5(1)(d)<br/>CM-6(a)</td>
@@ -3426,6 +3432,26 @@ users.
   <td></td>
 </tr>
 <tr>
+  <td>CM-6(a)<br/>AC-6(1)</td>
+  <td>N/A</td>
+  <td>Ensure All World-Writable Directories Are Group Owned by a System Account</td>
+  <td xml:lang="en-US">
+All directories in local partitions which are
+world-writable should be group owned by root or another
+system account. If any world-writable directories are not
+group owned by a system account, this should be investigated.
+Following this, the files should be deleted or assigned to an
+appropriate group.
+  </td>
+  <td xml:lang="en-US">
+Allowing a user account to group own a world-writable directory is
+undesirable because it allows the owner of that directory to remove
+or replace any files that may be placed in the directory by other
+users.
+  </td>
+  <td></td>
+</tr>
+<tr>
   <td>CM-6(a)<br/>AC-6(1)<br/>AU-9(4)</td>
   <td>N/A</td>
   <td>System Audit Directories Must Be Group Owned By Root</td>
@@ -4070,7 +4096,14 @@ The <code>firewalld</code> package can be installed with the following command:
 $ sudo yum install firewalld</pre>
   </td>
   <td xml:lang="en-US">
-The firewalld package should be installed to provide access control methods.
+"Firewalld" provides an easy and effective way to block/limit remote access to the system via ports, services, and protocols.
+
+Remote access services, such as those providing remote access to network devices and information systems, which lack automated control capabilities, increase risk and make remote user access management difficult at best.
+
+Remote access is access to DoD nonpublic information systems by an authorized user (or an information system) communicating through an external, non-organization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
+
+Oracle Linux 8 functionality (e.g., SSH) must be capable of taking enforcement action if the audit reveals unauthorized activity.
+Automated control of remote access sessions allows organizations to ensure ongoing compliance with remote access policies by enforcing connection rules of remote access applications on a variety of information system components (e.g., servers, workstations, notebook computers, smartphones, and tablets)."
   </td>
   <td></td>
 </tr>
@@ -5337,6 +5370,28 @@ The auditd service is an access monitoring and accounting daemon, watching syste
   <td></td>
 </tr>
 <tr>
+  <td>IA-7<br/>IA-7.1</td>
+  <td>N/A</td>
+  <td>Remove the Kerberos Server Package</td>
+  <td xml:lang="en-US">
+The <tt>krb5-server</tt> package should be removed if not in use.
+Is this system the Kerberos server? If not, remove the package.
+The <code>krb5-server</code> package can be removed with the following command:
+<pre>
+$ sudo yum erase krb5-server</pre>
+The krb5-server RPM is not installed by default on a Oracle Linux 8
+system. It is needed only by the Kerberos servers, not by the
+clients which use Kerberos for authentication. If the system is not
+intended for use as a Kerberos Server it should be removed.
+  </td>
+  <td xml:lang="en-US">
+Unnecessary packages should not be installed to decrease the attack
+surface of the system.  While this software is clearly essential on an KDC
+server, it is not necessary on typical desktop or workstation systems.
+  </td>
+  <td></td>
+</tr>
+<tr>
   <td>CM-7(a)<br/>CM-7(b)<br/>CM-6(a)<br/>IA-5(1)(c)</td>
   <td>N/A</td>
   <td>Uninstall rsh-server Package</td>
@@ -6172,6 +6227,29 @@ a user's session has idled and take action to initiate a session lock.
   <td></td>
 </tr>
 <tr>
+  <td>AC-11(a)<br/>CM-6(a)</td>
+  <td>N/A</td>
+  <td>Set GNOME3 Screensaver Lock Delay After Activation Period</td>
+  <td xml:lang="en-US">
+To activate the locking delay of the screensaver in the GNOME3 desktop when
+the screensaver is activated, add or set <tt>lock-delay</tt> to <tt>uint32 <tt>5_seconds</tt></tt> in
+<tt>/etc/dconf/db/local.d/00-security-settings</tt>. For example:
+<pre>[org/gnome/desktop/screensaver]
+lock-delay=uint32 <tt>5_seconds</tt>
+</pre>
+Once the setting has been added, add a lock to
+<tt>/etc/dconf/db/local.d/locks/00-security-settings-lock</tt> to prevent user modification.
+For example:
+<pre>/org/gnome/desktop/screensaver/lock-delay</pre>
+After the settings have been set, run <tt>dconf update</tt>.
+  </td>
+  <td xml:lang="en-US">
+A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity
+of the information system but does not want to logout because of the temporary nature of the absense.
+  </td>
+  <td>var_screensaver_lock_delay=5_seconds</td>
+</tr>
+<tr>
   <td>CM-11(a)<br/>CM-11(b)<br/>CM-6(a)<br/>CM-5(3)<br/>SA-12<br/>SA-12(10)</td>
   <td>N/A</td>
   <td>Ensure gpgcheck Enabled for Local Packages</td>
@@ -6398,7 +6476,7 @@ Kerberos is supported by crypto policy, but it's configuration may be
 set up to ignore it.
 To check that Crypto Policies settings for Kerberos are configured correctly, examine that there is a symlink at
 /etc/krb5.conf.d/crypto-policies targeting /etc/cypto-policies/back-ends/krb5.config.
-If the symlink exists, kerberos is configured to use the system-wide crypto policy settings.
+If the symlink exists, Kerberos is configured to use the system-wide crypto policy settings.
   </td>
   <td xml:lang="en-US">
 Overriding the system crypto policy makes the behavior of Kerberos violate expectations,
@@ -6965,11 +7043,11 @@ To set the runtime status of the <code>kernel.kptr_restrict</code> kernel parame
 To make sure that the setting is persistent, add the following line to a file in the directory <tt>/etc/sysctl.d</tt>: <pre>kernel.kptr_restrict = <tt>1</tt></pre>
   </td>
   <td xml:lang="en-US">
-Exposing kernel pointers (through procfs or <tt>seq_printf()</tt>) exposes
-kernel writeable structures that can contain functions pointers. If a write vulnereability occurs
-in the kernel allowing a write access to any of this structure, the kernel can be compromise. This
-option disallow any program withtout the CAP_SYSLOG capability from getting the kernel pointers addresses,
-replacing them with 0.
+Exposing kernel pointers (through procfs or <tt>seq_printf()</tt>) exposes kernel
+writeable structures which may contain functions pointers. If a write vulnerability
+occurs in the kernel, allowing write access to any of this structure, the kernel can
+be compromised. This option disallow any program without the CAP_SYSLOG capability
+to get the addresses of kernel pointers by replacing them with 0.
   </td>
   <td>sysctl_kernel_kptr_restrict_value=1</td>
 </tr>
@@ -6984,7 +7062,7 @@ To make sure that the setting is persistent, add the following line to a file in
   <td xml:lang="en-US">
 Address space layout randomization (ASLR) makes it more difficult for an
 attacker to predict the location of attack code they have introduced into a
-process's address space during an attempt at exploitation.  Additionally,
+process's address space during an attempt at exploitation. Additionally,
 ASLR makes it more difficult for an attacker to know the location of
 existing code in order to re-purpose it using return oriented programming
 (ROP) techniques.
@@ -8026,6 +8104,34 @@ information systems gaining access include, for example, hardware tokens
 providing time-based or challenge-response authenticators and smart cards such
 as the U.S. Government Personal Identity Verification card and the DoD Common
 Access Card.
+  </td>
+  <td></td>
+</tr>
+<tr>
+  <td></td>
+  <td>N/A</td>
+  <td>Check that vlock is installed to allow session locking</td>
+  <td xml:lang="en-US">
+The Oracle Linux 8 operating system must have vlock installed to allow for session locking.
+
+
+The <code>kbd</code> package can be installed with the following command:
+<pre>
+$ sudo yum install kbd</pre>
+  </td>
+  <td xml:lang="en-US">
+A session lock is a temporary action taken when a user stops work and
+moves away from the immediate physical vicinity of the information
+system but does not want to log out because of the temporary nature of
+the absence.
+
+The session lock is implemented at the point where session activity can
+be determined.
+
+Regardless of where the session lock is determined and implemented,
+once invoked, the session lock must remain in place until the user
+reauthenticates. No other activity aside from reauthentication must
+unlock the system.
   </td>
   <td></td>
 </tr>

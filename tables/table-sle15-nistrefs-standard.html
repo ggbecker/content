@@ -825,11 +825,13 @@ If the <tt>auditd</tt> daemon is configured to use the <tt>augenrules</tt> progr
 to read audit rules during daemon startup (the default), add the following lines to a file
 with suffix <tt>.rules</tt> in the directory <tt>/etc/audit/rules.d</tt> to capture kernel module
 loading and unloading events, setting ARCH to either b32 or b64 as appropriate for your system:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
-If the <tt>auditd</tt> daemon is configured to use the <tt>auditctl</tt> utility to read audit
+    If the <tt>auditd</tt> daemon is configured to use the <tt>auditctl</tt> utility to read audit
 rules during daemon startup, add the following lines to <tt>/etc/audit/audit.rules</tt> file
 in order to capture kernel module loading and unloading events, setting ARCH to either b32 or
 b64 as appropriate for your system:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
   </td>
   <td xml:lang="en-US">
@@ -846,7 +848,9 @@ to have an audit trail of modules that have been introduced into the kernel.
   <td xml:lang="en-US">
 To capture kernel module loading events, use following line, setting ARCH to
 either b32 for 32-bit system, or having two lines for both b32 and b64 in case your system is 64-bit:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S init_module -F key=modules</pre>
+
 
 Place to add the line depends on a way <tt>auditd</tt> daemon is configured. If it is configured
 to use the <tt>augenrules</tt> program (the default), add the line to a file with suffix
@@ -1796,7 +1800,14 @@ The <code>firewalld</code> package can be installed with the following command:
 $ sudo zypper install firewalld</pre>
   </td>
   <td xml:lang="en-US">
-The firewalld package should be installed to provide access control methods.
+"Firewalld" provides an easy and effective way to block/limit remote access to the system via ports, services, and protocols.
+
+Remote access services, such as those providing remote access to network devices and information systems, which lack automated control capabilities, increase risk and make remote user access management difficult at best.
+
+Remote access is access to DoD nonpublic information systems by an authorized user (or an information system) communicating through an external, non-organization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.
+
+SUSE Linux Enterprise 15 functionality (e.g., SSH) must be capable of taking enforcement action if the audit reveals unauthorized activity.
+Automated control of remote access sessions allows organizations to ensure ongoing compliance with remote access policies by enforcing connection rules of remote access applications on a variety of information system components (e.g., servers, workstations, notebook computers, smartphones, and tablets)."
   </td>
   <td></td>
 </tr>
@@ -2352,7 +2363,7 @@ To make sure that the setting is persistent, add the following line to a file in
   <td xml:lang="en-US">
 Address space layout randomization (ASLR) makes it more difficult for an
 attacker to predict the location of attack code they have introduced into a
-process's address space during an attempt at exploitation.  Additionally,
+process's address space during an attempt at exploitation. Additionally,
 ASLR makes it more difficult for an attacker to know the location of
 existing code in order to re-purpose it using return oriented programming
 (ROP) techniques.

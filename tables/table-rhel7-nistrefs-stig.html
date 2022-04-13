@@ -669,7 +669,9 @@ malicious processes that attempt to delete log files to conceal their presence.
   <td xml:lang="en-US">
 To capture kernel module unloading events, use following line, setting ARCH to
 either b32 for 32-bit system, or having two lines for both b32 and b64 in case your system is 64-bit:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S delete_module -F key=modules</pre>
+
 
 Place to add the line depends on a way <tt>auditd</tt> daemon is configured. If it is configured
 to use the <tt>augenrules</tt> program (the default), add the line to a file with suffix
@@ -694,11 +696,13 @@ If the <tt>auditd</tt> daemon is configured to use the <tt>augenrules</tt> progr
 to read audit rules during daemon startup (the default), add the following lines to a file
 with suffix <tt>.rules</tt> in the directory <tt>/etc/audit/rules.d</tt> to capture kernel module
 loading and unloading events, setting ARCH to either b32 or b64 as appropriate for your system:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
-If the <tt>auditd</tt> daemon is configured to use the <tt>auditctl</tt> utility to read audit
+    If the <tt>auditd</tt> daemon is configured to use the <tt>auditctl</tt> utility to read audit
 rules during daemon startup, add the following lines to <tt>/etc/audit/audit.rules</tt> file
 in order to capture kernel module loading and unloading events, setting ARCH to either b32 or
 b64 as appropriate for your system:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S finit_module -F key=modules</pre>
   </td>
   <td xml:lang="en-US">
@@ -715,7 +719,9 @@ to have an audit trail of modules that have been introduced into the kernel.
   <td xml:lang="en-US">
 To capture kernel module loading events, use following line, setting ARCH to
 either b32 for 32-bit system, or having two lines for both b32 and b64 in case your system is 64-bit:
+
 <pre>-a always,exit -F arch=<i>ARCH</i> -S init_module -F key=modules</pre>
+
 
 Place to add the line depends on a way <tt>auditd</tt> daemon is configured. If it is configured
 to use the <tt>augenrules</tt> program (the default), add the line to a file with suffix
@@ -2415,9 +2421,9 @@ Preventing re-use of previous passwords helps ensure that a compromised password
   <td>CCE-80522-6</td>
   <td>Set Existing Passwords Maximum Age</td>
   <td xml:lang="en-US">
-Configure non-compliant accounts to enforce a 60-day maximum password lifetime
+Configure non-compliant accounts to enforce a <tt>60</tt>-day maximum password lifetime
 restriction by running the following command:
-<pre>$ sudo chage -M 60 <i>USER</i></pre>
+<pre>$ sudo chage -M <tt>60</tt> <i>USER</i></pre>
   </td>
   <td xml:lang="en-US">
 Any password, no matter how complex, can eventually be cracked. Therefore,
@@ -2426,7 +2432,7 @@ not limit the lifetime of passwords and force users to change their
 passwords, there is the risk that the operating system passwords could be
 compromised.
   </td>
-  <td></td>
+  <td>var_accounts_maximum_age_login_defs=60</td>
 </tr>
 <tr>
   <td>IA-5(f)<br/>IA-5(1)(d)<br/>CM-6(a)</td>
@@ -2858,7 +2864,7 @@ By limiting the number of failed logon attempts the risk of unauthorized system
 access via user password guessing, otherwise known as brute-forcing, is reduced.
 Limits are imposed by locking the account.
   </td>
-  <td>var_accounts_passwords_pam_faillock_deny=3<br/>var_accounts_passwords_pam_faillock_fail_interval=900<br/>var_accounts_passwords_pam_faillock_unlock_time=never</td>
+  <td>var_accounts_passwords_pam_faillock_deny=3<br/>var_accounts_passwords_pam_faillock_unlock_time=never<br/>var_accounts_passwords_pam_faillock_fail_interval=900</td>
 </tr>
 <tr>
   <td>CM-6(a)<br/>AC-7(b)</td>
@@ -5602,7 +5608,7 @@ To make sure that the setting is persistent, add the following line to a file in
   <td xml:lang="en-US">
 Address space layout randomization (ASLR) makes it more difficult for an
 attacker to predict the location of attack code they have introduced into a
-process's address space during an attempt at exploitation.  Additionally,
+process's address space during an attempt at exploitation. Additionally,
 ASLR makes it more difficult for an attacker to know the location of
 existing code in order to re-purpose it using return oriented programming
 (ROP) techniques.

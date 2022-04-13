@@ -32,7 +32,6 @@ file_permissions_var_log_audit
 harden_ssh_client_crypto_policy
 harden_sshd_crypto_policy
 install_smartcard_packages
-kerberos_disable_no_keytab
 ldap_client_start_tls
 network_disable_zeroconf
 network_ipv6_disable_rpc
@@ -52,7 +51,6 @@ snmpd_no_rwusers
 sssd_enable_pam_services
 sssd_run_as_sssd_user
 sysconfig_networking_bootproto_ifcfg
-sysctl_kernel_exec_shield
 umask_for_daemons
 usbguard_allow_hid
 usbguard_allow_hid_and_hub
