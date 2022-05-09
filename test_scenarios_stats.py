@@ -21,6 +21,13 @@ def files(path):
             # print(os.path.join(path, file))
             yield file
 
+def are_tests_templated(template):
+    for file in os.listdir("shared/templates/"+template+"/tests"):
+        if os.path.isfile(os.path.join("shared/templates/"+template+"/tests", file)) and ("pass.sh" in file or "fail.sh" in file or "notapplicable.sh" in file or "error.sh" in file):
+            # print(os.path.join(path, file))
+            return True
+    return False
+
 def main():
     ssg_root = "."
     ssg_build_config_yaml = "build/build_config.yml"
@@ -50,28 +57,25 @@ def main():
                         # Happens on non-debug build when a rule is "documentation-incomplete"
                         continue
                     if rule.template:
-                        # print(rule.template["name"])
-
-
-                        
                         rule_tests = os.path.join(rule_dir, "tests")
                         try:
                             tests = files(rule_tests)
-                            # i+=len(list(tests))
                             current_count = template_test_count.get(rule.template["name"])
                             if current_count:
                                 template_test_count[rule.template["name"]] = current_count + len(list(tests))
                             else:
                                 template_test_count[rule.template["name"]] = len(list(tests))
-                            # for test in tests:
-                            #     i+=1
-                            #     print(os.path.join(rule_tests, test))
                         except FileNotFoundError:
                             continue
 
         tests_count_all = 0
+        print("||", "Template Name||",  "Tests Count||", "Templated Tests||")
         for template, tests_count in template_test_count.items():
-            print(tests_count, '\t', template)
+            try:
+                templated_tests = are_tests_templated(template)
+            except FileNotFoundError:
+                templated_tests = False
+            print("|", template, "|", tests_count,"|", templated_tests, "|")
             tests_count_all+=tests_count
 
         print("Number of tests in rules that are templated:", tests_count_all, "in", product)
