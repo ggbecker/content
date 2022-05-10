@@ -75,7 +75,7 @@ def main():
                 templated_tests = are_tests_templated(template)
             except FileNotFoundError:
                 templated_tests = False
-            print("|", template, "|", tests_count,"|", templated_tests, "|")
+            print("|", template, "|", tests_count,"|", "Yes" if templated_tests else "No", "|")
             tests_count_all+=tests_count
 
         print("Number of tests in rules that are templated:", tests_count_all, "in", product)
