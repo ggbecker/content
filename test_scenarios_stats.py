@@ -69,16 +69,17 @@ def main():
                             continue
 
         tests_count_all = 0
-        print("||", "Template Name||",  "Tests Count||", "Templated Tests||")
+        # print("||", "Template Name||",  "Tests Count||", "Templated Tests||")
         for template, tests_count in template_test_count.items():
             try:
                 templated_tests = are_tests_templated(template)
             except FileNotFoundError:
                 templated_tests = False
-            print("|", template, "|", tests_count,"|", "Yes" if templated_tests else "No", "|")
+            # print("|", template, "|", tests_count, "|", "Yes" if templated_tests else "No", "|")
+            print(template, "\t", "Yes" if templated_tests else "No", " \t", tests_count)
             tests_count_all+=tests_count
 
-        print("Number of tests in rules that are templated:", tests_count_all, "in", product)
+        # print("Number of tests in rules that are templated:", tests_count_all, "in", product)
 
 
 if __name__ == "__main__":
