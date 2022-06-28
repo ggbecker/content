@@ -2,6 +2,9 @@ name: Compare DS
 on:
   pull_request_target:
     branches: [ master, 'stabilization*' ]
+env:
+  BUILD_DIR_OLD: build_old
+  BUILD_DIR_NEW: build_new
 jobs:
   build-content:
     name: Generate Diff
@@ -53,10 +56,7 @@ jobs:
           prop_path: 'product'
       - name: Build product ${{ github.base_ref }} (${{ steps.fork_point.outputs.FORK_POINT }})
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        run: ./build_product ${{steps.product.outputs.prop}} --datastream-only
-      - name: Copy built datastream stream to be compared
-        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        run: cp build/ssg-${{steps.product.outputs.prop}}-ds.xml ssg-${{steps.product.outputs.prop}}-ds.xml
+        run: ./build_product --build-dir $BUILD_DIR_OLD ${{steps.product.outputs.prop}} --datastream-only
       - name: Checkout
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         uses: actions/checkout@v2
@@ -65,10 +65,14 @@ jobs:
           clean: false
       - name: Build product
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        run: ./build_product ${{steps.product.outputs.prop}} --datastream-only
+        run: ./build_product --build-dir $BUILD_DIR_NEW ${{steps.product.outputs.prop}} --datastream-only
       - name: Compare datastreams
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
-        run: utils/compare_ds.py ssg-${{steps.product.outputs.prop}}-ds.xml build/ssg-${{steps.product.outputs.prop}}-ds.xml | tee diff.log
+        run: utils/compare_ds.py $BUILD_DIR_OLD/ssg-${{steps.product.outputs.prop}}-ds.xml $BUILD_DIR_NEW/ssg-${{steps.product.outputs.prop}}-ds.xml | tee diff.log
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        run: utils/compare_intermediate_ovals.py $BUILD_DIR_OLD $BUILD_DIR_NEW ${{steps.product.outputs.prop}} | tee --append diff.log
         env:
           PYTHONPATH: ${{ github.workspace }}
       - name: Test if there are datastream changes
