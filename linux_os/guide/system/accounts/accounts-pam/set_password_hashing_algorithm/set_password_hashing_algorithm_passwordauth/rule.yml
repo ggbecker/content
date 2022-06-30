@@ -71,3 +71,14 @@ ocil: |-
     <pre>$ grep sha512 /etc/pam.d/password-auth</pre>
 
 platform: pam
+
+template:
+    name: pam_options
+    vars:
+      path: /etc/pam.d/password-auth
+      type: password
+      control_flag: sufficient
+      module: pam_unix.so
+      arguments:
+        - argument: sha512
+          new_argument: sha512

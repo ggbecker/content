@@ -10,9 +10,9 @@
     <criteria operator="AND" comment="Make sure arguments are properly configured">
 {{% for arg in ARGUMENTS %}}
 {{% if arg['variable']|length %}}
-      <criterion test_ref="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}" comment="Verify {{{ arg['variable'] }}} is set to the desired state" />
+      <criterion test_ref="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}_{{{ _RULE_ID }}}" comment="Verify {{{ arg['variable'] }}} is set to the desired state" />
 {{% else %}}
-      <criterion test_ref="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}" comment="Verify {{{ arg['argument'] }}} is set to the desired state" />
+      <criterion test_ref="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}_{{{ _RULE_ID }}}" comment="Verify {{{ arg['argument'] }}} is set to the desired state" />
 {{% endif %}}
 {{% endfor %}}
     </criteria>
@@ -20,32 +20,32 @@
 
 {{% for arg in ARGUMENTS %}}
 {{% if arg['variable']|length %}}
-  <ind:textfilecontent54_test id="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}"
+  <ind:textfilecontent54_test id="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}_{{{ _RULE_ID }}}"
   check="all"
   comment="Verify {{{ arg['variable'] }}} configuation of {{{ MODULE }}}" version="1">
-    <ind:object object_ref="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}" />
-    <ind:state state_ref="state_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}" />
+    <ind:object object_ref="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}_{{{ _RULE_ID }}}" />
+    <ind:state state_ref="state_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}_{{{ _RULE_ID }}}" />
   </ind:textfilecontent54_test>
 
-  <ind:textfilecontent54_object id="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}" comment="Check {{{ arg['variable'] }}} configuration of PAM {{{ MODULE }}} module" version="1">
+  <ind:textfilecontent54_object id="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}_{{{ _RULE_ID }}}" comment="Check {{{ arg['variable'] }}} configuration of PAM {{{ MODULE }}} module" version="1">
     <ind:filepath>{{{ PATH }}}</ind:filepath>
     <ind:pattern operation="pattern match">^\s*{{{ TYPE }}}\s+{{{ MATCH_CONTROL_FLAG }}}\s+{{{ MODULE }}}.*\s{{{ arg['variable'] }}}=(-?\d+)(?:\s+.*)?</ind:pattern>
     <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
   </ind:textfilecontent54_object>
 
-  <ind:textfilecontent54_state id="state_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}" version="3">
+  <ind:textfilecontent54_state id="state_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['variable']|lower }}}_{{{ _RULE_ID }}}" version="3">
     <ind:subexpression datatype="int" operation="{{{ arg['operation'] }}}" var_ref="var_password_pam_{{{ arg['variable'] }}}" />
   </ind:textfilecontent54_state>
 
   <external_variable comment="PAM external variable var_password_pam_{{{ arg['variable'] }}}" datatype="int" id="var_password_pam_{{{ arg['variable'] }}}" version="1" />
 {{% else %}}
-  <ind:textfilecontent54_test id="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}"
+  <ind:textfilecontent54_test id="test_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}_{{{ _RULE_ID }}}"
   check="all" check_existence={{% if arg['remove_argument']|length %}}"none_exist"{{% else %}}"all_exist"{{% endif %}}
   comment="Verify {{{ arg['argument'] }}} configuation of {{{ MODULE }}}" version="1">
-    <ind:object object_ref="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}" />
+    <ind:object object_ref="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}_{{{ _RULE_ID }}}" />
   </ind:textfilecontent54_test>
 
-  <ind:textfilecontent54_object id="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}" comment="Check {{{ arg['argument'] }}} configuration of PAM {{{ MODULE }}} module" version="1">
+  <ind:textfilecontent54_object id="object_pam_{{{ TYPE|lower }}}_{{{ MODULE|lower|replace('.so', '') }}}_{{{ arg['argument']|lower }}}_{{{ _RULE_ID }}}" comment="Check {{{ arg['argument'] }}} configuration of PAM {{{ MODULE }}} module" version="1">
     <ind:filepath>{{{ PATH }}}</ind:filepath>
 {{% if arg['argument_match']|length %}}
     <ind:pattern operation="pattern match">^\s*{{{ TYPE }}}(?:(?!\n)\s)+{{{ MATCH_CONTROL_FLAG }}}(?:(?!\n)\s)+{{{ MODULE }}}((?!\n)\s[^\n]+)?(?!\n)\s+{{{ arg['argument'] }}}={{{ arg['argument_match'] }}}((\s+\S+)*\s*\\*\s*)$</ind:pattern>

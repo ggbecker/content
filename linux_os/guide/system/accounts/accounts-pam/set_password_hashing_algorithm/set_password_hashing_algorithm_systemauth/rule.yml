@@ -6,8 +6,10 @@ title: "Set PAM's Password Hashing Algorithm"
 
 {{% if product in ["sle12", "sle15"] %}}
 {{% set pam_passwd_file_path = "/etc/pam.d/common-password" %}}
+{{% set control_flag_value = "required" %}}
 {{% else %}}
 {{% set pam_passwd_file_path = "/etc/pam.d/password-auth" %}}
+{{% set control_flag_value = "sufficient" %}}
 {{% endif %}}
 
 description: |-
@@ -18,11 +20,7 @@ description: |-
     <tt>password</tt> section to include the argument <tt>sha512</tt>, as shown
     below:
     <br />
-    {{% if product in ["sle12", "sle15"] %}}
-    <pre>password    required    pam_unix.so sha512 <i>other arguments...</i></pre>
-    {{% else %}}
-    <pre>password    sufficient    pam_unix.so sha512 <i>other arguments...</i></pre>
-    {{% endif %}}
+    <pre>password    {{{ control_flag_value }}}    pam_unix.so sha512 <i>other arguments...</i></pre>
     <br />
     This will help ensure when local users change their passwords, hashes for
     the new passwords will be generated using the SHA-512 algorithm. This is
@@ -84,27 +82,21 @@ ocil: |-
     <tt>sha512</tt>:
 
     <pre>$ sudo grep "^password.*pam_unix.so.*sha512" {{{ pam_passwd_file_path }}}
-    {{% if product in ["sle12", "sle15"] -%}}
-    password required pam_unix.so sha512
-    {{% else %}}
-    password sufficient pam_unix.so sha512
-    {{%- endif -%}}
+    password {{{ control_flag_value }}} pam_unix.so sha512
     </pre>
 
 platform: pam
 
-{{% if product in ["sle12", "sle15"] %}}
 template:
     name: pam_options
     vars:
-      path: /etc/pam.d/common-password
+      path: {{{ pam_passwd_file_path }}}
       type: password
-      control_flag: required
+      control_flag: {{{ control_flag_value }}}
       module: pam_unix.so
       arguments:
         - argument: sha512
           new_argument: sha512
-{{% endif %}}
 
 fixtext: |-
     {{% if product in ['rhel9'] -%}}
@@ -114,11 +106,7 @@ fixtext: |-
     {{%- endif %}}
 
     Edit/modify the following line in the "{{{ pam_passwd_file_path }}}" file to include the sha512 option for pam_unix.so:
-    {{% if product in ['sle12', 'sle15'] -%}}
-    password required pam_unix.so sha512
-    {{% else %}}
-    password sufficient pam_unix.so sha512
-    {{%- endif %}}
+    password {{{ control_flag_value }}} pam_unix.so sha512
 
 {{% if product in ['rhel9'] -%}}
 srg_requirement: 'The {{{ full_name }}} pam_unix.so module must be configured in the system-auth file to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.'
