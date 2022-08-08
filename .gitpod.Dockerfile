@@ -1,4 +1,5 @@
 FROM gitpod/workspace-full
+ENV TEST=1
 ENV PYTHONUSERBASE=/workspace/.pip-modules
 ENV PATH=$PYTHONUSERBASE/bin:$PATH
 ENV PIP_USER=yes
