@@ -29,6 +29,10 @@ references:
     stigid@ol8: OL08-00-010572
     stigid@rhel8: RHEL-08-010572
 
+# uefi platform does not wrap remediations with
+# proper platform check as it relies on verifying
+# if a certain file (/sys/firmware/efi) exists.
+# Thus the need for custom Bash and Ansible remediation.
 platform: machine and uefi
 
 template:
@@ -37,6 +41,9 @@ template:
         mountpoint: /boot/efi
         mountoption: nosuid
         mount_has_to_exist: "no"
+    backends:
+        ansible: "off"
+        bash: "off"
 
 fixtext: |-
     {{{ fixtext_mount_option("/boot/efi", "nosuid") }}}
