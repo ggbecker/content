@@ -43,6 +43,26 @@ jobs:
       - name: Print changes to content detected if any
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         run: cat output.json
+      - name: Get rule ids to be tested
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        id: rules
+        uses: notiz-dev/github-action-json-property@v0.2.0
+        with:
+          path: 'output.json'
+          prop_path: 'rules'
+      - name: Print rules 0.2.0
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        run: echo ${{steps.rules.outputs.prop}}
+      - name: Get rule ids to be tested
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        id: rules
+        uses: notiz-dev/github-action-json-property@v0.1.0
+        with:
+          path: 'output.json'
+          prop_path: 'rules'
+      - name: Print rules 0.1.0
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        run: echo ${{steps.rules.outputs.prop}}
       - name: Get product attribute
         if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
         id: product
