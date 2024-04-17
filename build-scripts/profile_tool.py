@@ -11,6 +11,7 @@ try:
         command_sub,
         command_most_used_rules,
         command_most_used_components,
+        command_used_rules_per_component,
     )
 except ImportError:
     print("The ssg module could not be found.")
@@ -315,6 +316,32 @@ def parse_most_used_components(subparsers):
         default=get_available_products_with_components_root(),
     )
 
+def parse_used_rules_per_component(subparsers):
+    parser_most_used_component = subparsers.add_parser(
+        "used-rules-per-component",
+        description=(
+            "Generates list of all components used by the rules in existing profiles."
+            " In various formats."
+        ),
+        help="Generates list of all components used by the rules in existing profiles.",
+    )
+    parser_most_used_component.add_argument(
+        "--format",
+        default="plain",
+        choices=["plain", "json", "csv"],
+        help="Which format to use for output.",
+    )
+    parser_most_used_component.add_argument(
+        "--products",
+        help=(
+            "List of products to be considered. "
+            "If not specified will by used all products with components_root."
+        ),
+        nargs="+",
+        choices=get_available_products_with_components_root(),
+        default=get_available_products_with_components_root(),
+    )
+
 
 def get_available_products_with_components_root():
     out = set()
@@ -334,6 +361,7 @@ def parse_args():
     parse_sub_subcommand(subparsers)
     parse_most_used_rules_subcommand(subparsers)
     parse_most_used_components(subparsers)
+    parse_used_rules_per_component(subparsers)
 
     args = parser.parse_args()
 
@@ -371,6 +399,7 @@ SUBCMDS = {
     "sub": command_sub,
     "most-used-rules": command_most_used_rules,
     "most-used-components": command_most_used_components,
+    "used-rules-per-component": command_used_rules_per_component,
 }
 
 
