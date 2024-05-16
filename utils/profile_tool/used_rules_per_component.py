@@ -81,19 +81,32 @@ def command_used_rules_per_component(args):
 
             # Create a new worksheet
             ws = wb.create_sheet(title=entry_name)
+            permanent_row = 0
+            ws.cell(row=1, column=1, value="Package")
+            ws.cell(row=1, column=2, value="Status")
+            ws.cell(row=1, column=3, value="Comments")
+            ws.column_dimensions['A'].width = 50
+            ws.column_dimensions['B'].width = 20
+            ws.column_dimensions['C'].width = 100
+            from openpyxl.worksheet.datavalidation import DataValidation
+            # Set up DataValidation for a specific cell
+            dv = DataValidation(type="list", formula1='"Keep,Change,Remove,Add"', allow_blank=True)
+            ws.add_data_validation(dv)
             
             # Write items to the worksheet
             for i, item in enumerate(items, start=0):
                             # Write the item
-                ws.cell(row=i+1, column=1, value=item)
+                ws.cell(row=i+2, column=1, value=item)
                 
                 # Create hyperlink
                 url = f"https://complianceascode.github.io/content-pages/components/{list(args.products)[0]}/{entry_name}.html#{item}"
-                cell = ws.cell(row=i+1, column=1)
+                cell = ws.cell(row=i+2, column=1)
                 cell.hyperlink = url
                 cell.value = f'=HYPERLINK("{url}", "{item}")'
                 cell.hyperlink.target_mode = "External"
                 cell.font = font  # Set font style for hyperlink
+
+                dv.add(ws.cell(row=i+2, column=2))
         
         # Save the workbook
         wb.save("entries_spreadsheet.xlsx")
