@@ -169,7 +169,21 @@ class RuleChecker(oscap.Checker):
                 if not self._remediation_went_ok(runner, rule_id):
                     return False
 
-                return self._final_scan_went_ok(runner, rule_id)
+                final_result_ok = self._final_scan_went_ok(runner, rule_id)
+
+                if final_result_ok:
+                    LogHelper.preload_log(
+                        logging.INFO,
+                        "Remediation of {0} using profile {1} OK".format(rule_id, profile),
+                        log_target='pass')
+                else:
+                    LogHelper.preload_log(
+                        logging.INFO,
+                        "Remediation of {0} using profile {1} Failed".format(rule_id, profile),
+                        log_target='fail')
+
+                return final_result_ok
+
             else:
                 msg = ("No remediation is available for rule '{}'."
                        .format(rule_id))
