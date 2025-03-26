@@ -1,8 +1,8 @@
-FROM gitpod/workspace-full
+# FROM gitpod/workspace-full
 ENV PYTHONUSERBASE=/workspace/.pip-modules
 ENV PATH=$PYTHONUSERBASE/bin:$PATH
 ENV PIP_USER=yes
-USER gitpod
+# USER gitpod
 RUN sudo apt-get update -q && \
         sudo apt-get install -yq \
         cmake \
