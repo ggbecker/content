@@ -33,7 +33,7 @@ cd openscap-1.3.6 && \
     sudo make install && \
     cd ../..
 
-pip install docker ansible json2html docutils==0.17.1 \
+pip install ansible json2html docutils==0.17.1 \
 myst-parser \
 sphinx \
 sphinx-rtd-theme \
