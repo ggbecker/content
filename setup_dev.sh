@@ -33,7 +33,7 @@ cd openscap-1.3.6 && \
     sudo make install && \
     cd ../..
 
-pip install ansible json2html docutils==0.17.1 \
+pip install docker ansible json2html docutils==0.17.1 \
 myst-parser \
 sphinx \
 sphinx-rtd-theme \
@@ -50,6 +50,8 @@ PRIVATE_KEY_FILEPATH=$PRIVATE_KEY_FOLDER/id_rsa
 sed -i "s,&&PRIVATE_KEY_FILEPATH&&,$PRIVATE_KEY_FILEPATH,g" .vscode/launch.json
 mkdir -p $PRIVATE_KEY_FOLDER
 ssh-keygen -N '' -f $PRIVATE_KEY_FILEPATH
+# set correct SSH permissions
+chmod 600 $PRIVATE_KEY_FILEPATH
 docker build --build-arg "CLIENT_PUBLIC_KEY=$(cat $PRIVATE_KEY_FILEPATH.pub)" -t $CONTAINER_NAME --build-arg IMAGE=$CONTAINER_VERSION -f Dockerfiles/test_suite-$CONTAINER .
 [ -n "$WORKSHOP" ] && ansible-playbook -i 127.0.0.1, docs/workshop/labs_setup.yml -e EXERCISE=$WORKSHOP -e LAB_DIR=$GITPOD_REPO_ROOT --connection=local -u gitpod --ssh-extra-args '-F docs/workshop/data/ssh_config'
 [ -z "$WORKSHOP" ] && ./build_product $PRODUCT --datastream-only
