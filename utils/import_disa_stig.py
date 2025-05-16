@@ -66,6 +66,9 @@ def _get_rule(env_yaml, rule_obj):
     rule.load_policy_specific_content(rule_path, env_yaml)
     return rule
 
+def _is_variable(selection):
+    return "=" in selection
+
 
 def main() -> int:
     args = _parse_args()
@@ -78,7 +81,24 @@ def main() -> int:
 
     for stig_id, stig_rule in srgs.items():
         control = controls[stig_id]
-        if control is None or control.rules is None or len(control.rules) != 1:
+
+        for selection in control.rules:
+            if _is_variable(selection):
+                control.rules.remove(selection)
+
+        control_has_audit_rules = False
+        for selection in control.rules:
+            if "audit_rules_" in selection:
+                control_has_audit_rules = True
+
+        if control_has_audit_rules:
+            continue
+
+        if control is None or (control.rules is not None and len(control.rules) == 0):
+            # print(f"No rules selected for {stig_id}")
+            continue
+
+        if len(control.rules) != 1:
             print(f"Warning: Unable to update {stig_id} since it doesn't have exactly one "
                   f"rule.", file=sys.stderr)
             continue
