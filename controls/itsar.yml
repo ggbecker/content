@@ -1,0 +1,1140 @@
+---
+policy: 'Indian Telecom Security Assurance Requirements (ITSAR)'
+title: 'Indian Telecom Security Assurance Requirements (ITSAR) - Common Security Requirements'
+id: itsar
+version: '1.0.0'
+source: https://nccs.gov.in/public/itsar/ITSAR404042308.pdf
+
+levels:
+    - id: base
+
+reference_type: itsar
+product: rhel9
+
+controls:
+    # Section 1: Access and Authorization
+    - id: 2.1.1
+      title: Management Protocols Mutual Authentication
+      levels:
+          - base
+      notes: |-
+          The system management shall support mutual authentication mechanisms using secure cryptographic controls.
+      status: automated
+      rules:
+          - configure_ssh_crypto_policy
+          - harden_sshd_crypto_policy
+          - configure_crypto_policy
+
+    - id: 2.1.2
+      title: Management Traffic Protection
+      levels:
+          - base
+      notes: |-
+          The management traffic shall be protected using secure cryptographic controls.
+      status: automated
+      rules:
+          - sshd_disable_empty_passwords
+          - sshd_set_idle_timeout
+          - sshd_use_strong_ciphers
+          - configure_ssh_crypto_policy
+
+    - id: 2.1.3
+      title: Role-based access control policy
+      levels:
+          - base
+      notes: |-
+          The system shall support RBAC with minimum of 3 user roles for OAM privilege management.
+      status: automated
+      rules:
+          - sudo_remove_nopasswd
+          - sudo_remove_no_authenticate
+          - sudoers_default_includedir
+
+    - id: 2.1.4
+      title: User Authentication – Local/Remote
+      levels:
+          - base
+      notes: |-
+          Minimum two authentication attributes shall be combined for protecting accounts from misuse.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for multi-factor authentication enforcement
+
+    - id: 2.1.5
+      title: Remote login restrictions for privileged users
+      levels:
+          - base
+      notes: |-
+          Root user login shall be limited to system console only, not remotely.
+      status: automated
+      rules:
+          - sshd_disable_root_login
+          - no_direct_root_logins
+          - securetty_root_login_console_only
+
+    - id: 2.1.6
+      title: Authorization Policy
+      levels:
+          - base
+      notes: |-
+          Authorizations shall be reduced to minimum required. Applications shall not execute with admin rights.
+      status: automated
+      rules:
+          - sudo_require_authentication
+          - sudo_remove_nopasswd
+          - file_permissions_unauthorized_world_writable
+          - dir_perms_world_writable_system_owned
+
+    - id: 2.1.7
+      title: Unambiguous identification of the user & group accounts removal
+      levels:
+          - base
+      notes: |-
+          Users shall be identified unambiguously. System shall not enable group accounts or sharing.
+      status: automated
+      rules:
+          - accounts_have_homedir_login_defs
+          - no_shelllogin_for_systemaccounts
+          - no_empty_passwords
+          - account_unique_id
+
+    - id: 2.1.8
+      title: Out of band Management
+      levels:
+          - base
+      notes: |-
+          Management interfaces shall be secured through out-of-band network with MFA for remote access.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for out-of-band management network configuration
+
+    # Section 2: Authentication Attribute Management
+    - id: 2.2.1
+      title: Authentication Policy
+      levels:
+          - base
+      notes: |-
+          System function usage requires successful authentication with at least two attributes.
+      status: automated
+      rules:
+          - sshd_enable_pubkey_auth
+          - no_empty_passwords
+
+    - id: 2.2.2
+      title: Authentication Support – External
+      levels:
+          - base
+      notes: |-
+          External authentication communication shall be protected using secure cryptographic controls.
+      status: automated
+      rules:
+          - sssd_enable_certmap
+          - sssd_memcache_timeout
+          - enable_authselect
+
+    - id: 2.2.3
+      title: Protection against brute force and dictionary attacks
+      levels:
+          - base
+      notes: |-
+          Protection against brute force and dictionary attacks shall be implemented.
+      status: automated
+      rules:
+          - accounts_passwords_pam_faillock_deny
+          - accounts_passwords_pam_faillock_unlock_time
+          - accounts_passwords_pam_faillock_interval
+          - accounts_password_pam_pwhistory_remember_password_auth
+          - accounts_password_pam_pwhistory_remember_system_auth
+
+    - id: 2.2.4
+      title: Enforce Strong Password
+      levels:
+          - base
+      notes: |-
+          Passwords shall comply with complexity criteria: minimum 8 chars with uppercase, lowercase, digit, and special char.
+      status: automated
+      rules:
+          - accounts_password_pam_minlen
+          - accounts_password_pam_ucredit
+          - accounts_password_pam_lcredit
+          - accounts_password_pam_dcredit
+          - accounts_password_pam_ocredit
+          - set_password_hashing_algorithm_systemauth
+          - set_password_hashing_algorithm_logindefs
+          - accounts_password_all_shadowed_sha512
+
+    - id: 2.2.5
+      title: Inactive Session timeout
+      levels:
+          - base
+      notes: |-
+          Session shall be terminated after inactivity period. Reauthentication after 15 minutes.
+      status: automated
+      rules:
+          - sshd_set_idle_timeout
+          - sshd_set_keepalive
+          - accounts_tmout
+          - var_accounts_tmout=15_min
+
+    - id: 2.2.6
+      title: Password Changes
+      levels:
+          - base
+      notes: |-
+          System shall enforce password expiry and history. Password age minimum 1 day.
+      status: automated
+      rules:
+          - accounts_password_pam_pwhistory_remember_password_auth
+          - accounts_password_pam_pwhistory_remember_system_auth
+          - accounts_maximum_age_login_defs
+          - accounts_minimum_age_login_defs
+          - accounts_password_minlen_login_defs
+          - accounts_password_warn_age_login_defs
+
+    - id: 2.2.7
+      title: Protected Authentication feedback
+      levels:
+          - base
+      notes: |-
+          Authentication attributes shall not be displayed (masked with asterisks).
+      status: automated
+      rules:
+          - no_empty_passwords
+
+    - id: 2.2.8
+      title: Removal of predefined or default authentication attributes
+      levels:
+          - base
+      notes: |-
+          Default authentication attributes shall be deleted, disabled, or changed on first login.
+      status: automated
+      rules:
+          - accounts_password_all_shadowed
+          - no_empty_passwords
+          - accounts_have_homedir_login_defs
+
+    - id: 2.2.9
+      title: Logout function
+      levels:
+          - base
+      notes: |-
+          System shall have logout function. All processes under user ID shall terminate on logout.
+      status: automated
+      rules:
+          - accounts_tmout
+          - sshd_set_idle_timeout
+
+    - id: 2.2.10
+      title: Policy regarding consecutive failed login attempts
+      levels:
+          - base
+      notes: |-
+          Maximum failed attempts configurable (default ≤8). Block delay after exceeding limit.
+      status: automated
+      rules:
+          - accounts_passwords_pam_faillock_deny
+          - accounts_passwords_pam_faillock_unlock_time
+          - accounts_passwords_pam_faillock_interval
+          - accounts_passwords_pam_faillock_audit
+
+    - id: 2.2.11
+      title: Suspend accounts on non-use
+      levels:
+          - base
+      notes: |-
+          System shall automatically suspend accounts after X days without valid login.
+      status: automated
+      rules:
+          - account_disable_post_pw_expiration
+          - accounts_password_set_max_life_existing
+
+    # Section 3: Software Security
+    - id: 2.3.1
+      title: Secure Update
+      levels:
+          - base
+      notes: |-
+          Software updates shall validate integrity via cryptographic means (digital signature).
+      status: automated
+      rules:
+          - ensure_gpgcheck_globally_activated
+          - ensure_gpgcheck_never_disabled
+          - ensure_gpgcheck_local_packages
+          - ensure_redhat_gpgkey_installed
+
+    - id: 2.3.2
+      title: Secure Upgrade
+      levels:
+          - base
+      notes: |-
+          Software package integrity validated during installation/upgrade. Tampered software shall not execute.
+      status: automated
+      rules:
+          - ensure_gpgcheck_globally_activated
+          - ensure_gpgcheck_never_disabled
+          - package_aide_installed
+          - aide_build_database
+          - aide_periodic_cron_checking
+
+    - id: 2.3.3
+      title: Source code security assurance
+      levels:
+          - base
+      notes: |-
+          OEM shall follow secure coding practices. System free from CWE top 25, OWASP top 10.
+      status: manual
+      notes: |-
+          - TODO: This is a vendor/OEM responsibility requiring documentation and undertaking
+
+    - id: 2.3.4
+      title: Known Malware and backdoor Check
+      levels:
+          - base
+      notes: |-
+          System shall be free from all known malware and backdoors.
+      status: automated
+      rules:
+          - package_aide_installed
+          - aide_build_database
+          - aide_periodic_cron_checking
+
+    - id: 2.3.5
+      title: No unused software
+      levels:
+          - base
+      notes: |-
+          Software components not needed for operation shall not be present.
+      status: automated
+      rules:
+          - package_telnet_removed
+          - package_telnet-server_removed
+          - service_rlogin_disabled
+          - service_rsh_disabled
+          - package_tftp_removed
+          - package_tftp-server_removed
+
+    - id: 2.3.6
+      title: Unnecessary Services Removal
+      levels:
+          - base
+      notes: |-
+          Only protocol handlers and services needed for operation shall run. FTP, Telnet, rlogin, HTTP, SNMPv1/v2, SSHv1 disabled.
+      status: automated
+      rules:
+          - service_telnet_disabled
+          - package_telnet-server_removed
+          - package_telnet_removed
+          - service_rlogin_disabled
+          - service_rsh_disabled
+          - package_tftp-server_removed
+          - package_tftp_removed
+          - sshd_disable_rhosts
+          - disable_ctrlaltdel_reboot
+
+    - id: 2.3.7
+      title: Restricting System Boot Source
+      levels:
+          - base
+      notes: |-
+          System can boot only from intended memory devices.
+      status: automated
+      rules:
+          - grub2_uefi_password
+          - grub2_password
+          - grub2_uefi_admin_username
+          - grub2_admin_username
+          - file_permissions_grub2_cfg
+          - file_owner_grub2_cfg
+          - file_groupowner_grub2_cfg
+
+    - id: 2.3.8
+      title: Secure Time Synchronization
+      levels:
+          - base
+      notes: |-
+          Reliable time through NTP/PTP with secure communication channel. Audit logs for time changes.
+      status: automated
+      rules:
+          - chronyd_client_only
+          - chronyd_no_chronyc_network
+          - chronyd_or_ntpd_specify_remote_server
+          - service_chronyd_enabled
+          - chronyd_run_as_chrony_user
+
+    - id: 2.3.9
+      title: Restricted reachability of services
+      levels:
+          - base
+      notes: |-
+          Services reachable only on interfaces meant for purpose. Admin services restricted to management plane.
+      status: automated
+      rules:
+          - service_firewalld_enabled
+          - set_firewalld_default_zone
+          - firewalld_sshd_port_enabled
+
+    - id: 2.3.10
+      title: Self Testing
+      levels:
+          - base
+      notes: |-
+          Cryptographic module shall perform power-up and conditional self-tests.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for cryptographic module self-testing verification
+
+    # Section 4: System Secure Execution Environment
+    - id: 2.4.1
+      title: No unused functions
+      levels:
+          - base
+      notes: |-
+          Unused software and hardware functions shall be deactivated.
+      status: automated
+      rules:
+          - package_telnet_removed
+          - package_telnet-server_removed
+          - service_rlogin_disabled
+          - service_rsh_disabled
+          - package_tftp_removed
+          - package_tftp-server_removed
+          - wireless_disable_interfaces
+
+    - id: 2.4.2
+      title: No unsupported components
+      levels:
+          - base
+      notes: |-
+          System shall not contain end-of-life or end-of-support components.
+      status: manual
+      notes: |-
+          - TODO: This requires vendor undertaking and documentation
+
+    - id: 2.4.3
+      title: Avoidance of Unspecified mode of Access
+      levels:
+          - base
+      notes: |-
+          System shall not contain unspecified or undeclared wireless access mechanisms.
+      status: automated
+      rules:
+          - wireless_disable_interfaces
+          - kernel_module_bluetooth_disabled
+
+    # Section 5: User Audit
+    - id: 2.5.1
+      title: Audit trail storage and protection
+      levels:
+          - base
+      notes: |-
+          Security event log shall be access controlled (only privileged users).
+      status: automated
+      rules:
+          - file_permissions_var_log_audit
+          - file_ownership_var_log_audit
+          - file_group_ownership_var_log_audit
+          - directory_permissions_var_log_audit
+          - directory_ownership_var_log_audit
+          - directory_group_ownership_var_log_audit
+
+    - id: 2.5.2
+      title: Audit Event Generation
+      levels:
+          - base
+      notes: |-
+          System shall log all important security events with details: date/time, event type, subject identity, protocol, source/dest IPs, outcome.
+      status: automated
+      rules:
+          - service_auditd_enabled
+          - audit_rules_login_events
+          - audit_rules_time_adjtimex
+          - audit_rules_time_settimeofday
+          - audit_rules_time_stime
+          - audit_rules_time_clock_settime
+          - audit_rules_time_watch_localtime
+          - audit_rules_usergroup_modification
+          - audit_rules_networkconfig_modification
+          - audit_rules_mac_modification
+          - audit_rules_dac_modification_chmod
+          - audit_rules_dac_modification_chown
+          - audit_rules_kernel_module_loading
+          - audit_rules_privileged_commands
+          - audit_rules_unsuccessful_file_modification
+          - audit_rules_file_deletion_events
+          - audit_rules_session_events
+          - audit_rules_sudoers
+          - audit_rules_sysadmin_actions
+
+    - id: 2.5.3
+      title: Secure Log Export
+      levels:
+          - base
+      notes: |-
+          Log export shall use secure communication.
+      status: automated
+      rules:
+          - rsyslog_encrypt_offload_defaultnetstreamdriver
+          - rsyslog_encrypt_offload_actionsendstreamdrivermode
+          - rsyslog_encrypt_offload_actionsendstreamdriverauthmode
+          - rsyslog_remote_loghost
+
+    - id: 2.5.4
+      title: Logging access to personal data
+      levels:
+          - base
+      notes: |-
+          Access to personal data shall be logged.
+      status: automated
+      rules:
+          - audit_rules_dac_modification_chmod
+          - audit_rules_dac_modification_chown
+          - audit_rules_dac_modification_fchmod
+          - audit_rules_dac_modification_fchmodat
+          - audit_rules_dac_modification_fchown
+          - audit_rules_dac_modification_fchownat
+
+    - id: 2.5.5
+      title: Security audit log
+      levels:
+          - base
+      notes: |-
+          Security-relevant events shall be logged in audit log.
+      status: automated
+      rules:
+          - service_auditd_enabled
+          - audit_rules_login_events
+          - audit_rules_privileged_commands
+          - audit_rules_sysadmin_actions
+
+    - id: 2.5.6
+      title: Audit Logs
+      levels:
+          - base
+      notes: |-
+          Comprehensive audit logging shall be configured.
+      status: automated
+      rules:
+          - service_auditd_enabled
+          - auditd_data_retention_max_log_file
+          - auditd_data_retention_max_log_file_action
+          - auditd_data_retention_space_left_action
+          - auditd_data_retention_admin_space_left_action
+          - auditd_data_retention_action_mail_acct
+
+    - id: 2.5.7
+      title: Centralized log Auditing
+      levels:
+          - base
+      notes: |-
+          Centralized log auditing shall be configured.
+      status: automated
+      rules:
+          - rsyslog_remote_loghost
+          - package_rsyslog_installed
+          - service_rsyslog_enabled
+
+    # Section 6: Data Protection
+    - id: 2.6.1
+      title: Cryptographic Based Secure Communication
+      levels:
+          - base
+      notes: |-
+          Secure communication using cryptographic controls.
+      status: automated
+      rules:
+          - configure_crypto_policy
+          - configure_ssh_crypto_policy
+          - harden_sshd_crypto_policy
+
+    - id: 2.6.2
+      title: Cryptographic Module Security Assurance
+      levels:
+          - base
+      notes: |-
+          Cryptographic modules shall have security assurance.
+      status: automated
+      rules:
+          - configure_crypto_policy
+          - enable_fips_mode
+
+    - id: 2.6.3
+      title: Cryptographic Algorithms implementation Security Assurance
+      levels:
+          - base
+      notes: |-
+          Cryptographic algorithm implementations shall be secure.
+      status: automated
+      rules:
+          - configure_crypto_policy
+          - enable_fips_mode
+          - harden_sshd_ciphers_openssh_conf_crypto_policy
+          - harden_sshd_macs_openssh_conf_crypto_policy
+
+    - id: 2.6.4
+      title: Protecting data and information – Confidential System Internal Data
+      levels:
+          - base
+      notes: |-
+          Confidential system internal data shall be protected.
+      status: automated
+      rules:
+          - file_permissions_backup_etc_passwd
+          - file_permissions_backup_etc_shadow
+          - file_permissions_backup_etc_group
+          - file_permissions_backup_etc_gshadow
+          - file_permissions_etc_passwd
+          - file_permissions_etc_shadow
+          - file_permissions_etc_group
+          - file_permissions_etc_gshadow
+
+    - id: 2.6.5
+      title: Protecting data and information in storage
+      levels:
+          - base
+      notes: |-
+          Data in storage shall be protected.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for encryption of data at rest
+
+    - id: 2.6.6
+      title: Protection against Copy of Data
+      levels:
+          - base
+      notes: |-
+          Protection against unauthorized copying of data.
+      status: automated
+      rules:
+          - mount_option_nodev_removable_partitions
+          - mount_option_nosuid_removable_partitions
+          - mount_option_noexec_removable_partitions
+          - kernel_module_usb-storage_disabled
+
+    - id: 2.6.7
+      title: Protection against Data Exfiltration - Overt Channel
+      levels:
+          - base
+      notes: |-
+          Protection against data exfiltration through overt channels.
+      status: automated
+      rules:
+          - service_firewalld_enabled
+          - set_firewalld_default_zone
+
+    - id: 2.6.8
+      title: Protection against Data Exfiltration - Covert Channel
+      levels:
+          - base
+      notes: |-
+          Protection against data exfiltration through covert channels.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for covert channel protection mechanisms
+
+    # Section 7: Network Services
+    - id: 2.7.1
+      title: Traffic Filtering – Network Level
+      levels:
+          - base
+      notes: |-
+          Network level traffic filtering shall be implemented.
+      status: automated
+      rules:
+          - service_firewalld_enabled
+          - set_firewalld_default_zone
+          - firewalld_sshd_port_enabled
+
+    - id: 2.7.2
+      title: Traffic Separation
+      levels:
+          - base
+      notes: |-
+          Traffic separation between different network zones shall be enforced.
+      status: automated
+      rules:
+          - service_firewalld_enabled
+          - set_firewalld_default_zone
+
+    - id: 2.7.3
+      title: Traffic Protection –Anti-Spoofing
+      levels:
+          - base
+      notes: |-
+          Anti-spoofing mechanisms shall be implemented.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_conf_all_rp_filter
+          - sysctl_net_ipv4_conf_default_rp_filter
+          - sysctl_net_ipv4_conf_all_accept_source_route
+          - sysctl_net_ipv4_conf_default_accept_source_route
+          - sysctl_net_ipv6_conf_all_accept_source_route
+          - sysctl_net_ipv6_conf_default_accept_source_route
+
+    - id: 2.7.4
+      title: Network security
+      levels:
+          - base
+      notes: |-
+          General network security hardening shall be applied.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_conf_all_accept_redirects
+          - sysctl_net_ipv4_conf_default_accept_redirects
+          - sysctl_net_ipv6_conf_all_accept_redirects
+          - sysctl_net_ipv6_conf_default_accept_redirects
+          - sysctl_net_ipv4_conf_all_send_redirects
+          - sysctl_net_ipv4_conf_default_send_redirects
+          - sysctl_net_ipv4_conf_all_secure_redirects
+          - sysctl_net_ipv4_conf_default_secure_redirects
+          - sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+          - sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+          - sysctl_net_ipv4_tcp_syncookies
+
+    # Section 8: Attack Prevention Mechanisms
+    - id: 2.8.1
+      title: Network Level and application-level DDoS
+      levels:
+          - base
+      notes: |-
+          DDoS protection mechanisms shall be implemented.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_tcp_syncookies
+          - service_firewalld_enabled
+
+    - id: 2.8.2
+      title: Excessive Overload Protection
+      levels:
+          - base
+      notes: |-
+          Protection against excessive overload shall be implemented.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_tcp_syncookies
+
+    - id: 2.8.3
+      title: Manipulated packets protection
+      levels:
+          - base
+      notes: |-
+          Manipulated packets shall not lead to availability impairment.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+          - sysctl_net_ipv4_conf_all_log_martians
+          - sysctl_net_ipv4_conf_default_log_martians
+
+    # Section 9: Vulnerability Testing Requirements
+    - id: 2.9.1
+      title: Fuzzing – Network and Application Level
+      levels:
+          - base
+      notes: |-
+          System shall be tested against fuzzing attacks.
+      status: manual
+      notes: |-
+          - TODO: This is a testing requirement, not a configuration
+
+    - id: 2.9.2
+      title: Port Scanning
+      levels:
+          - base
+      notes: |-
+          System shall be tested with port scanning.
+      status: manual
+      notes: |-
+          - TODO: This is a testing requirement, not a configuration
+
+    - id: 2.9.3
+      title: Vulnerability Scanning
+      levels:
+          - base
+      notes: |-
+          Regular vulnerability scanning shall be performed.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for vulnerability scanning schedule/configuration
+
+    # Section 10: Operating System
+    - id: 2.10.1
+      title: Growing Content Handling
+      levels:
+          - base
+      notes: |-
+          System shall handle growing content appropriately.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for content growth handling mechanisms
+
+    - id: 2.10.2
+      title: Handling of ICMP
+      levels:
+          - base
+      notes: |-
+          ICMP handling shall be configured securely.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+          - sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+
+    - id: 2.10.3
+      title: Authenticated Privilege Escalation only
+      levels:
+          - base
+      notes: |-
+          Privilege escalation shall require authentication.
+      status: automated
+      rules:
+          - sudo_require_authentication
+          - sudo_remove_nopasswd
+          - sudo_remove_no_authenticate
+
+    - id: 2.10.4
+      title: System account identification
+      levels:
+          - base
+      notes: |-
+          System accounts shall be properly identified.
+      status: automated
+      rules:
+          - no_shelllogin_for_systemaccounts
+          - account_unique_id
+
+    - id: 2.10.5
+      title: OS Hardening - Minimized kernel network functions
+      levels:
+          - base
+      notes: |-
+          Kernel network functions shall be minimized.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_conf_all_send_redirects
+          - sysctl_net_ipv4_conf_default_send_redirects
+          - sysctl_net_ipv4_conf_all_accept_redirects
+          - sysctl_net_ipv4_conf_default_accept_redirects
+          - sysctl_net_ipv6_conf_all_accept_redirects
+          - sysctl_net_ipv6_conf_default_accept_redirects
+
+    - id: 2.10.6
+      title: No automatic launch of removable media
+      levels:
+          - base
+      notes: |-
+          Removable media shall not launch automatically.
+      status: automated
+      rules:
+          - mount_option_noexec_removable_partitions
+          - dconf_gnome_disable_automount
+          - dconf_gnome_disable_autorun
+
+    - id: 2.10.7
+      title: External file system mount restrictions
+      levels:
+          - base
+      notes: |-
+          External filesystem mounts shall be restricted.
+      status: automated
+      rules:
+          - mount_option_nodev_removable_partitions
+          - mount_option_nosuid_removable_partitions
+          - mount_option_noexec_removable_partitions
+          - kernel_module_usb-storage_disabled
+
+    - id: 2.10.8
+      title: File-system Authorization privileges
+      levels:
+          - base
+      notes: |-
+          Filesystem authorization privileges shall be properly configured.
+      status: automated
+      rules:
+          - file_permissions_unauthorized_world_writable
+          - dir_perms_world_writable_system_owned
+          - no_files_unowned_by_user
+          - file_permissions_ungroupowned
+
+    - id: 2.10.9
+      title: SYN Flood Prevention
+      levels:
+          - base
+      notes: |-
+          SYN flood attacks shall be prevented.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_tcp_syncookies
+
+    - id: 2.10.10
+      title: Handling of IP options and extensions
+      levels:
+          - base
+      notes: |-
+          IP options and extensions shall be handled securely.
+      status: automated
+      rules:
+          - sysctl_net_ipv4_conf_all_accept_source_route
+          - sysctl_net_ipv4_conf_default_accept_source_route
+          - sysctl_net_ipv6_conf_all_accept_source_route
+          - sysctl_net_ipv6_conf_default_accept_source_route
+
+    # Section 11: Web Servers
+    - id: 2.11.1
+      title: HTTPS
+      levels:
+          - base
+      notes: |-
+          Web servers shall use HTTPS.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for httpd/nginx HTTPS configuration
+
+    - id: 2.11.2
+      title: Webserver logging
+      levels:
+          - base
+      notes: |-
+          Web server logging shall be configured.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web server logging configuration
+
+    - id: 2.11.3
+      title: HTTPS input validation
+      levels:
+          - base
+      notes: |-
+          HTTPS input validation shall be implemented.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web server input validation
+
+    - id: 2.11.4
+      title: No system privileges
+      levels:
+          - base
+      notes: |-
+          Web server shall not run with system privileges.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web server user/group configuration
+
+    - id: 2.11.5
+      title: No unused HTTPS methods
+      levels:
+          - base
+      notes: |-
+          Unused HTTP methods shall be disabled.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for HTTP method restrictions
+
+    - id: 2.11.6
+      title: No unused add-ons
+      levels:
+          - base
+      notes: |-
+          Unused web server add-ons shall be removed.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web server module management
+
+    - id: 2.11.7
+      title: No compiler, interpreter, or shell via CGI or other server-side scripting
+      levels:
+          - base
+      notes: |-
+          CGI shall not provide access to compilers, interpreters, or shells.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for CGI restrictions
+
+    - id: 2.11.8
+      title: No CGI or other scripting for uploads
+      levels:
+          - base
+      notes: |-
+          CGI scripting for uploads shall be disabled.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for upload directory restrictions
+
+    - id: 2.11.9
+      title: No execution of system commands with SSI
+      levels:
+          - base
+      notes: |-
+          SSI execution of system commands shall be prevented.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for SSI exec directive restriction
+
+    - id: 2.11.10
+      title: Access rights for web server configuration
+      levels:
+          - base
+      notes: |-
+          Web server configuration access shall be restricted.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web server configuration file permissions
+
+    - id: 2.11.11
+      title: No default content
+      levels:
+          - base
+      notes: |-
+          Default web server content shall be removed.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for default content removal
+
+    - id: 2.11.12
+      title: No directory listings
+      levels:
+          - base
+      notes: |-
+          Directory listings shall be disabled.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for directory listing restrictions
+
+    - id: 2.11.13
+      title: Web server information in HTTPS headers
+      levels:
+          - base
+      notes: |-
+          Web server information disclosure in headers shall be minimized.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for HTTP header information disclosure
+
+    - id: 2.11.14
+      title: Web server information in error pages
+      levels:
+          - base
+      notes: |-
+          Web server information in error pages shall be minimized.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for error page information disclosure
+
+    - id: 2.11.15
+      title: Minimized file type mappings
+      levels:
+          - base
+      notes: |-
+          File type mappings shall be minimized.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for MIME type restrictions
+
+    - id: 2.11.16
+      title: Restricted file access
+      levels:
+          - base
+      notes: |-
+          Web server file access shall be restricted.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web server document root permissions
+
+    - id: 2.11.17
+      title: Execute rights exclusive for CGI/Scripting directory
+      levels:
+          - base
+      notes: |-
+          Execute rights only in CGI directories.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for CGI directory execution restrictions
+
+    - id: 2.11.18
+      title: HTTP User session
+      levels:
+          - base
+      notes: |-
+          HTTP user sessions shall be managed securely.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for web session management
+
+    # Section 12: Other Security requirements
+    - id: 2.12.1
+      title: Remote Diagnostic Procedure – Verification
+      levels:
+          - base
+      notes: |-
+          Remote diagnostic procedures shall be verified.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for remote diagnostic verification
+
+    - id: 2.12.2
+      title: No System Password Recovery
+      levels:
+          - base
+      notes: |-
+          System password recovery shall be disabled or secured.
+      status: automated
+      rules:
+          - grub2_password
+          - grub2_uefi_password
+          - grub2_disable_recovery
+
+    - id: 2.12.3
+      title: Secure System Software Revocation
+      levels:
+          - base
+      notes: |-
+          System software revocation mechanisms shall be implemented.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for software revocation list management
+
+    - id: 2.12.4
+      title: Software Integrity Check –Installation
+      levels:
+          - base
+      notes: |-
+          Software integrity shall be checked during installation.
+      status: automated
+      rules:
+          - ensure_gpgcheck_globally_activated
+          - ensure_gpgcheck_never_disabled
+          - ensure_gpgcheck_local_packages
+
+    - id: 2.12.5
+      title: Software Integrity Check – Boot
+      levels:
+          - base
+      notes: |-
+          Software integrity shall be checked during boot.
+      status: automated
+      rules:
+          - package_aide_installed
+          - aide_build_database
+          - grub2_enable_fips_mode
+
+    - id: 2.12.6
+      title: Unused Physical and Logical Interfaces Disabling
+      levels:
+          - base
+      notes: |-
+          Unused physical and logical interfaces shall be disabled.
+      status: automated
+      rules:
+          - wireless_disable_interfaces
+          - kernel_module_bluetooth_disabled
+          - service_telnet_disabled
+          - service_rlogin_disabled
+          - service_rsh_disabled
+
+    - id: 2.12.7
+      title: No Default Profile
+      levels:
+          - base
+      notes: |-
+          Default profiles shall be removed or customized.
+      status: manual
+      notes: |-
+          - TODO: needs a new rule for default profile removal/customization
+

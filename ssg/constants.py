@@ -35,6 +35,7 @@ SSG_REF_URIS = {
     'app-srg': 'https://www.cyber.mil/stigs/downloads/?_dl_facet_stigs=application-servers',
     'app-srg-ctr': 'https://www.cyber.mil/stigs/downloads/?_dl_facet_stigs=app-security',
     'stigref': 'https://www.cyber.mil/stigs/srg-stig-tools/',
+    'itsar': 'https://nccs.gov.in/public/itsar/ITSAR404042308.pdf',
 }
 
 product_directories = [
@@ -100,6 +101,7 @@ anssi_ns = "https://cyber.gouv.fr/sites/default/files/document/linux_configurati
 ospp_ns = "https://www.niap-ccevs.org/Profile/PP.cfm"
 pcidss4_ns = "https://docs-prv.pcisecuritystandards.org/PCI%20DSS/Standard/PCI-DSS-v4_0.pdf"
 cui_ns = 'http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-171.pdf'
+itsar_ns = "https://nccs.gov.in/public/itsar/ITSAR404042308.pdf"
 stig_refs = 'https://www.cyber.mil/stigs/'
 disa_cciuri = "https://www.cyber.mil/stigs/cci/"
 ssg_version_uri = \
@@ -275,6 +277,9 @@ REFERENCES = dict(
     cui=Reference(
         id="cui", name=REF_PREFIX_MAP["cui"], url=cui_ns,
         regex_with_groups=r"(\d+)(?:\.(\w+)(?:\.(\w+)(?:\.(\w+))?)?)?"),
+    itsar=Reference(
+        id="itsar", name="ITSAR", url=itsar_ns,
+        regex_with_groups=r"(\d+)\.(\d+)(?:\.(\d+))?"),
     nist=Reference(
         id="nist", name=REF_PREFIX_MAP["nist"], url="",
         regex_with_groups=r".*-(\d+)(?:\((\d+)\))?"),
