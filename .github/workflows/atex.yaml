@@ -92,7 +92,7 @@ jobs:
         env:
           TESTING_FARM_API_TOKEN: ${{ secrets.TESTING_FARM_API_TOKEN }}
         run: |
-          true || python tests/run_tests_testingfarm.py \
+          python tests/run_tests_testingfarm.py \
             --contest-dir contest \
             --content-dir content-centos-stream${{ matrix.centos_stream_major }} \
             --plan gating-ci \
