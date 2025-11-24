@@ -92,7 +92,7 @@ jobs:
         env:
           TESTING_FARM_API_TOKEN: ${{ secrets.TESTING_FARM_API_TOKEN }}
         run: |
-          python tests/run_tests_testingfarm.py \
+          python3 tests/run_tests_testingfarm.py \
             --contest-dir contest \
             --content-dir content-centos-stream${{ matrix.centos_stream_major }} \
             --plan gating-ci \
@@ -231,7 +231,7 @@ jobs:
         env:
           TESTING_FARM_API_TOKEN: ${{ secrets.TESTING_FARM_API_TOKEN }}
         run: |
-          python tests/submit_results_to_testing_farm.py \
+          python3 tests/submit_results_to_testing_farm.py \
             --repo-url "https://github.com/RHSecurityCompliance/atex-results-testing-farm" \
             --pr-number "${{ github.event.pull_request.number }}" 2>&1 | tee tf_output.log
 
