@@ -103,7 +103,7 @@ jobs:
           python3 tests/run_tests_testingfarm.py \
             --contest-dir contest \
             --content-dir content-centos-stream${{ matrix.centos_stream_major }} \
-            --plan gating-ci \
+            --plan "/plans/gating-ci" \
             --compose "CentOS-Stream-${{ matrix.centos_stream_major }}" \
             --arch x86_64 \
             --os-major-version "${{ matrix.centos_stream_major }}" \
