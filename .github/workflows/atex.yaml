@@ -86,7 +86,7 @@ jobs:
       - name: Install test dependencies
         run: |
           # Install venv utility and pip
-          dnf -y install python3-pip python3-virtualenv git
+          dnf -y install python3-pip python3-virtualenv git rsync
 
           # Create and activate a virtual environment
           python3 -m venv venv
@@ -136,7 +136,7 @@ jobs:
         if: always()  # Run even if previous steps fail
         run: |
           # Install venv utility and pip
-          dnf -y install python3-pip python3-virtualenv git
+          dnf -y install python3-pip python3-virtualenv git rsync
 
           # Create and activate a virtual environment
           python3 -m venv venv
