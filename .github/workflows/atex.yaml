@@ -103,7 +103,8 @@ jobs:
           python3 tests/run_tests_testingfarm.py \
             --contest-dir contest \
             --content-dir content-centos-stream${{ matrix.centos_stream_major }} \
-            --plan "/plans/gating-ci" \
+            --plan "/plans/daily" \
+            --tests "/hardening/oscap/stig" \
             --compose "CentOS-Stream-${{ matrix.centos_stream_major }}" \
             --arch x86_64 \
             --os-major-version "${{ matrix.centos_stream_major }}" \
@@ -123,6 +124,7 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     needs: test
+    if: always() # run even if the tests have failed
     container:
       image: fedora:latest
 
