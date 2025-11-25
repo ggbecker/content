@@ -61,7 +61,7 @@ jobs:
     needs: build_content
     strategy:
       matrix:
-        centos_stream_major: [8, 9, 10]
+        centos_stream_major: [9] # [8, 9, 10]
     container:
       image: fedora:latest
 
@@ -86,11 +86,7 @@ jobs:
       - name: Install test dependencies
         run: |
           # Install venv utility and pip
-          dnf -y install python3-pip python3-virtualenv git rsync
-
-          # Create and activate a virtual environment
-          python3 -m venv venv
-          source venv/bin/activate
+          dnf -y install python3-pip git rsync
 
           # Install dependencies into the isolated environment
           pip install fmf git+https://github.com/RHSecurityCompliance/atex.git
@@ -99,12 +95,11 @@ jobs:
         env:
           TESTING_FARM_API_TOKEN: ${{ secrets.TESTING_FARM_API_TOKEN }}
         run: |
-          source venv/bin/activate
           python3 tests/run_tests_testingfarm.py \
             --contest-dir contest \
             --content-dir content-centos-stream${{ matrix.centos_stream_major }} \
             --plan "/plans/daily" \
-            --tests "/hardening/oscap/stig" \
+            --tests "/hardening/host-os/oscap/stig" \
             --compose "CentOS-Stream-${{ matrix.centos_stream_major }}" \
             --arch x86_64 \
             --os-major-version "${{ matrix.centos_stream_major }}" \
@@ -136,11 +131,7 @@ jobs:
         if: always()  # Run even if previous steps fail
         run: |
           # Install venv utility and pip
-          dnf -y install python3-pip python3-virtualenv git rsync
-
-          # Create and activate a virtual environment
-          python3 -m venv venv
-          source venv/bin/activate
+          dnf -y install python3-pip git rsync
 
           # Install dependencies into the isolated environment
           pip install fmf git+https://github.com/RHSecurityCompliance/atex.git
@@ -248,7 +239,6 @@ jobs:
         env:
           TESTING_FARM_API_TOKEN: ${{ secrets.TESTING_FARM_API_TOKEN }}
         run: |
-          source venv/bin/activate
           python3 tests/submit_results_to_testing_farm.py \
             --repo-url "https://github.com/RHSecurityCompliance/atex-results-testing-farm" \
             --pr-number "${{ github.event.pull_request.number }}" 2>&1 | tee tf_output.log

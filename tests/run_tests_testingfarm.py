@@ -81,10 +81,10 @@ with contextlib.ExitStack() as stack:
     platform_name = f"cs{args.os_major_version}@{args.arch}"
 
     # Hardware requirements for Testing Farm
-    if args.arch == "x86_64":
-        hw = {"virtualization": {"is-supported": True}, "memory": ">= 7 GB"}
-    else:
-        hw = None
+    # if args.arch == "x86_64":
+    #     hw = {"virtualization": {"is-supported": True}, "memory": ">= 7 GB"}
+    # else:
+    #     hw = None
 
     # Setup Testing Farm provisioner
     prov = TestingFarmProvisioner(
@@ -92,7 +92,7 @@ with contextlib.ExitStack() as stack:
         arch=args.arch,
         max_retries=2,
         timeout=args.timeout,
-        hardware=hw,
+        # hardware=hw,
     )
 
     # Setup Contest orchestrator
