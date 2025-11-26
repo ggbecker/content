@@ -201,23 +201,30 @@ jobs:
       - name: Process test results with json2db.py
         if: always()
         run: |
-          # Process results for each version
-          for version in 8 9 10; do
-            if [ -f "test-results/cs${version}/results-centos-stream-${version}-x86_64.json.gz" ]; then
-              echo "Processing CentOS Stream ${version} results..."
-              python atex-html/json2db.py \
-                test-results/cs${version}/results-centos-stream-${version}-x86_64.json.gz \
-                atex-results-testing-farm/results-cs${version}.sqlite.gz
-            else
-              echo "No results found for CentOS Stream ${version}, skipping..."
-            fi
-          done
+          sed "/<title>/s/>.*</>Test outputs from PR #${{ github.event.pull_request.number }} HTML</" -i atex-html/index.html
 
-      - name: Copy test artifacts to atex-results-testing-farm
+      - name: Create final merged results artifact
         if: always()
         run: |
-          # Copy all test results and files to the upload directory
-          cp -r test-results/* atex-results-testing-farm/ || true
+          # Process results for each version
+          mkdir -p atex-results-testing-farm/files_dir/
+          for version in 8 9 10; do
+            if [ -f "test-results/cs${version}/results-centos-stream-${version}-x86_64.json.gz" ]; then
+              cat "test-results/cs${version}/results-centos-stream-${version}-x86_64.json.gz"
+              rm -f "test-results/cs${version}/results-centos-stream-${version}-x86_64.json.gz" >/dev/null
+              cp -r test-results/cs${version}/files-centos-stream-${version}-x86_64/* atex-results-testing-farm/files_dir/ >/dev/null
+            fi
+          done > results.json.gz
+
+      - name: Process test results with json2db.py
+        if: always()
+        run: |
+          python atex-html/json2db.py results.json.gz atex-results-testing-farm/results.sqlite.gz
+
+      - name: Prepare the html-hosted results viewer
+        if: always()
+        run: |
+          cp -rf atex-html/index.html atex-html/sqljs/ atex-results-testing-farm/
 
       - name: Push artifacts as tag to Testing Farm repository
         if: always()
