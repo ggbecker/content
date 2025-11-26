@@ -61,7 +61,7 @@ jobs:
     needs: build_content
     strategy:
       matrix:
-        centos_stream_major: [9] # [8, 9, 10]
+        centos_stream_major: [8, 9, 10]
     container:
       image: fedora:latest
 
