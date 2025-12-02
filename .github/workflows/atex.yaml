@@ -5,7 +5,6 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
-  FEDORA_IMAGE: fedora:latest
   ATEX_REPO: RHSecurityCompliance/atex-results-testing-farm
   ATEX_HTML_REPO: RHSecurityCompliance/atex-html
   CONTEST_REPO: RHSecurityCompliance/contest
@@ -20,7 +19,7 @@ jobs:
       matrix:
         centos_stream_major: [8, 9, 10]
     container:
-      image: ${{ env.FEDORA_IMAGE }}
+      image: fedora:latest
 
     steps:
       - name: Checkout repository
@@ -80,7 +79,7 @@ jobs:
       matrix:
         centos_stream_major: [8, 9, 10]
     container:
-      image: ${{ env.FEDORA_IMAGE }}
+      image: fedora:latest
 
     steps:
       - name: Checkout repository
@@ -137,7 +136,7 @@ jobs:
     needs: test
     if: always() # Run even if tests fail
     container:
-      image: ${{ env.FEDORA_IMAGE }}
+      image: fedora:latest
 
     steps:
       - name: Checkout repository
