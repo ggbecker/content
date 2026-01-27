@@ -156,6 +156,7 @@ jobs:
             --contest-dir contest \
             --content-dir content-centos-stream${CS_MAJOR} \
             --plan "/plans/upstream" \
+            --tests "/hardening/host-os/oscap/stig" \
             --compose "CentOS-Stream-${CS_MAJOR}" \
             --arch x86_64 \
             --os-major-version "${CS_MAJOR}" \
