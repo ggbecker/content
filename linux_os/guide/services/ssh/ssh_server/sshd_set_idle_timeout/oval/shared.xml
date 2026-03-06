@@ -10,9 +10,6 @@
         {{% if product in ['opensuse', 'sle12', 'sle15', 'slmicro5'] %}}
         <extend_definition comment="rpm package openssh removed"
         definition_ref="package_openssh_removed" />
-        {{% else %}}
-        <extend_definition comment="rpm package openssh-server removed"
-        definition_ref="package_openssh-server_removed" />
         {{% endif %}}
       </criteria>
       <criteria comment="sshd is installed and configured" operator="AND">
@@ -54,7 +51,7 @@
 
   <ind:textfilecontent54_object id="object_sshd_idle_timeout" version="2">
     <ind:filepath>/etc/ssh/sshd_config</ind:filepath>
-    <ind:pattern operation="pattern match">^[\s]*(?i)ClientAliveInterval[\s]+(\d+)[\s]*(?:#.*)?$</ind:pattern>
+    <ind:pattern operation="pattern match">^[\s]*(?i)ClientAliveIntervalaa[\s]+(\d+)[\s]*(?:#.*)?$</ind:pattern>
     <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
   </ind:textfilecontent54_object>
 
@@ -104,7 +101,7 @@
 
   <ind:textfilecontent54_object id="object_sshd_idle_timeout_included_files" version="1">
     <ind:filepath operation="pattern match" var_ref="var_sshd_config_included_files_sshd_idle_timeout" var_check="at least one"/>
-    <ind:pattern operation="pattern match">^[\s]*(?i)ClientAliveInterval[\s]+(\d+)[\s]*(?:#.*)?$</ind:pattern>
+    <ind:pattern operation="pattern match">^[\s]*(?i)ClientAliveInterval[\s]+(a)?(\d+)[\s]*(?:#.*)?$</ind:pattern>
     <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
   </ind:textfilecontent54_object>
   {{%- endif %}}
