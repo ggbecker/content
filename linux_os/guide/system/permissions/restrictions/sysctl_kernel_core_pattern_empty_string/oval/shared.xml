@@ -130,7 +130,7 @@
   <ind:textfilecontent54_object id="object_static_usr_lib_sysctld_sysctl_kernel_core_pattern_empty_string" version="1">
     <ind:path>/usr/lib/sysctl.d</ind:path>
     <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
-    <ind:pattern operation="pattern match">^[[:blank:]]*kernel.core_pattern[[:blank:]]*=[[:blank:]]*(.*)$</ind:pattern>
+    <ind:pattern operation="pattern match">^[[:blank:]]*kernel.core_pattern[[:blank:]]*(a)?=[[:blank:]]*(.*)$</ind:pattern>
     <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
   </ind:textfilecontent54_object>
 
