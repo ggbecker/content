@@ -85,3 +85,4 @@ shared/references/oscal/.trestle/cache
 
 # Ignore user-specific CLAUDE preferences
 CLAUDE.local.md
+# controls/nist_800_53.yml

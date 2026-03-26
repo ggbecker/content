@@ -188,13 +188,25 @@ def open_and_expand(yaml_file, substitutions_dict=None):
         substitutions_dict = dict()
 
     expanded_template = process_file(yaml_file, substitutions_dict)
+
     try:
         yaml_contents = _open_yaml(expanded_template, yaml_file, substitutions_dict)
     except yaml.scanner.ScannerError:
+        # Save expanded control file to /tmp for inspection on error
+        if "controls" in str(yaml_file) and "nist_800_53" in str(yaml_file):
+            product = substitutions_dict.get('product', 'unknown')
+            debug_file = f"/tmp/nist_800_53_expanded_{product}.yml"
+            try:
+                with open(debug_file, 'w') as f:
+                    f.write(expanded_template)
+                print(f"DEBUG: Saved expanded control file to: {debug_file}")
+            except Exception as e:
+                print(f"DEBUG: Could not save expanded file: {e}")
+
         print("A Jinja template expansion can mess up the indentation.")
         print("Please, check if the contents below are correctly expanded:")
         print("Source yaml: {}".format(yaml_file))
-        print("Expanded yaml:\n{}".format(expanded_template))
+        # Don't print expanded_template to stdout, it's saved to /tmp instead
         sys.exit(1)
 
     return yaml_contents

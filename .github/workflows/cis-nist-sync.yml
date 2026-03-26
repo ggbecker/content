@@ -1,0 +1,266 @@
+name: CIS-NIST Control File Sync
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  schedule:
+    # Run every Sunday at 2:00 PM UTC
+    - cron: '0 14 * * 0'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  generate-and-validate:
+    name: Generate CIS-NIST Control File and Profiles
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Install system dependencies
+        run: |
+          dnf install -y \
+            cmake \
+            make \
+            ninja-build \
+            openscap-utils \
+            python3-pyyaml \
+            python3-jinja2 \
+            python3-pip \
+            git \
+            gcc \
+            gcc-c++ \
+            python3-devel \
+            libxml2-devel \
+            libxslt-devel \
+            python3-setuptools \
+            libxml2 \
+            expat \
+            gh
+
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure git
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install ruamel.yaml PyPDF2
+
+      - name: Download OSCAL catalog
+        run: |
+          cd utils/nist_sync
+          python3 download_oscal.py
+
+      - name: Run CIS-NIST workflow
+        id: workflow
+        run: |
+          cd utils/nist_sync
+
+          echo "Running workflow for products: rhel8 rhel9 rhel10"
+          # Use committed cis_nist_mappings.json (fast, no PDF parsing)
+          ./generate_cis_nist_workflow.sh --products "rhel8 rhel9 rhel10"
+
+      - name: Render policies and generate HTML tables
+        run: |
+          cd build
+
+          # Render policies for all products
+          ninja render-policies
+
+          cd ..
+          mkdir -p artifacts/tables
+          mkdir -p artifacts/rendered-policies
+
+          # Copy rendered NIST 800-53 policies
+          for product in rhel8 rhel9 rhel10; do
+            if [ -f "build/$product/rendered-policies/nist_800_53.html" ]; then
+              cp "build/$product/rendered-policies/nist_800_53.html" "artifacts/rendered-policies/nist_800_53-$product.html"
+            fi
+          done
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p artifacts/controls
+          mkdir -p artifacts/profiles
+          mkdir -p artifacts/data
+          mkdir -p artifacts/datastreams
+
+          # Copy control file
+          cp controls/nist_800_53.yml artifacts/controls/
+
+          # Copy mapping cache
+          cp utils/nist_sync/data/cis_nist_mappings.json artifacts/data/
+
+          # Copy profiles
+          for product in rhel8 rhel9 rhel10; do
+            if [ -f "products/$product/profiles/cis_nist.profile" ]; then
+              mkdir -p "artifacts/profiles/$product"
+              cp "products/$product/profiles/cis_nist.profile" "artifacts/profiles/$product/"
+            fi
+          done
+
+          # Copy datastreams
+          for product in rhel8 rhel9 rhel10; do
+            if [ -f "build/ssg-$product-ds.xml" ]; then
+              cp "build/ssg-$product-ds.xml" "artifacts/datastreams/"
+            fi
+          done
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cis-nist-artifacts-${{ github.run_number }}
+          path: artifacts/
+          retention-days: 90
+
+      - name: Generate summary report
+        run: |
+          {
+            echo "# CIS-NIST Sync Report"
+            echo ""
+            echo "## Generated Artifacts"
+            echo ""
+            echo "### Control File"
+            echo "- \`controls/nist_800_53.yml\`"
+
+            # Count controls (without parsing Jinja2-templated YAML)
+            # Count "- id:" at indentation level 2 (top-level controls)
+            CONTROL_COUNT=$(grep -E '^  - id:' controls/nist_800_53.yml | wc -l)
+
+            echo "  - Total controls: $CONTROL_COUNT"
+
+            # Count guards
+            GUARD_COUNT=$(grep -c '{{% if' controls/nist_800_53.yml || echo "0")
+            echo "  - Jinja2 guards: $GUARD_COUNT"
+
+            echo ""
+            echo "### Profiles"
+            for product in rhel8 rhel9 rhel10; do
+              if [ -f "products/$product/profiles/cis_nist.profile" ]; then
+                echo "- \`products/$product/profiles/cis_nist.profile\`"
+              fi
+            done
+
+            echo ""
+            echo "### Profile Validation"
+            echo ""
+            echo "| Product | CIS Rules | CIS-NIST Rules | Match |"
+            echo "|---------|-----------|----------------|-------|"
+
+            echo ""
+            echo "## Mapping Statistics"
+            echo ""
+
+            # Parse mapping cache
+            python3 << 'PYEOF'
+          import json
+          with open('utils/nist_sync/data/cis_nist_mappings.json', 'r') as f:
+              data = json.load(f)
+
+          print(f"- Rules mapped to NIST: {len(data['rules'])}")
+          print(f"- Variables mapped to NIST: {len(data['variables'])}")
+
+          # Count unique NIST controls referenced
+          nist_controls = set()
+          for nist_list in data['rules'].values():
+              nist_controls.update(nist_list)
+          for nist_list in data['variables'].values():
+              nist_controls.update(nist_list)
+
+          print(f"- Unique NIST controls referenced: {len(nist_controls)}")
+          PYEOF
+
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet controls/nist_800_53.yml; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Show diff summary
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          echo "## Changes Detected" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          git diff --stat controls/nist_800_53.yml >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Create Pull Request for scheduled runs
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && steps.changes.outputs.has_changes == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create a new branch for the update
+          BRANCH_NAME="auto-update-nist-800-53-$(date +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH_NAME"
+
+          # Stage and commit changes
+          git add controls/nist_800_53.yml
+
+          # Get change statistics
+          ADDED=$(git diff --cached --numstat | awk '{sum+=$1} END {print sum}')
+          REMOVED=$(git diff --cached --numstat | awk '{sum+=$2} END {print sum}')
+          CHANGES_SUMMARY="+${ADDED:-0}/-${REMOVED:-0}"
+
+          git commit -m "$(cat <<EOF
+          Update NIST 800-53 control file from latest OSCAL catalog
+
+          This automated update synchronizes the NIST 800-53 control file with
+          the latest OSCAL catalog from NIST.
+
+          Changes: ${CHANGES_SUMMARY} lines
+
+          Generated by: Weekly NIST 800-53 Sync Workflow
+          Co-Authored-By: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          EOF
+          )"
+
+          # Push the branch
+          git push origin "$BRANCH_NAME"
+
+          # Create pull request using gh CLI
+          gh pr create \
+            --title "Update NIST 800-53 control file ($(date +%Y-%m-%d))" \
+            --body "$(cat <<EOF
+          ## Summary
+          This automated pull request updates the NIST 800-53 control file from the latest OSCAL catalog.
+
+          ## Changes
+          - ${CHANGES_SUMMARY} lines modified in \`controls/nist_800_53.yml\`
+
+          ## Details
+          - **Triggered by**: $(if [ "${{ github.event_name }}" == "schedule" ]; then echo "Weekly scheduled workflow"; else echo "Manual workflow dispatch"; fi)
+          - **Date**: $(date +%Y-%m-%d %H:%M:%S UTC)
+          - **Source**: [NIST OSCAL Catalog](https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final)
+
+          ## Review Checklist
+          - [ ] Review control additions/removals
+          - [ ] Verify control mappings are correct
+          - [ ] Run validation tests
+
+          🤖 Generated with [GitHub Actions](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          EOF
+          )" \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --label "automated" \
+            --label "nist-800-53"
+
+          echo "✅ Pull request created successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Branch: \`$BRANCH_NAME\`" >> $GITHUB_STEP_SUMMARY
