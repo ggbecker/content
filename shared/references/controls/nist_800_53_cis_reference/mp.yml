@@ -1,0 +1,166 @@
+# NIST 800-53 MP Family: Media Protection
+controls:
+  - id: mp-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-2
+    title: Media Access
+    description: 'Restrict access to {{ insert: param, mp-2_prm_1 }} to {{ insert: param, mp-2_prm_2 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-2.1
+    title: Automated Restricted Access
+    rules: []
+    status: pending
+  - id: mp-2.2
+    title: Cryptographic Protection
+    rules: []
+    status: pending
+  - id: mp-3
+    title: Media Marking
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-4
+    title: Media Storage
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-4.1
+    title: Cryptographic Protection
+    rules: []
+    status: pending
+  - id: mp-4.2
+    title: Automated Restricted Access
+    description: 'Restrict access to media storage areas and log access attempts and access granted using {{ insert: param, mp-4.2_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: mp-5
+    title: Media Transport
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-5.1
+    title: Protection Outside of Controlled Areas
+    rules: []
+    status: pending
+  - id: mp-5.2
+    title: Documentation of Activities
+    rules: []
+    status: pending
+  - id: mp-5.3
+    title: Custodians
+    description: Employ an identified custodian during transport of system media outside of controlled areas.
+    rules: []
+    status: pending
+  - id: mp-5.4
+    title: Cryptographic Protection
+    rules: []
+    status: pending
+  - id: mp-6
+    title: Media Sanitization
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-6.1
+    title: Review, Approve, Track, Document, and Verify
+    description: Review, approve, track, document, and verify media sanitization and disposal actions.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: mp-6.2
+    title: Equipment Testing
+    description: 'Test sanitization equipment and procedures {{ insert: param, mp-6.2_prm_1 }} to ensure that the intended sanitization is being achieved.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: mp-6.3
+    title: Nondestructive Techniques
+    description: 'Apply nondestructive sanitization techniques to portable storage devices prior to connecting such devices to the system under the following circumstances: {{ insert: param, mp-06.03_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: mp-6.4
+    title: Controlled Unclassified Information
+    rules: []
+    status: pending
+  - id: mp-6.5
+    title: Classified Information
+    rules: []
+    status: pending
+  - id: mp-6.6
+    title: Media Destruction
+    rules: []
+    status: pending
+  - id: mp-6.7
+    title: Dual Authorization
+    description: 'Enforce dual authorization for the sanitization of {{ insert: param, mp-06.07_odp }}.'
+    rules: []
+    status: pending
+  - id: mp-6.8
+    title: Remote Purging or Wiping of Information
+    description: 'Provide the capability to purge or wipe information from {{ insert: param, mp-06.08_odp.01 }} {{ insert: param, mp-06.08_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: mp-7
+    title: Media Use
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: mp-7.1
+    title: Prohibit Use Without Owner
+    rules: []
+    status: pending
+  - id: mp-7.2
+    title: Prohibit Use of Sanitization-resistant Media
+    description: Prohibit the use of sanitization-resistant media in organizational systems.
+    rules: []
+    status: pending
+  - id: mp-8
+    title: Media Downgrading
+    rules: []
+    status: pending
+  - id: mp-8.1
+    title: Documentation of Process
+    description: Document system media downgrading actions.
+    rules: []
+    status: pending
+  - id: mp-8.2
+    title: Equipment Testing
+    description: 'Test downgrading equipment and procedures {{ insert: param, mp-8.2_prm_1 }} to ensure that downgrading actions are being achieved.'
+    rules: []
+    status: pending
+  - id: mp-8.3
+    title: Controlled Unclassified Information
+    description: Downgrade system media containing controlled unclassified information prior to public release.
+    rules: []
+    status: pending
+  - id: mp-8.4
+    title: Classified Information
+    description: Downgrade system media containing classified information prior to release to individuals without required access authorizations.
+    rules: []
+    status: pending

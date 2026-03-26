@@ -1,0 +1,120 @@
+# NIST 800-53 PS Family: Personnel Security
+controls:
+  - id: ps-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-2
+    title: Position Risk Designation
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-3
+    title: Personnel Screening
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-3.1
+    title: Classified Information
+    description: Verify that individuals accessing a system processing, storing, or transmitting classified information are cleared and indoctrinated to the highest classification level of the information to which they have access on the system.
+    rules: []
+    status: pending
+  - id: ps-3.2
+    title: Formal Indoctrination
+    description: Verify that individuals accessing a system processing, storing, or transmitting types of classified information that require formal indoctrination, are formally indoctrinated for all the relevant types of information to which they have access on the system.
+    rules: []
+    status: pending
+  - id: ps-3.3
+    title: Information Requiring Special Protective Measures
+    description: 'Verify that individuals accessing a system processing, storing, or transmitting information requiring special protection:'
+    rules: []
+    status: pending
+  - id: ps-3.4
+    title: Citizenship Requirements
+    description: 'Verify that individuals accessing a system processing, storing, or transmitting {{ insert: param, ps-03.04_odp.01 }} meet {{ insert: param, ps-03.04_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ps-4
+    title: Personnel Termination
+    description: 'Upon termination of individual employment:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-4.1
+    title: Post-employment Requirements
+    rules: []
+    status: pending
+  - id: ps-4.2
+    title: Automated Actions
+    description: 'Use {{ insert: param, ps-04.02_odp.01 }} to {{ insert: param, ps-04.02_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ps-5
+    title: Personnel Transfer
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-6
+    title: Access Agreements
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-6.1
+    title: Information Requiring Special Protection
+    rules: []
+    status: pending
+  - id: ps-6.2
+    title: Classified Information Requiring Special Protection
+    description: 'Verify that access to classified information requiring special protection is granted only to individuals who:'
+    rules: []
+    status: pending
+  - id: ps-6.3
+    title: Post-employment Requirements
+    rules: []
+    status: pending
+  - id: ps-7
+    title: External Personnel Security
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-8
+    title: Personnel Sanctions
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ps-9
+    title: Position Descriptions
+    description: Incorporate security and privacy roles and responsibilities into organizational position descriptions.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending

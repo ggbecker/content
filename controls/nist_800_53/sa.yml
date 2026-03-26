@@ -1,0 +1,752 @@
+# NIST 800-53 SA Family: System and Services Acquisition
+controls:
+  - id: sa-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-2
+    title: Allocation of Resources
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-3
+    title: System Development Life Cycle
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-3.1
+    title: Manage Preproduction Environment
+    description: Protect system preproduction environments commensurate with risk throughout the system development life cycle for the system, system component, or system service.
+    rules: []
+    status: pending
+  - id: sa-3.2
+    title: Use of Live or Operational Data
+    rules: []
+    status: pending
+  - id: sa-3.3
+    title: Technology Refresh
+    description: Plan for and implement a technology refresh schedule for the system throughout the system development life cycle.
+    rules: []
+    status: pending
+  - id: sa-4
+    title: Acquisition Process
+    description: 'Include the following requirements, descriptions, and criteria, explicitly or by reference, using {{ insert: param, sa-04_odp.01 }} in the acquisition contract for the system, system component, or system service:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-4.1
+    title: Functional Properties of Controls
+    description: Require the developer of the system, system component, or system service to provide a description of the functional properties of the controls to be implemented.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-4.2
+    title: Design and Implementation Information for Controls
+    description: 'Require the developer of the system, system component, or system service to provide design and implementation information for the controls that includes: {{ insert: param, sa-04.02_odp.01 }} at {{ insert: param, sa-04.02_odp.03 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-4.3
+    title: Development Methods, Techniques, and Practices
+    description: 'Require the developer of the system, system component, or system service to demonstrate the use of a system development life cycle process that includes:'
+    rules: []
+    status: pending
+  - id: sa-4.4
+    title: Assignment of Components to Systems
+    rules: []
+    status: pending
+  - id: sa-4.5
+    title: System, Component, and Service Configurations
+    description: 'Require the developer of the system, system component, or system service to:'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sa-4.6
+    title: Use of Information Assurance Products
+    rules: []
+    status: pending
+  - id: sa-4.7
+    title: 'NIAP-approved Protection Profiles '
+    rules: []
+    status: pending
+  - id: sa-4.8
+    title: Continuous Monitoring Plan for Controls
+    description: Require the developer of the system, system component, or system service to produce a plan for continuous monitoring of control effectiveness that is consistent with the continuous monitoring program of the organization.
+    rules: []
+    status: pending
+  - id: sa-4.9
+    title: Functions, Ports, Protocols, and Services in Use
+    description: Require the developer of the system, system component, or system service to identify the functions, ports, protocols, and services intended for organizational use.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-4.10
+    title: Use of Approved PIV Products
+    description: Employ only information technology products on the FIPS 201-approved products list for Personal Identity Verification (PIV) capability implemented within organizational systems.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-4.11
+    title: System of Records
+    description: 'Include {{ insert: param, sa-04.11_odp }} in the acquisition contract for the operation of a system of records on behalf of an organization to accomplish an organizational mission or function.'
+    rules: []
+    status: pending
+  - id: sa-4.12
+    title: Data Ownership
+    rules: []
+    status: pending
+  - id: sa-5
+    title: System Documentation
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-5.1
+    title: Functional Properties of Security Controls
+    rules: []
+    status: pending
+  - id: sa-5.2
+    title: Security-relevant External System Interfaces
+    rules: []
+    status: pending
+  - id: sa-5.3
+    title: High-level Design
+    rules: []
+    status: pending
+  - id: sa-5.4
+    title: Low-level Design
+    rules: []
+    status: pending
+  - id: sa-5.5
+    title: Source Code
+    rules: []
+    status: pending
+  - id: sa-6
+    title: Software Usage Restrictions
+    rules: []
+    status: pending
+  - id: sa-7
+    title: User-installed Software
+    rules: []
+    status: pending
+  - id: sa-8
+    title: Security and Privacy Engineering Principles
+    description: 'Apply the following systems security and privacy engineering principles in the specification, design, development, implementation, and modification of the system and system components: {{ insert: param, sa-8_prm_1 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-8.1
+    title: Clear Abstractions
+    description: Implement the security design principle of clear abstractions.
+    rules: []
+    status: pending
+  - id: sa-8.2
+    title: Least Common Mechanism
+    description: 'Implement the security design principle of least common mechanism in {{ insert: param, sa-08.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.3
+    title: Modularity and Layering
+    description: 'Implement the security design principles of modularity and layering in {{ insert: param, sa-8.3_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sa-8.4
+    title: Partially Ordered Dependencies
+    description: 'Implement the security design principle of partially ordered dependencies in {{ insert: param, sa-08.04_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.5
+    title: Efficiently Mediated Access
+    description: 'Implement the security design principle of efficiently mediated access in {{ insert: param, sa-08.05_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.6
+    title: Minimized Sharing
+    description: 'Implement the security design principle of minimized sharing in {{ insert: param, sa-08.06_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.7
+    title: Reduced Complexity
+    description: 'Implement the security design principle of reduced complexity in {{ insert: param, sa-08.07_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.8
+    title: Secure Evolvability
+    description: 'Implement the security design principle of secure evolvability in {{ insert: param, sa-08.08_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.9
+    title: Trusted Components
+    description: 'Implement the security design principle of trusted components in {{ insert: param, sa-08.09_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.10
+    title: Hierarchical Trust
+    description: 'Implement the security design principle of hierarchical trust in {{ insert: param, sa-08.10_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.11
+    title: Inverse Modification Threshold
+    description: 'Implement the security design principle of inverse modification threshold in {{ insert: param, sa-08.11_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.12
+    title: Hierarchical Protection
+    description: 'Implement the security design principle of hierarchical protection in {{ insert: param, sa-08.12_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.13
+    title: Minimized Security Elements
+    description: 'Implement the security design principle of minimized security elements in {{ insert: param, sa-08.13_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.14
+    title: Least Privilege
+    description: 'Implement the security design principle of least privilege in {{ insert: param, sa-08.14_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.15
+    title: Predicate Permission
+    description: 'Implement the security design principle of predicate permission in {{ insert: param, sa-08.15_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.16
+    title: Self-reliant Trustworthiness
+    description: 'Implement the security design principle of self-reliant trustworthiness in {{ insert: param, sa-08.16_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.17
+    title: Secure Distributed Composition
+    description: 'Implement the security design principle of secure distributed composition in {{ insert: param, sa-08.17_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.18
+    title: Trusted Communications Channels
+    description: 'Implement the security design principle of trusted communications channels in {{ insert: param, sa-08.18_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.19
+    title: Continuous Protection
+    description: 'Implement the security design principle of continuous protection in {{ insert: param, sa-08.19_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.20
+    title: Secure Metadata Management
+    description: 'Implement the security design principle of secure metadata management in {{ insert: param, sa-08.20_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.21
+    title: Self-analysis
+    description: 'Implement the security design principle of self-analysis in {{ insert: param, sa-08.21_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.22
+    title: Accountability and Traceability
+    description: 'Implement the security design principle of accountability and traceability in {{ insert: param, sa-8.22_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sa-8.23
+    title: Secure Defaults
+    description: 'Implement the security design principle of secure defaults in {{ insert: param, sa-08.23_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.24
+    title: Secure Failure and Recovery
+    description: 'Implement the security design principle of secure failure and recovery in {{ insert: param, sa-8.24_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sa-8.25
+    title: Economic Security
+    description: 'Implement the security design principle of economic security in {{ insert: param, sa-08.25_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.26
+    title: Performance Security
+    description: 'Implement the security design principle of performance security in {{ insert: param, sa-08.26_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.27
+    title: Human Factored Security
+    description: 'Implement the security design principle of human factored security in {{ insert: param, sa-08.27_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.28
+    title: Acceptable Security
+    description: 'Implement the security design principle of acceptable security in {{ insert: param, sa-08.28_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.29
+    title: Repeatable and Documented Procedures
+    description: 'Implement the security design principle of repeatable and documented procedures in {{ insert: param, sa-08.29_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.30
+    title: Procedural Rigor
+    description: 'Implement the security design principle of procedural rigor in {{ insert: param, sa-08.30_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.31
+    title: Secure System Modification
+    description: 'Implement the security design principle of secure system modification in {{ insert: param, sa-08.31_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.32
+    title: Sufficient Documentation
+    description: 'Implement the security design principle of sufficient documentation in {{ insert: param, sa-08.32_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-8.33
+    title: Minimization
+    description: 'Implement the privacy principle of minimization using {{ insert: param, sa-08.33_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-9
+    title: External System Services
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-9.1
+    title: Risk Assessments and Organizational Approvals
+    rules: []
+    status: pending
+  - id: sa-9.2
+    title: Identification of Functions, Ports, Protocols, and Services
+    description: 'Require providers of the following external system services to identify the functions, ports, protocols, and other services required for the use of such services: {{ insert: param, sa-09.02_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-9.3
+    title: Establish and Maintain Trust Relationship with Providers
+    description: 'Establish, document, and maintain trust relationships with external service providers based on the following requirements, properties, factors, or conditions: {{ insert: param, sa-9.3_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sa-9.4
+    title: Consistent Interests of Consumers and Providers
+    description: 'Take the following actions to verify that the interests of {{ insert: param, sa-09.04_odp.01 }} are consistent with and reflect organizational interests: {{ insert: param, sa-09.04_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sa-9.5
+    title: Processing, Storage, and Service Location
+    description: 'Restrict the location of {{ insert: param, sa-09.05_odp.01 }} to {{ insert: param, sa-09.05_odp.02 }} based on {{ insert: param, sa-09.05_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: sa-9.6
+    title: Organization-controlled Cryptographic Keys
+    description: Maintain exclusive control of cryptographic keys for encrypted material stored or transmitted through an external system.
+    rules: []
+    status: pending
+  - id: sa-9.7
+    title: Organization-controlled Integrity Checking
+    description: Provide the capability to check the integrity of information while it resides in the external system.
+    rules: []
+    status: pending
+  - id: sa-9.8
+    title: Processing and Storage Location — U.S. Jurisdiction
+    description: Restrict the geographic location of information processing and data storage to facilities located within in the legal jurisdictional boundary of the United States.
+    rules: []
+    status: pending
+  - id: sa-10
+    title: Developer Configuration Management
+    description: 'Require the developer of the system, system component, or system service to:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-10.1
+    title: Software and Firmware Integrity Verification
+    description: Require the developer of the system, system component, or system service to enable integrity verification of software and firmware components.
+    rules: []
+    status: pending
+  - id: sa-10.2
+    title: Alternative Configuration Management Processes
+    description: Provide an alternate configuration management process using organizational personnel in the absence of a dedicated developer configuration management team.
+    rules: []
+    status: pending
+  - id: sa-10.3
+    title: Hardware Integrity Verification
+    description: Require the developer of the system, system component, or system service to enable integrity verification of hardware components.
+    rules: []
+    status: pending
+  - id: sa-10.4
+    title: Trusted Generation
+    description: Require the developer of the system, system component, or system service to employ tools for comparing newly generated versions of security-relevant hardware descriptions, source code, and object code with previous versions.
+    rules: []
+    status: pending
+  - id: sa-10.5
+    title: Mapping Integrity for Version Control
+    description: Require the developer of the system, system component, or system service to maintain the integrity of the mapping between the master build data describing the current version of security-relevant hardware, software, and firmware and the on-site master copy of the data for the current version.
+    rules: []
+    status: pending
+  - id: sa-10.6
+    title: Trusted Distribution
+    description: Require the developer of the system, system component, or system service to execute procedures for ensuring that security-relevant hardware, software, and firmware updates distributed to the organization are exactly as specified by the master copies.
+    rules: []
+    status: pending
+  - id: sa-10.7
+    title: Security and Privacy Representatives
+    description: 'Require {{ insert: param, sa-10.7_prm_1 }} to be included in the {{ insert: param, sa-10.7_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: sa-11
+    title: Developer Testing and Evaluation
+    description: 'Require the developer of the system, system component, or system service, at all post-design stages of the system development life cycle, to:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-11.1
+    title: Static Code Analysis
+    description: Require the developer of the system, system component, or system service to employ static code analysis tools to identify common flaws and document the results of the analysis.
+    rules: []
+    status: pending
+  - id: sa-11.2
+    title: Threat Modeling and Vulnerability Analyses
+    description: 'Require the developer of the system, system component, or system service to perform threat modeling and vulnerability analyses during development and the subsequent testing and evaluation of the system, component, or service that:'
+    rules: []
+    status: pending
+  - id: sa-11.3
+    title: Independent Verification of Assessment Plans and Evidence
+    rules: []
+    status: pending
+  - id: sa-11.4
+    title: Manual Code Reviews
+    description: 'Require the developer of the system, system component, or system service to perform a manual code review of {{ insert: param, sa-11.04_odp.01 }} using the following processes, procedures, and/or techniques: {{ insert: param, sa-11.04_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sa-11.5
+    title: Penetration Testing
+    description: 'Require the developer of the system, system component, or system service to perform penetration testing:'
+    rules: []
+    status: pending
+  - id: sa-11.6
+    title: Attack Surface Reviews
+    description: Require the developer of the system, system component, or system service to perform attack surface reviews.
+    rules: []
+    status: pending
+  - id: sa-11.7
+    title: Verify Scope of Testing and Evaluation
+    description: 'Require the developer of the system, system component, or system service to verify that the scope of testing and evaluation provides complete coverage of the required controls at the following level of rigor: {{ insert: param, sa-11.7_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sa-11.8
+    title: Dynamic Code Analysis
+    description: Require the developer of the system, system component, or system service to employ dynamic code analysis tools to identify common flaws and document the results of the analysis.
+    rules: []
+    status: pending
+  - id: sa-11.9
+    title: Interactive Application Security Testing
+    description: Require the developer of the system, system component, or system service to employ interactive application security testing tools to identify flaws and document the results.
+    rules: []
+    status: pending
+  - id: sa-12
+    title: Supply Chain Protection
+    rules: []
+    status: pending
+  - id: sa-12.1
+    title: Acquisition Strategies / Tools / Methods
+    rules: []
+    status: pending
+  - id: sa-12.2
+    title: Supplier Reviews
+    rules: []
+    status: pending
+  - id: sa-12.3
+    title: Trusted Shipping and Warehousing
+    rules: []
+    status: pending
+  - id: sa-12.4
+    title: Diversity of Suppliers
+    rules: []
+    status: pending
+  - id: sa-12.5
+    title: Limitation of Harm
+    rules: []
+    status: pending
+  - id: sa-12.6
+    title: Minimizing Procurement Time
+    rules: []
+    status: pending
+  - id: sa-12.7
+    title: Assessments Prior to Selection / Acceptance / Update
+    rules: []
+    status: pending
+  - id: sa-12.8
+    title: Use of All-source Intelligence
+    rules: []
+    status: pending
+  - id: sa-12.9
+    title: Operations Security
+    rules: []
+    status: pending
+  - id: sa-12.10
+    title: Validate as Genuine and Not Altered
+    rules: []
+    status: pending
+  - id: sa-12.11
+    title: Penetration Testing / Analysis of Elements, Processes, and Actors
+    rules: []
+    status: pending
+  - id: sa-12.12
+    title: Inter-organizational Agreements
+    rules: []
+    status: pending
+  - id: sa-12.13
+    title: Critical Information System Components
+    rules: []
+    status: pending
+  - id: sa-12.14
+    title: Identity and Traceability
+    rules: []
+    status: pending
+  - id: sa-12.15
+    title: Processes to Address Weaknesses or Deficiencies
+    rules: []
+    status: pending
+  - id: sa-13
+    title: Trustworthiness
+    rules: []
+    status: pending
+  - id: sa-14
+    title: Criticality Analysis
+    rules: []
+    status: pending
+  - id: sa-14.1
+    title: Critical Components with No Viable Alternative Sourcing
+    rules: []
+    status: pending
+  - id: sa-15
+    title: Development Process, Standards, and Tools
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-15.1
+    title: Quality Metrics
+    description: 'Require the developer of the system, system component, or system service to:'
+    rules: []
+    status: pending
+  - id: sa-15.2
+    title: Security and Privacy Tracking Tools
+    description: Require the developer of the system, system component, or system service to select and employ security and privacy tracking tools for use during the development process.
+    rules: []
+    status: pending
+  - id: sa-15.3
+    title: Criticality Analysis
+    description: 'Require the developer of the system, system component, or system service to perform a criticality analysis:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-15.4
+    title: Threat Modeling and Vulnerability Analysis
+    rules: []
+    status: pending
+  - id: sa-15.5
+    title: Attack Surface Reduction
+    description: 'Require the developer of the system, system component, or system service to reduce attack surfaces to {{ insert: param, sa-15.05_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-15.6
+    title: Continuous Improvement
+    description: Require the developer of the system, system component, or system service to implement an explicit process to continuously improve the development process.
+    rules: []
+    status: pending
+  - id: sa-15.7
+    title: Automated Vulnerability Analysis
+    description: 'Require the developer of the system, system component, or system service {{ insert: param, sa-15.07_odp.01 }} to:'
+    rules: []
+    status: pending
+  - id: sa-15.8
+    title: Reuse of Threat and Vulnerability Information
+    description: Require the developer of the system, system component, or system service to use threat modeling and vulnerability analyses from similar systems, components, or services to inform the current development process.
+    rules: []
+    status: pending
+  - id: sa-15.9
+    title: Use of Live Data
+    rules: []
+    status: pending
+  - id: sa-15.10
+    title: Incident Response Plan
+    description: Require the developer of the system, system component, or system service to provide, implement, and test an incident response plan.
+    rules: []
+    status: pending
+  - id: sa-15.11
+    title: Archive System or Component
+    description: Require the developer of the system or system component to archive the system or component to be released or delivered together with the corresponding evidence supporting the final security and privacy review.
+    rules: []
+    status: pending
+  - id: sa-15.12
+    title: Minimize Personally Identifiable Information
+    description: Require the developer of the system or system component to minimize the use of personally identifiable information in development and test environments.
+    rules: []
+    status: pending
+  - id: sa-15.13
+    title: Logging Syntax
+    description: Require the developer of the system or system component to minimize the use of personally identifiable information in development and test environments.
+    rules: []
+    status: pending
+  - id: sa-16
+    title: Developer-provided Training
+    description: 'Require the developer of the system, system component, or system service to provide the following training on the correct use and operation of the implemented security and privacy functions, controls, and/or mechanisms: {{ insert: param, sa-16_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sa-17
+    title: Developer Security and Privacy Architecture and Design
+    description: 'Require the developer of the system, system component, or system service to produce a design specification and security and privacy architecture that:'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sa-17.1
+    title: Formal Policy Model
+    description: 'Require the developer of the system, system component, or system service to:'
+    rules: []
+    status: pending
+  - id: sa-17.2
+    title: Security-relevant Components
+    description: 'Require the developer of the system, system component, or system service to:'
+    rules: []
+    status: pending
+  - id: sa-17.3
+    title: Formal Correspondence
+    description: 'Require the developer of the system, system component, or system service to:'
+    rules: []
+    status: pending
+  - id: sa-17.4
+    title: Informal Correspondence
+    description: 'Require the developer of the system, system component, or system service to:'
+    rules: []
+    status: pending
+  - id: sa-17.5
+    title: Conceptually Simple Design
+    description: 'Require the developer of the system, system component, or system service to:'
+    rules: []
+    status: pending
+  - id: sa-17.6
+    title: Structure for Testing
+    description: Require the developer of the system, system component, or system service to structure security-relevant hardware, software, and firmware to facilitate testing.
+    rules: []
+    status: pending
+  - id: sa-17.7
+    title: Structure for Least Privilege
+    description: Require the developer of the system, system component, or system service to structure security-relevant hardware, software, and firmware to facilitate controlling access with least privilege.
+    rules: []
+    status: pending
+  - id: sa-17.8
+    title: Orchestration
+    description: 'Design {{ insert: param, sa-17.08_odp.01 }} with coordinated behavior to implement the following capabilities: {{ insert: param, sa-17.08_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sa-17.9
+    title: Design Diversity
+    description: 'Use different designs for {{ insert: param, sa-17.09_odp }} to satisfy a common set of requirements or to provide equivalent functionality.'
+    rules: []
+    status: pending
+  - id: sa-18
+    title: Tamper Resistance and Detection
+    rules: []
+    status: pending
+  - id: sa-18.1
+    title: Multiple Phases of System Development Life Cycle
+    rules: []
+    status: pending
+  - id: sa-18.2
+    title: Inspection of Systems or Components
+    rules: []
+    status: pending
+  - id: sa-19
+    title: Component Authenticity
+    rules: []
+    status: pending
+  - id: sa-19.1
+    title: Anti-counterfeit Training
+    rules: []
+    status: pending
+  - id: sa-19.2
+    title: Configuration Control for Component Service and Repair
+    rules: []
+    status: pending
+  - id: sa-19.3
+    title: Component Disposal
+    rules: []
+    status: pending
+  - id: sa-19.4
+    title: Anti-counterfeit Scanning
+    rules: []
+    status: pending
+  - id: sa-20
+    title: Customized Development of Critical Components
+    description: 'Reimplement or custom develop the following critical system components: {{ insert: param, sa-20_odp }}.'
+    rules: []
+    status: pending
+  - id: sa-21
+    title: Developer Screening
+    description: 'Require that the developer of {{ insert: param, sa-21_odp.01 }}:'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sa-21.1
+    title: Validation of Screening
+    rules: []
+    status: pending
+  - id: sa-22
+    title: Unsupported System Components
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sa-22.1
+    title: Alternative Sources for Continued Support
+    rules: []
+    status: pending
+  - id: sa-23
+    title: Specialization
+    description: 'Employ {{ insert: param, sa-23_odp.01 }} on {{ insert: param, sa-23_odp.02 }} supporting mission essential services or functions to increase the trustworthiness in those systems or components.'
+    rules: []
+    status: pending
+  - id: sa-24
+    title: Design For Cyber Resiliency
+    rules: []
+    status: pending
