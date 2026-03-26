@@ -1,0 +1,366 @@
+# NIST 800-53 CP Family: Contingency Planning
+controls:
+  - id: cp-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-2
+    title: Contingency Plan
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-2.1
+    title: Coordinate with Related Plans
+    description: Coordinate contingency plan development with organizational elements responsible for related plans.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-2.2
+    title: Capacity Planning
+    description: Conduct capacity planning so that necessary capacity for information processing, telecommunications, and environmental support exists during contingency operations.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-2.3
+    title: Resume Mission and Business Functions
+    description: 'Plan for the resumption of {{ insert: param, cp-02.03_odp.01 }} mission and business functions within {{ insert: param, cp-02.03_odp.02 }} of contingency plan activation.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-2.4
+    title: Resume All Mission and Business Functions
+    rules: []
+    status: pending
+  - id: cp-2.5
+    title: Continue Mission and Business Functions
+    description: 'Plan for the continuance of {{ insert: param, cp-02.05_odp }} mission and business functions with minimal or no loss of operational continuity and sustains that continuity until full system restoration at primary processing and/or storage sites.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-2.6
+    title: Alternate Processing and Storage Sites
+    description: 'Plan for the transfer of {{ insert: param, cp-02.06_odp }} mission and business functions to alternate processing and/or storage sites with minimal or no loss of operational continuity and sustain that continuity through system restoration to primary processing and/or storage sites.'
+    rules: []
+    status: pending
+  - id: cp-2.7
+    title: Coordinate with External Service Providers
+    description: Coordinate the contingency plan with the contingency plans of external service providers to ensure that contingency requirements can be satisfied.
+    rules: []
+    status: pending
+  - id: cp-2.8
+    title: Identify Critical Assets
+    description: 'Identify critical system assets supporting {{ insert: param, cp-02.08_odp }} mission and business functions.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-3
+    title: Contingency Training
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-3.1
+    title: Simulated Events
+    description: Incorporate simulated events into contingency training to facilitate effective response by personnel in crisis situations.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-3.2
+    title: Mechanisms Used in Training Environments
+    description: Employ mechanisms used in operations to provide a more thorough and realistic contingency training environment.
+    rules: []
+    status: pending
+  - id: cp-4
+    title: Contingency Plan Testing
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-4.1
+    title: Coordinate with Related Plans
+    description: Coordinate contingency plan testing with organizational elements responsible for related plans.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-4.2
+    title: Alternate Processing Site
+    description: 'Test the contingency plan at the alternate processing site:'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-4.3
+    title: Automated Testing
+    description: 'Test the contingency plan using {{ insert: param, cp-04.03_odp }}.'
+    rules: []
+    status: pending
+  - id: cp-4.4
+    title: Full Recovery and Reconstitution
+    description: Include a full recovery and reconstitution of the system to a known state as part of contingency plan testing.
+    rules: []
+    status: pending
+  - id: cp-4.5
+    title: Self-challenge
+    description: 'Employ {{ insert: param, cp-04.05_odp.01 }} to {{ insert: param, cp-04.05_odp.02 }} to disrupt and adversely affect the system or system component.'
+    rules: []
+    status: pending
+  - id: cp-5
+    title: Contingency Plan Update
+    rules: []
+    status: pending
+  - id: cp-6
+    title: Alternate Storage Site
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-6.1
+    title: Separation from Primary Site
+    description: Identify an alternate storage site that is sufficiently separated from the primary storage site to reduce susceptibility to the same threats.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-6.2
+    title: Recovery Time and Recovery Point Objectives
+    description: Configure the alternate storage site to facilitate recovery operations in accordance with recovery time and recovery point objectives.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-6.3
+    title: Accessibility
+    description: Identify potential accessibility problems to the alternate storage site in the event of an area-wide disruption or disaster and outline explicit mitigation actions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-7
+    title: Alternate Processing Site
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-7.1
+    title: Separation from Primary Site
+    description: Identify an alternate processing site that is sufficiently separated from the primary processing site to reduce susceptibility to the same threats.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-7.2
+    title: Accessibility
+    description: Identify potential accessibility problems to alternate processing sites in the event of an area-wide disruption or disaster and outlines explicit mitigation actions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-7.3
+    title: Priority of Service
+    description: Develop alternate processing site agreements that contain priority-of-service provisions in accordance with availability requirements (including recovery time objectives).
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-7.4
+    title: Preparation for Use
+    description: Prepare the alternate processing site so that the site can serve as the operational site supporting essential mission and business functions.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-7.5
+    title: Equivalent Information Security Safeguards
+    rules: []
+    status: pending
+  - id: cp-7.6
+    title: Inability to Return to Primary Site
+    description: Plan and prepare for circumstances that preclude returning to the primary processing site.
+    rules: []
+    status: pending
+  - id: cp-8
+    title: Telecommunications Services
+    description: 'Establish alternate telecommunications services, including necessary agreements to permit the resumption of {{ insert: param, cp-08_odp.01 }} for essential mission and business functions within {{ insert: param, cp-08_odp.02 }} when the primary telecommunications capabilities are unavailable at either the primary or alternate processing or storage sites.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-8.1
+    title: Priority of Service Provisions
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-8.2
+    title: Single Points of Failure
+    description: Obtain alternate telecommunications services to reduce the likelihood of sharing a single point of failure with primary telecommunications services.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-8.3
+    title: Separation of Primary and Alternate Providers
+    description: Obtain alternate telecommunications services from providers that are separated from primary service providers to reduce susceptibility to the same threats.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-8.4
+    title: Provider Contingency Plan
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-8.5
+    title: Alternate Telecommunication Service Testing
+    description: 'Test alternate telecommunication services {{ insert: param, cp-08.05_odp }}.'
+    rules: []
+    status: pending
+  - id: cp-9
+    title: System Backup
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-9.1
+    title: Testing for Reliability and Integrity
+    description: 'Test backup information {{ insert: param, cp-9.1_prm_1 }} to verify media reliability and information integrity.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-9.2
+    title: Test Restoration Using Sampling
+    description: Use a sample of backup information in the restoration of selected system functions as part of contingency plan testing.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-9.3
+    title: Separate Storage for Critical Information
+    description: 'Store backup copies of {{ insert: param, cp-09.03_odp }} in a separate facility or in a fire rated container that is not collocated with the operational system.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-9.4
+    title: Protection from Unauthorized Modification
+    rules: []
+    status: pending
+  - id: cp-9.5
+    title: Transfer to Alternate Storage Site
+    description: 'Transfer system backup information to the alternate storage site {{ insert: param, cp-9.5_prm_1 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-9.6
+    title: Redundant Secondary System
+    description: Conduct system backup by maintaining a redundant secondary system that is not collocated with the primary system and that can be activated without loss of information or disruption to operations.
+    rules: []
+    status: pending
+  - id: cp-9.7
+    title: Dual Authorization for Deletion or Destruction
+    description: 'Enforce dual authorization for the deletion or destruction of {{ insert: param, cp-09.07_odp }}.'
+    rules: []
+    status: pending
+  - id: cp-9.8
+    title: Cryptographic Protection
+    description: 'Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of {{ insert: param, cp-09.08_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-10
+    title: System Recovery and Reconstitution
+    description: 'Provide for the recovery and reconstitution of the system to a known state within {{ insert: param, cp-10_prm_1 }} after a disruption, compromise, or failure.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-10.1
+    title: Contingency Plan Testing
+    rules: []
+    status: pending
+  - id: cp-10.2
+    title: Transaction Recovery
+    description: Implement transaction recovery for systems that are transaction-based.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cp-10.3
+    title: Compensating Security Controls
+    description: Addressed through tailoring.
+    rules: []
+    status: pending
+  - id: cp-10.4
+    title: Restore Within Time Period
+    description: 'Provide the capability to restore system components within {{ insert: param, cp-10.04_odp }} from configuration-controlled and integrity-protected information representing a known, operational state for the components.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cp-10.5
+    title: Failover Capability
+    rules: []
+    status: pending
+  - id: cp-10.6
+    title: Component Protection
+    description: Protect system components used for recovery and reconstitution.
+    rules: []
+    status: pending
+  - id: cp-11
+    title: Alternate Communications Protocols
+    description: 'Provide the capability to employ {{ insert: param, cp-11_odp }} in support of maintaining continuity of operations.'
+    rules: []
+    status: pending
+  - id: cp-12
+    title: Safe Mode
+    description: 'When {{ insert: param, cp-12_odp.02 }} are detected, enter a safe mode of operation with {{ insert: param, cp-12_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: cp-13
+    title: Alternative Security Mechanisms
+    description: 'Employ {{ insert: param, cp-13_odp.01 }} for satisfying {{ insert: param, cp-13_odp.02 }} when the primary means of implementing the security function is unavailable or compromised.'
+    rules: []
+    status: pending

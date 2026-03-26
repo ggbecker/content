@@ -1,0 +1,103 @@
+# NIST 800-53 AT Family: Awareness and Training
+controls:
+  - id: at-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: at-2
+    title: Literacy Training and Awareness
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: at-2.1
+    title: Practical Exercises
+    description: Provide practical exercises in literacy training that simulate events and incidents.
+    rules: []
+    status: pending
+  - id: at-2.2
+    title: Insider Threat
+    description: Provide literacy training on recognizing and reporting potential indicators of insider threat.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: at-2.3
+    title: Social Engineering and Mining
+    description: Provide literacy training on recognizing and reporting potential and actual instances of social engineering and social mining.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: at-2.4
+    title: Suspicious Communications and Anomalous System Behavior
+    description: 'Provide literacy training on recognizing suspicious communications and anomalous behavior in organizational systems using {{ insert: param, at-02.04_odp }}.'
+    rules: []
+    status: pending
+  - id: at-2.5
+    title: Advanced Persistent Threat
+    description: Provide literacy training on the advanced persistent threat.
+    rules: []
+    status: pending
+  - id: at-2.6
+    title: Cyber Threat Environment
+    rules: []
+    status: pending
+  - id: at-3
+    title: Role-based Training
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: at-3.1
+    title: Environmental Controls
+    description: 'Provide {{ insert: param, at-03.01_odp.01 }} with initial and {{ insert: param, at-03.01_odp.02 }} training in the employment and operation of environmental controls.'
+    rules: []
+    status: pending
+  - id: at-3.2
+    title: Physical Security Controls
+    description: 'Provide {{ insert: param, at-03.02_odp.01 }} with initial and {{ insert: param, at-03.02_odp.02 }} training in the employment and operation of physical security controls.'
+    rules: []
+    status: pending
+  - id: at-3.3
+    title: Practical Exercises
+    description: Provide practical exercises in security and privacy training that reinforce training objectives.
+    rules: []
+    status: pending
+  - id: at-3.4
+    title: Suspicious Communications and Anomalous System Behavior
+    rules: []
+    status: pending
+  - id: at-3.5
+    title: Processing Personally Identifiable Information
+    description: 'Provide {{ insert: param, at-03.05_odp.01 }} with initial and {{ insert: param, at-03.05_odp.02 }} training in the employment and operation of personally identifiable information processing and transparency controls.'
+    rules: []
+    status: pending
+  - id: at-4
+    title: Training Records
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: at-5
+    title: Contacts with Security Groups and Associations
+    rules: []
+    status: pending
+  - id: at-6
+    title: Training Feedback
+    description: 'Provide feedback on organizational training results to the following personnel {{ insert: param, at-06_odp.01 }}: {{ insert: param, at-06_odp.02 }}.'
+    rules: []
+    status: pending

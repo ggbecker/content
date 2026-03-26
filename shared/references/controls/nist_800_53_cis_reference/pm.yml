@@ -1,0 +1,172 @@
+# NIST 800-53 PM Family: Program Management
+controls:
+  - id: pm-1
+    title: Information Security Program Plan
+    rules: []
+    status: pending
+  - id: pm-2
+    title: Information Security Program Leadership Role
+    description: Appoint a senior agency information security officer with the mission and resources to coordinate, develop, implement, and maintain an organization-wide information security program.
+    rules: []
+    status: pending
+  - id: pm-3
+    title: Information Security and Privacy Resources
+    rules: []
+    status: pending
+  - id: pm-4
+    title: Plan of Action and Milestones Process
+    rules: []
+    status: pending
+  - id: pm-5
+    title: System Inventory
+    description: 'Develop and update {{ insert: param, pm-05_odp }} an inventory of organizational systems.'
+    rules: []
+    status: pending
+  - id: pm-5.1
+    title: Inventory of Personally Identifiable Information
+    description: 'Establish, maintain, and update {{ insert: param, pm-05.01_odp }} an inventory of all systems, applications, and projects that process personally identifiable information.'
+    rules: []
+    status: pending
+  - id: pm-6
+    title: Measures of Performance
+    description: Develop, monitor, and report on the results of information security and privacy measures of performance.
+    rules: []
+    status: pending
+  - id: pm-7
+    title: Enterprise Architecture
+    description: Develop and maintain an enterprise architecture with consideration for information security, privacy, and the resulting risk to organizational operations and assets, individuals, other organizations, and the Nation.
+    rules: []
+    status: pending
+  - id: pm-7.1
+    title: Offloading
+    description: 'Offload {{ insert: param, pm-07.01_odp }} to other systems, system components, or an external provider.'
+    rules: []
+    status: pending
+  - id: pm-8
+    title: Critical Infrastructure Plan
+    description: Address information security and privacy issues in the development, documentation, and updating of a critical infrastructure and key resources protection plan.
+    rules: []
+    status: pending
+  - id: pm-9
+    title: Risk Management Strategy
+    rules: []
+    status: pending
+  - id: pm-10
+    title: Authorization Process
+    rules: []
+    status: pending
+  - id: pm-11
+    title: Mission and Business Process Definition
+    rules: []
+    status: pending
+  - id: pm-12
+    title: Insider Threat Program
+    description: Implement an insider threat program that includes a cross-discipline insider threat incident handling team.
+    rules: []
+    status: pending
+  - id: pm-13
+    title: Security and Privacy Workforce
+    description: Establish a security and privacy workforce development and improvement program.
+    rules: []
+    status: pending
+  - id: pm-14
+    title: Testing, Training, and Monitoring
+    rules: []
+    status: pending
+  - id: pm-15
+    title: Security and Privacy Groups and Associations
+    description: 'Establish and institutionalize contact with selected groups and associations within the security and privacy communities:'
+    rules: []
+    status: pending
+  - id: pm-16
+    title: Threat Awareness Program
+    description: Implement a threat awareness program that includes a cross-organization information-sharing capability for threat intelligence.
+    rules: []
+    status: pending
+  - id: pm-16.1
+    title: Automated Means for Sharing Threat Intelligence
+    description: Employ automated mechanisms to maximize the effectiveness of sharing threat intelligence information.
+    rules: []
+    status: pending
+  - id: pm-17
+    title: Protecting Controlled Unclassified Information on External Systems
+    rules: []
+    status: pending
+  - id: pm-18
+    title: Privacy Program Plan
+    rules: []
+    status: pending
+  - id: pm-19
+    title: Privacy Program Leadership Role
+    description: Appoint a senior agency official for privacy with the authority, mission, accountability, and resources to coordinate, develop, and implement, applicable privacy requirements and manage privacy risks through the organization-wide privacy program.
+    rules: []
+    status: pending
+  - id: pm-20
+    title: Dissemination of Privacy Program Information
+    description: 'Maintain a central resource webpage on the organization’s principal public website that serves as a central source of information about the organization’s privacy program and that:'
+    rules: []
+    status: pending
+  - id: pm-20.1
+    title: Privacy Policies on Websites, Applications, and Digital Services
+    description: 'Develop and post privacy policies on all external-facing websites, mobile applications, and other digital services, that:'
+    rules: []
+    status: pending
+  - id: pm-21
+    title: Accounting of Disclosures
+    rules: []
+    status: pending
+  - id: pm-22
+    title: Personally Identifiable Information Quality Management
+    description: 'Develop and document organization-wide policies and procedures for:'
+    rules: []
+    status: pending
+  - id: pm-23
+    title: Data Governance Body
+    description: 'Establish a Data Governance Body consisting of {{ insert: param, pm-23_odp.01 }} with {{ insert: param, pm-23_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: pm-24
+    title: Data Integrity Board
+    description: 'Establish a Data Integrity Board to:'
+    rules: []
+    status: pending
+  - id: pm-25
+    title: Minimization of Personally Identifiable Information Used in Testing, Training, and Research
+    rules: []
+    status: pending
+  - id: pm-26
+    title: Complaint Management
+    description: 'Implement a process for receiving and responding to complaints, concerns, or questions from individuals about the organizational security and privacy practices that includes:'
+    rules: []
+    status: pending
+  - id: pm-27
+    title: Privacy Reporting
+    rules: []
+    status: pending
+  - id: pm-28
+    title: Risk Framing
+    rules: []
+    status: pending
+  - id: pm-29
+    title: Risk Management Program Leadership Roles
+    rules: []
+    status: pending
+  - id: pm-30
+    title: Supply Chain Risk Management Strategy
+    rules: []
+    status: pending
+  - id: pm-30.1
+    title: Suppliers of Critical or Mission-essential Items
+    description: Identify, prioritize, and assess suppliers of critical or mission-essential technologies, products, and services.
+    rules: []
+    status: pending
+  - id: pm-31
+    title: Continuous Monitoring Strategy
+    description: 'Develop an organization-wide continuous monitoring strategy and implement continuous monitoring programs that include:'
+    rules: []
+    status: pending
+  - id: pm-32
+    title: Purposing
+    description: 'Analyze {{ insert: param, pm-32_odp }} supporting mission essential services or functions to ensure that the information resources are being used consistent with their intended purpose.'
+    rules: []
+    status: pending

@@ -1,0 +1,624 @@
+# NIST 800-53 AU Family: Audit and Accountability
+controls:
+  - id: au-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-2
+    title: Event Logging
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - var_audit_backlog_limit=8192
+      {{% if product == "rhel9" %}}
+      - var_auditd_action_mail_acct=root
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - var_auditd_admin_space_left_action=cis_rhel10
+      {{% elif product == "rhel8" %}}
+      - var_auditd_admin_space_left_action=cis_rhel8
+      {{% elif product == "rhel9" %}}
+      - var_auditd_admin_space_left_action=cis_rhel9
+      {{% endif %}}
+      {{% if product == "rhel9" %}}
+      - var_auditd_disk_error_action=cis_rhel9
+      - var_auditd_disk_full_action=cis_rhel9
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - var_auditd_space_left_action=cis_rhel10
+      {{% elif product == "rhel8" %}}
+      - var_auditd_space_left_action=cis_rhel8
+      {{% elif product == "rhel9" %}}
+      - var_auditd_space_left_action=cis_rhel9
+      {{% endif %}}
+      - aide_build_database
+      - aide_periodic_cron_checking
+      - audit_rules_execution_chacl
+      - audit_rules_execution_chcon
+      - audit_rules_execution_setfacl
+      - audit_rules_privileged_commands_usermod
+      - auditd_data_disk_error_action
+      - auditd_data_disk_full_action
+      {{% if product == "rhel9" %}}
+      - auditd_data_retention_action_mail_acct
+      {{% endif %}}
+      - auditd_data_retention_admin_space_left_action
+      - auditd_data_retention_space_left_action
+      - grub2_audit_backlog_limit_argument
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - journald_disable_forward_to_syslog
+      {{% endif %}}
+      - package_aide_installed
+      - package_audit-libs_installed
+      - package_audit_installed
+      - package_systemd-journal-remote_installed
+      {{% if product == "rhel8" %}}
+      - rsyslog_nolisten
+      {{% endif %}}
+      - service_auditd_enabled
+      {{% if product == "rhel8" %}}
+      - service_rsyslog_enabled
+      {{% endif %}}
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - service_systemd-journal-upload_enabled
+      {{% endif %}}
+      - service_systemd-journald_enabled
+      - socket_systemd-journal-remote_disabled
+    status: automated
+  - id: au-2.1
+    title: Compilation of Audit Records from Multiple Sources
+    rules: []
+    status: pending
+  - id: au-2.2
+    title: Selection of Audit Events by Component
+    rules: []
+    status: pending
+  - id: au-2.3
+    title: Reviews and Updates
+    rules: []
+    status: pending
+  - id: au-2.4
+    title: Privileged Functions
+    rules: []
+    status: pending
+  - id: au-3
+    title: Content of Audit Records
+    description: 'Ensure that audit records contain information that establishes the following:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - sshd_max_auth_tries_value=4
+      - sysctl_net_ipv4_conf_all_log_martians_value=enabled
+      - sysctl_net_ipv4_conf_default_log_martians_value=enabled
+      - var_accounts_passwords_pam_faillock_dir=run
+      - var_multiple_time_servers=rhel
+      - audit_rules_dac_modification_chmod
+      - audit_rules_dac_modification_chown
+      - audit_rules_dac_modification_fchmod
+      - audit_rules_dac_modification_fchmodat
+      - audit_rules_dac_modification_fchown
+      - audit_rules_dac_modification_fchownat
+      - audit_rules_dac_modification_fremovexattr
+      - audit_rules_dac_modification_fsetxattr
+      - audit_rules_dac_modification_lchown
+      - audit_rules_dac_modification_lremovexattr
+      - audit_rules_dac_modification_lsetxattr
+      - audit_rules_dac_modification_removexattr
+      - audit_rules_dac_modification_setxattr
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - audit_rules_kernel_module_loading_create
+      {{% endif %}}
+      - audit_rules_kernel_module_loading_delete
+      - audit_rules_kernel_module_loading_finit
+      - audit_rules_kernel_module_loading_init
+      - audit_rules_kernel_module_loading_query
+      - audit_rules_login_events_faillock
+      - audit_rules_login_events_lastlog
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - audit_rules_mac_modification
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - audit_rules_mac_modification_etc_selinux
+      {{% endif %}}
+      - audit_rules_mac_modification_usr_share
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - audit_rules_networkconfig_modification
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - audit_rules_networkconfig_modification_etc_hosts
+      - audit_rules_networkconfig_modification_etc_issue
+      - audit_rules_networkconfig_modification_etc_issue_net
+      - audit_rules_networkconfig_modification_etc_networkmanager_system_connections
+      - audit_rules_networkconfig_modification_etc_sysconfig_network
+      {{% endif %}}
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - audit_rules_networkconfig_modification_hostname_file
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - audit_rules_networkconfig_modification_network_scripts
+      {{% endif %}}
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - audit_rules_networkconfig_modification_networkmanager
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - audit_rules_networkconfig_modification_setdomainname
+      - audit_rules_networkconfig_modification_sethostname
+      {{% endif %}}
+      - audit_rules_privileged_commands
+      - audit_rules_privileged_commands_kmod
+      - audit_rules_session_events_btmp
+      - audit_rules_session_events_utmp
+      - audit_rules_session_events_wtmp
+      - audit_rules_suid_auid_privilege_function
+      - audit_rules_sysadmin_actions
+      - audit_rules_time_adjtimex
+      - audit_rules_time_clock_settime
+      - audit_rules_time_settimeofday
+      - audit_rules_time_watch_localtime
+      - audit_rules_unsuccessful_file_modification_creat
+      - audit_rules_unsuccessful_file_modification_ftruncate
+      - audit_rules_unsuccessful_file_modification_open
+      - audit_rules_unsuccessful_file_modification_openat
+      - audit_rules_unsuccessful_file_modification_truncate
+      - audit_rules_usergroup_modification_group
+      - audit_rules_usergroup_modification_gshadow
+      - audit_rules_usergroup_modification_nsswitch_conf
+      - audit_rules_usergroup_modification_opasswd
+      - audit_rules_usergroup_modification_pam_conf
+      - audit_rules_usergroup_modification_pamd
+      - audit_rules_usergroup_modification_passwd
+      - audit_rules_usergroup_modification_shadow
+      - chronyd_specify_remote_server
+      - directory_permissions_var_log_audit
+      - file_groupownership_audit_binaries
+      - file_ownership_var_log_audit_stig
+      - file_permissions_audit_binaries
+      - journald_storage
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - package_chrony_installed
+      {{% endif %}}
+      - sshd_set_loglevel_verbose
+      - sshd_set_max_auth_tries
+      - sudo_custom_logfile
+      - sysctl_net_ipv4_conf_all_log_martians
+      - sysctl_net_ipv4_conf_default_log_martians
+    status: automated
+  - id: au-3.1
+    title: Additional Audit Information
+    description: 'Generate audit records containing the following additional information: {{ insert: param, au-03.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-3.2
+    title: Centralized Management of Planned Audit Record Content
+    rules: []
+    status: pending
+  - id: au-3.3
+    title: Limit Personally Identifiable Information Elements
+    description: 'Limit personally identifiable information contained in audit records to the following elements identified in the privacy risk assessment: {{ insert: param, au-03.03_odp }}.'
+    rules: []
+    status: pending
+  - id: au-4
+    title: Audit Log Storage Capacity
+    description: 'Allocate audit log storage capacity to accommodate {{ insert: param, au-04_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - journald_compress
+    status: automated
+  - id: au-4.1
+    title: Transfer to Alternate Storage
+    description: 'Transfer audit logs {{ insert: param, au-04.01_odp }} to a different system, system component, or media other than the system or system component conducting the logging.'
+    rules: []
+    status: pending
+  - id: au-5
+    title: Response to Audit Logging Process Failures
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      {{% if product == "rhel10" %}}
+      - var_auditd_disk_error_action=cis_rhel10
+      {{% elif product == "rhel8" %}}
+      - var_auditd_disk_error_action=cis_rhel8
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - var_auditd_disk_full_action=cis_rhel10
+      {{% elif product == "rhel8" %}}
+      - var_auditd_disk_full_action=cis_rhel8
+      {{% endif %}}
+      - auditd_data_disk_error_action
+      - auditd_data_disk_full_action
+    status: automated
+  - id: au-5.1
+    title: Storage Capacity Warning
+    description: 'Provide a warning to {{ insert: param, au-05.01_odp.01 }} within {{ insert: param, au-05.01_odp.02 }} when allocated audit log storage volume reaches {{ insert: param, au-05.01_odp.03 }} of repository maximum audit log storage capacity.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-5.2
+    title: Real-time Alerts
+    description: 'Provide an alert within {{ insert: param, au-05.02_odp.01 }} to {{ insert: param, au-05.02_odp.02 }} when the following audit failure events occur: {{ insert: param, au-05.02_odp.03 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-5.3
+    title: Configurable Traffic Volume Thresholds
+    description: 'Enforce configurable network communications traffic volume thresholds reflecting limits on audit log storage capacity and {{ insert: param, au-05.03_odp }} network traffic above those thresholds.'
+    rules: []
+    status: pending
+  - id: au-5.4
+    title: Shutdown on Failure
+    description: 'Invoke a {{ insert: param, au-05.04_odp.01 }} in the event of {{ insert: param, au-05.04_odp.02 }} , unless an alternate audit logging capability exists.'
+    rules: []
+    status: pending
+  - id: au-5.5
+    title: Alternate Audit Logging Capability
+    description: 'Provide an alternate audit logging capability in the event of a failure in primary audit logging capability that implements {{ insert: param, au-05.05_odp }}.'
+    rules: []
+    status: pending
+  - id: au-6
+    title: Audit Record Review, Analysis, and Reporting
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-6.1
+    title: Automated Process Integration
+    description: 'Integrate audit record review, analysis, and reporting processes using {{ insert: param, au-06.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-6.2
+    title: Automated Security Alerts
+    rules: []
+    status: pending
+  - id: au-6.3
+    title: Correlate Audit Record Repositories
+    description: Analyze and correlate audit records across different repositories to gain organization-wide situational awareness.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-6.4
+    title: Central Review and Analysis
+    description: Provide and implement the capability to centrally review and analyze audit records from multiple components within the system.
+    rules: []
+    status: pending
+  - id: au-6.5
+    title: Integrated Analysis of Audit Records
+    description: 'Integrate analysis of audit records with analysis of {{ insert: param, au-06.05_odp.01 }} to further enhance the ability to identify inappropriate or unusual activity.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-6.6
+    title: Correlation with Physical Monitoring
+    description: Correlate information from audit records with information obtained from monitoring physical access to further enhance the ability to identify suspicious, inappropriate, unusual, or malevolent activity.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-6.7
+    title: Permitted Actions
+    description: 'Specify the permitted actions for each {{ insert: param, au-06.07_odp }} associated with the review, analysis, and reporting of audit record information.'
+    rules: []
+    status: pending
+  - id: au-6.8
+    title: Full Text Analysis of Privileged Commands
+    description: Perform a full text analysis of logged privileged commands in a physically distinct component or subsystem of the system, or other system that is dedicated to that analysis.
+    rules: []
+    status: pending
+  - id: au-6.9
+    title: Correlation with Information from Nontechnical Sources
+    description: Correlate information from nontechnical sources with audit record information to enhance organization-wide situational awareness.
+    rules: []
+    status: pending
+  - id: au-6.10
+    title: Audit Level Adjustment
+    rules: []
+    status: pending
+  - id: au-7
+    title: Audit Record Reduction and Report Generation
+    description: 'Provide and implement an audit record reduction and report generation capability that:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-7.1
+    title: Automatic Processing
+    description: 'Provide and implement the capability to process, sort, and search audit records for events of interest based on the following content: {{ insert: param, au-07.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-7.2
+    title: Automatic Sort and Search
+    rules: []
+    status: pending
+  - id: au-8
+    title: Time Stamps
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      {{% if product == "rhel9" %}}
+      - var_auditd_max_log_file=6
+      {{% elif product in ["rhel10", "rhel8"] %}}
+      - var_auditd_max_log_file=8
+      {{% endif %}}
+      - var_auditd_max_log_file_action=keep_logs
+      - auditd_data_retention_max_log_file
+      - auditd_data_retention_max_log_file_action
+    status: automated
+  - id: au-8.1
+    title: Synchronization with Authoritative Time Source
+    rules: []
+    status: pending
+  - id: au-8.2
+    title: Secondary Authoritative Time Source
+    rules: []
+    status: pending
+  - id: au-9
+    title: Protection of Audit Information
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - audit_rules_immutable
+    status: automated
+  - id: au-9.1
+    title: Hardware Write-once Media
+    description: Write audit trails to hardware-enforced, write-once media.
+    rules: []
+    status: pending
+  - id: au-9.2
+    title: Store on Separate Physical Systems or Components
+    description: 'Store audit records {{ insert: param, au-09.02_odp }} in a repository that is part of a physically different system or system component than the system or component being audited.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-9.3
+    title: Cryptographic Protection
+    description: Implement cryptographic mechanisms to protect the integrity of audit information and audit tools.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-9.4
+    title: Access by Subset of Privileged Users
+    description: 'Authorize access to management of audit logging functionality to only {{ insert: param, au-09.04_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-9.5
+    title: Dual Authorization
+    description: 'Enforce dual authorization for {{ insert: param, au-09.05_odp.01 }} of {{ insert: param, au-09.05_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: au-9.6
+    title: Read-only Access
+    description: 'Authorize read-only access to audit information to {{ insert: param, au-09.06_odp }}.'
+    rules: []
+    status: pending
+  - id: au-9.7
+    title: Store on Component with Different Operating System
+    description: Store audit information on a component running a different operating system than the system or component being audited.
+    rules: []
+    status: pending
+  - id: au-10
+    title: Non-repudiation
+    description: 'Provide irrefutable evidence that an individual (or process acting on behalf of an individual) has performed {{ insert: param, au-10_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-10.1
+    title: Association of Identities
+    rules: []
+    status: pending
+  - id: au-10.2
+    title: Validate Binding of Information Producer Identity
+    rules: []
+    status: pending
+  - id: au-10.3
+    title: Chain of Custody
+    description: Maintain reviewer or releaser credentials within the established chain of custody for information reviewed or released.
+    rules: []
+    status: pending
+  - id: au-10.4
+    title: Validate Binding of Information Reviewer Identity
+    rules: []
+    status: pending
+  - id: au-10.5
+    title: Digital Signatures
+    rules: []
+    status: pending
+  - id: au-11
+    title: Audit Record Retention
+    description: 'Retain audit records for {{ insert: param, au-11_odp }} to provide support for after-the-fact investigations of incidents and to meet regulatory and organizational information retention requirements.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: au-11.1
+    title: Long-term Retrieval Capability
+    description: 'Employ {{ insert: param, au-11.01_odp }} to ensure that long-term audit records generated by the system can be retrieved.'
+    rules: []
+    status: pending
+  - id: au-12
+    title: Audit Record Generation
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - var_accounts_passwords_pam_faillock_dir=run
+      - audit_rules_dac_modification_chmod
+      - audit_rules_dac_modification_chown
+      - audit_rules_dac_modification_fchmod
+      - audit_rules_dac_modification_fchmodat
+      {{% if product == "rhel10" %}}
+      - audit_rules_dac_modification_fchmodat2
+      {{% endif %}}
+      - audit_rules_dac_modification_fchown
+      - audit_rules_dac_modification_fchownat
+      - audit_rules_dac_modification_fremovexattr
+      - audit_rules_dac_modification_fsetxattr
+      - audit_rules_dac_modification_lchown
+      - audit_rules_dac_modification_lremovexattr
+      - audit_rules_dac_modification_lsetxattr
+      - audit_rules_dac_modification_removexattr
+      - audit_rules_dac_modification_setxattr
+      - audit_rules_execution_chcon
+      - audit_rules_file_deletion_events_rename
+      - audit_rules_file_deletion_events_renameat
+      {{% if product == "rhel10" %}}
+      - audit_rules_file_deletion_events_renameat2
+      {{% endif %}}
+      - audit_rules_file_deletion_events_unlink
+      - audit_rules_file_deletion_events_unlinkat
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - audit_rules_kernel_module_loading_create
+      {{% endif %}}
+      - audit_rules_kernel_module_loading_delete
+      - audit_rules_kernel_module_loading_finit
+      - audit_rules_kernel_module_loading_init
+      - audit_rules_kernel_module_loading_query
+      - audit_rules_login_events_faillock
+      - audit_rules_login_events_lastlog
+      - audit_rules_media_export
+      - audit_rules_privileged_commands_kmod
+      - audit_rules_privileged_commands_usermod
+      - audit_rules_sysadmin_actions
+      - audit_rules_unsuccessful_file_modification_creat
+      - audit_rules_unsuccessful_file_modification_ftruncate
+      - audit_rules_unsuccessful_file_modification_open
+      - audit_rules_unsuccessful_file_modification_openat
+      - audit_rules_unsuccessful_file_modification_truncate
+      - audit_rules_usergroup_modification_group
+      - audit_rules_usergroup_modification_gshadow
+      - audit_rules_usergroup_modification_nsswitch_conf
+      - audit_rules_usergroup_modification_opasswd
+      - audit_rules_usergroup_modification_pam_conf
+      - audit_rules_usergroup_modification_pamd
+      - audit_rules_usergroup_modification_passwd
+      - audit_rules_usergroup_modification_shadow
+      - file_permissions_audit_configuration
+      - grub2_audit_argument
+      - service_auditd_enabled
+    status: automated
+  - id: au-12.1
+    title: System-wide and Time-correlated Audit Trail
+    description: 'Compile audit records from {{ insert: param, au-12.01_odp.01 }} into a system-wide (logical or physical) audit trail that is time-correlated to within {{ insert: param, au-12.01_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-12.2
+    title: Standardized Formats
+    description: Produce a system-wide (logical or physical) audit trail composed of audit records in a standardized format.
+    rules: []
+    status: pending
+  - id: au-12.3
+    title: Changes by Authorized Individuals
+    description: 'Provide and implement the capability for {{ insert: param, au-12.03_odp.01 }} to change the logging to be performed on {{ insert: param, au-12.03_odp.02 }} based on {{ insert: param, au-12.03_odp.03 }} within {{ insert: param, au-12.03_odp.04 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: au-12.4
+    title: Query Parameter Audits of Personally Identifiable Information
+    description: Provide and implement the capability for auditing the parameters of user query events for data sets containing personally identifiable information.
+    rules: []
+    status: pending
+  - id: au-13
+    title: Monitoring for Information Disclosure
+    rules: []
+    status: pending
+  - id: au-13.1
+    title: Use of Automated Tools
+    description: 'Monitor open-source information and information sites using {{ insert: param, au-13.01_odp }}.'
+    rules: []
+    status: pending
+  - id: au-13.2
+    title: Review of Monitored Sites
+    description: 'Review the list of open-source information sites being monitored {{ insert: param, au-13.02_odp }}.'
+    rules: []
+    status: pending
+  - id: au-13.3
+    title: Unauthorized Replication of Information
+    description: Employ discovery techniques, processes, and tools to determine if external entities are replicating organizational information in an unauthorized manner.
+    rules: []
+    status: pending
+  - id: au-14
+    title: Session Audit
+    rules: []
+    status: pending
+  - id: au-14.1
+    title: System Start-up
+    description: Initiate session audits automatically at system start-up.
+    rules: []
+    status: pending
+  - id: au-14.2
+    title: Capture and Record Content
+    rules: []
+    status: pending
+  - id: au-14.3
+    title: Remote Viewing and Listening
+    description: Provide and implement the capability for authorized users to remotely view and hear content related to an established user session in real time.
+    rules: []
+    status: pending
+  - id: au-15
+    title: Alternate Audit Logging Capability
+    rules: []
+    status: pending
+  - id: au-16
+    title: Cross-organizational Audit Logging
+    description: 'Employ {{ insert: param, au-16_odp.01 }} for coordinating {{ insert: param, au-16_odp.02 }} among external organizations when audit information is transmitted across organizational boundaries.'
+    rules: []
+    status: pending
+  - id: au-16.1
+    title: Identity Preservation
+    description: Preserve the identity of individuals in cross-organizational audit trails.
+    rules: []
+    status: pending
+  - id: au-16.2
+    title: Sharing of Audit Information
+    description: 'Provide cross-organizational audit information to {{ insert: param, au-16.02_odp.01 }} based on {{ insert: param, au-16.02_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: au-16.3
+    title: Disassociability
+    description: 'Implement {{ insert: param, au-16.03_odp }} to disassociate individuals from audit information transmitted across organizational boundaries.'
+    rules: []
+    status: pending

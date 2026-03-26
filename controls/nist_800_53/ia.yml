@@ -1,0 +1,509 @@
+# NIST 800-53 IA Family: Identification and Authentication
+controls:
+  - id: ia-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-2
+    title: Identification and Authentication (Organizational Users)
+    description: Uniquely identify and authenticate organizational users and associate that unique identification with processes acting on behalf of those users.
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - account_unique_id
+    status: automated
+  - id: ia-2.1
+    title: Multi-factor Authentication to Privileged Accounts
+    description: Implement multi-factor authentication for access to privileged accounts.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-2.2
+    title: Multi-factor Authentication to Non-privileged Accounts
+    description: Implement multi-factor authentication for access to non-privileged accounts.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-2.3
+    title: Local Access to Privileged Accounts
+    rules: []
+    status: pending
+  - id: ia-2.4
+    title: Local Access to Non-privileged Accounts
+    rules: []
+    status: pending
+  - id: ia-2.5
+    title: Individual Authentication with Group Authentication
+    description: When shared accounts or authenticators are employed, require users to be individually authenticated before granting access to the shared accounts or resources.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ia-2.6
+    title: Access to Accounts —separate Device
+    description: 'Implement multi-factor authentication for {{ insert: param, ia-02.06_odp.01 }} access to {{ insert: param, ia-02.06_odp.02 }} such that:'
+    rules: []
+    status: pending
+  - id: ia-2.7
+    title: Network Access to Non-privileged Accounts — Separate Device
+    rules: []
+    status: pending
+  - id: ia-2.8
+    title: Access to Accounts — Replay Resistant
+    description: 'Implement replay-resistant authentication mechanisms for access to {{ insert: param, ia-02.08_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-2.9
+    title: Network Access to Non-privileged Accounts — Replay Resistant
+    rules: []
+    status: pending
+  - id: ia-2.10
+    title: Single Sign-on
+    description: 'Provide a single sign-on capability for {{ insert: param, ia-02.10_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-2.11
+    title: Remote Access — Separate Device
+    rules: []
+    status: pending
+  - id: ia-2.12
+    title: Acceptance of PIV Credentials
+    description: Accept and electronically verify Personal Identity Verification-compliant credentials.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-2.13
+    title: Out-of-band Authentication
+    description: 'Implement the following out-of-band authentication mechanisms under {{ insert: param, ia-02.13_odp.02 }}: {{ insert: param, ia-02.13_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: ia-3
+    title: Device Identification and Authentication
+    description: 'Uniquely identify and authenticate {{ insert: param, ia-03_odp.01 }} before establishing a {{ insert: param, ia-03_odp.02 }} connection.'
+    levels:
+      - moderate
+      - high
+    rules:
+      - dconf_gnome_disable_automount
+      - dconf_gnome_disable_automount_open
+      - kernel_module_usb-storage_disabled
+    status: automated
+  - id: ia-3.1
+    title: Cryptographic Bidirectional Authentication
+    description: 'Authenticate {{ insert: param, ia-03.01_odp.01 }} before establishing {{ insert: param, ia-03.01_odp.02 }} connection using bidirectional authentication that is cryptographically based.'
+    rules: []
+    status: pending
+  - id: ia-3.2
+    title: Cryptographic Bidirectional Network Authentication
+    rules: []
+    status: pending
+  - id: ia-3.3
+    title: Dynamic Address Allocation
+    rules: []
+    status: pending
+  - id: ia-3.4
+    title: Device Attestation
+    description: 'Handle device identification and authentication based on attestation by {{ insert: param, ia-03.04_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-4
+    title: Identifier Management
+    description: 'Manage system identifiers by:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-4.1
+    title: Prohibit Account Identifiers as Public Identifiers
+    description: Prohibit the use of system account identifiers that are the same as public identifiers for individual accounts.
+    rules: []
+    status: pending
+  - id: ia-4.2
+    title: Supervisor Authorization
+    rules: []
+    status: pending
+  - id: ia-4.3
+    title: Multiple Forms of Certification
+    rules: []
+    status: pending
+  - id: ia-4.4
+    title: Identify User Status
+    description: 'Manage individual identifiers by uniquely identifying each individual as {{ insert: param, ia-04.04_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-4.5
+    title: Dynamic Management
+    description: 'Manage individual identifiers dynamically in accordance with {{ insert: param, ia-04.05_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-4.6
+    title: Cross-organization Management
+    description: 'Coordinate with the following external organizations for cross-organization management of identifiers: {{ insert: param, ia-04.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-4.7
+    title: In-person Registration
+    rules: []
+    status: pending
+  - id: ia-4.8
+    title: Pairwise Pseudonymous Identifiers
+    description: Generate pairwise pseudonymous identifiers.
+    rules: []
+    status: pending
+  - id: ia-4.9
+    title: Attribute Maintenance and Protection
+    description: 'Maintain the attributes for each uniquely identified individual, device, or service in {{ insert: param, ia-04.09_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-5
+    title: Authenticator Management
+    description: 'Manage system authenticators by:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - var_accounts_minimum_age_login_defs=1
+      {{% endif %}}
+      {{% if product == "rhel9" %}}
+      - var_password_hashing_algorithm=SHA512
+      {{% elif product == "rhel10" %}}
+      - var_password_hashing_algorithm=cis_rhel10
+      {{% elif product == "rhel8" %}}
+      - var_password_hashing_algorithm=cis_rhel8
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - var_password_hashing_algorithm_pam=cis_rhel10
+      {{% elif product == "rhel8" %}}
+      - var_password_hashing_algorithm_pam=cis_rhel8
+      {{% elif product == "rhel9" %}}
+      - var_password_hashing_algorithm_pam=sha512
+      {{% endif %}}
+      - var_password_pam_dictcheck=1
+      - var_password_pam_difok=2
+      - var_password_pam_maxrepeat=3
+      - var_password_pam_maxsequence=3
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - var_password_pam_minclass=4
+      {{% endif %}}
+      - var_password_pam_minlen=14
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - accounts_minimum_age_login_defs
+      {{% endif %}}
+      - accounts_password_all_shadowed
+      - accounts_password_pam_dictcheck
+      - accounts_password_pam_difok
+      - accounts_password_pam_enforce_root
+      - accounts_password_pam_maxrepeat
+      - accounts_password_pam_maxsequence
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - accounts_password_pam_minclass
+      {{% endif %}}
+      - accounts_password_pam_minlen
+      - accounts_password_pam_pwhistory_enforce_for_root
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - accounts_password_pam_pwhistory_use_authtok
+      - accounts_password_pam_unix_authtok
+      {{% endif %}}
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - accounts_password_set_min_life_existing
+      {{% endif %}}
+      - no_empty_passwords_etc_shadow
+      {{% if product == "rhel9" %}}
+      - set_password_hashing_algorithm_libuserconf
+      {{% endif %}}
+      - set_password_hashing_algorithm_logindefs
+      - set_password_hashing_algorithm_passwordauth
+      - set_password_hashing_algorithm_systemauth
+    status: automated
+  - id: ia-5.1
+    title: Password-based Authentication
+    description: 'For password-based authentication:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - var_password_pam_remember=24
+      - var_password_pam_remember_control_flag=requisite_or_required
+      - accounts_password_pam_pwhistory_remember_password_auth
+      - accounts_password_pam_pwhistory_remember_system_auth
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - accounts_password_pam_unix_enabled
+      {{% endif %}}
+    status: automated
+  - id: ia-5.2
+    title: Public Key-based Authentication
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-5.3
+    title: In-person or Trusted External Party Registration
+    rules: []
+    status: pending
+  - id: ia-5.4
+    title: Automated Support for Password Strength Determination
+    rules: []
+    status: pending
+  - id: ia-5.5
+    title: Change Authenticators Prior to Delivery
+    description: Require developers and installers of system components to provide unique authenticators or change default authenticators prior to delivery and installation.
+    rules: []
+    status: pending
+  - id: ia-5.6
+    title: Protection of Authenticators
+    description: Protect authenticators commensurate with the security category of the information to which use of the authenticator permits access.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-5.7
+    title: No Embedded Unencrypted Static Authenticators
+    description: Ensure that unencrypted static authenticators are not embedded in applications or other forms of static storage.
+    rules: []
+    status: pending
+  - id: ia-5.8
+    title: Multiple System Accounts
+    description: 'Implement {{ insert: param, ia-05.08_odp }} to manage the risk of compromise due to individuals having accounts on multiple systems.'
+    rules: []
+    status: pending
+  - id: ia-5.9
+    title: Federated Credential Management
+    description: 'Use the following external organizations to federate credentials: {{ insert: param, ia-05.09_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-5.10
+    title: Dynamic Credential Binding
+    description: 'Bind identities and authenticators dynamically using the following rules: {{ insert: param, ia-05.10_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-5.11
+    title: Hardware Token-based Authentication
+    rules: []
+    status: pending
+  - id: ia-5.12
+    title: Biometric Authentication Performance
+    description: 'For biometric-based authentication, employ mechanisms that satisfy the following biometric quality requirements {{ insert: param, ia-05.12_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-5.13
+    title: Expiration of Cached Authenticators
+    description: 'Prohibit the use of cached authenticators after {{ insert: param, ia-05.13_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-5.14
+    title: Managing Content of PKI Trust Stores
+    description: For PKI-based authentication, employ an organization-wide methodology for managing the content of PKI trust stores installed across all platforms, including networks, operating systems, browsers, and applications.
+    rules: []
+    status: pending
+  - id: ia-5.15
+    title: GSA-approved Products and Services
+    description: Use only General Services Administration-approved products and services for identity, credential, and access management.
+    rules: []
+    status: pending
+  - id: ia-5.16
+    title: In-person or Trusted External Party Authenticator Issuance
+    description: 'Require that the issuance of {{ insert: param, ia-05.16_odp.01 }} be conducted {{ insert: param, ia-05.16_odp.02 }} before {{ insert: param, ia-05.16_odp.03 }} with authorization by {{ insert: param, ia-05.16_odp.04 }}.'
+    rules: []
+    status: pending
+  - id: ia-5.17
+    title: Presentation Attack Detection for Biometric Authenticators
+    description: Employ presentation attack detection mechanisms for biometric-based authentication.
+    rules: []
+    status: pending
+  - id: ia-5.18
+    title: Password Managers
+    rules: []
+    status: pending
+  - id: ia-6
+    title: Authentication Feedback
+    description: Obscure feedback of authentication information during the authentication process to protect the information from possible exploitation and use by unauthorized individuals.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-7
+    title: Cryptographic Module Authentication
+    description: Implement mechanisms for authentication to a cryptographic module that meet the requirements of applicable laws, executive orders, directives, policies, regulations, standards, and guidelines for such authentication.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-8
+    title: Identification and Authentication (Non-organizational Users)
+    description: Uniquely identify and authenticate non-organizational users or processes acting on behalf of non-organizational users.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-8.1
+    title: Acceptance of PIV Credentials from Other Agencies
+    description: Accept and electronically verify Personal Identity Verification-compliant credentials from other federal agencies.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-8.2
+    title: Acceptance of External Authenticators
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-8.3
+    title: Use of FICAM-approved Products
+    rules: []
+    status: pending
+  - id: ia-8.4
+    title: Use of Defined Profiles
+    description: 'Conform to the following profiles for identity management {{ insert: param, ia-08.04_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-8.5
+    title: Acceptance of PIV-I Credentials
+    description: 'Accept and verify federated or PKI credentials that meet {{ insert: param, ia-08.05_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-8.6
+    title: Disassociability
+    description: 'Implement the following measures to disassociate user attributes or identifier assertion relationships among individuals, credential service providers, and relying parties: {{ insert: param, ia-08.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-9
+    title: Service Identification and Authentication
+    description: 'Uniquely identify and authenticate {{ insert: param, ia-09_odp }} before establishing communications with devices, users, or other services or applications.'
+    rules: []
+    status: pending
+  - id: ia-9.1
+    title: Information Exchange
+    rules: []
+    status: pending
+  - id: ia-9.2
+    title: Transmission of Decisions
+    rules: []
+    status: pending
+  - id: ia-10
+    title: Adaptive Authentication
+    description: 'Require individuals accessing the system to employ {{ insert: param, ia-10_odp.01 }} under specific {{ insert: param, ia-10_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ia-11
+    title: Re-authentication
+    description: 'Require users to re-authenticate when {{ insert: param, ia-11_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - var_sudo_timestamp_timeout=15_minutes
+      - sudo_require_reauthentication
+    status: automated
+  - id: ia-12
+    title: Identity Proofing
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-12.1
+    title: Supervisor Authorization
+    description: Require that the registration process to receive an account for logical access includes supervisor or sponsor authorization.
+    rules: []
+    status: pending
+  - id: ia-12.2
+    title: Identity Evidence
+    description: Require evidence of individual identification be presented to the registration authority.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-12.3
+    title: Identity Evidence Validation and Verification
+    description: 'Require that the presented identity evidence be validated and verified through {{ insert: param, ia-12.03_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-12.4
+    title: In-person Validation and Verification
+    description: Require that the validation and verification of identity evidence be conducted in person before a designated registration authority.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ia-12.5
+    title: Address Confirmation
+    description: 'Require that a {{ insert: param, ia-12.05_odp }} be delivered through an out-of-band channel to verify the users address (physical or digital) of record.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ia-12.6
+    title: Accept Externally-proofed Identities
+    description: 'Accept externally-proofed identities at {{ insert: param, ia-12.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ia-13
+    title: Identity Providers and Authorization Servers
+    description: 'Employ identity providers and authorization servers to manage user, device, and non-person entity (NPE) identities, attributes, and access rights supporting authentication and authorization decisions in accordance with {{ insert: param, ia-13_odp.01 }} using {{ insert: param, ia-13_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ia-13.1
+    title: Protection of Cryptographic Keys
+    description: Cryptographic keys that protect access tokens are generated, managed, and protected from disclosure and misuse.
+    rules: []
+    status: pending
+  - id: ia-13.2
+    title: Verification of Identity Assertions and Access Tokens
+    description: The source and integrity of identity assertions and access tokens are verified before granting access to system and information resources.
+    rules: []
+    status: pending
+  - id: ia-13.3
+    title: Token Management
+    description: 'In accordance with {{ insert: param, ia-13_odp.01 }}, assertions and access tokens are:'
+    rules: []
+    status: pending
