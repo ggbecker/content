@@ -1,0 +1,104 @@
+# NIST 800-53 PT Family: PII Processing and Transparency
+controls:
+  - id: pt-1
+    title: Policy and Procedures
+    rules: []
+    status: pending
+  - id: pt-2
+    title: Authority to Process Personally Identifiable Information
+    rules: []
+    status: pending
+  - id: pt-2.1
+    title: Data Tagging
+    description: 'Attach data tags containing {{ insert: param, pt-02.01_odp.01 }} to {{ insert: param, pt-02.01_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: pt-2.2
+    title: Automation
+    description: 'Manage enforcement of the authorized processing of personally identifiable information using {{ insert: param, pt-02.02_odp }}.'
+    rules: []
+    status: pending
+  - id: pt-3
+    title: Personally Identifiable Information Processing Purposes
+    rules: []
+    status: pending
+  - id: pt-3.1
+    title: Data Tagging
+    description: 'Attach data tags containing the following purposes to {{ insert: param, pt-03.01_odp.02 }}: {{ insert: param, pt-03.01_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: pt-3.2
+    title: Automation
+    description: 'Track processing purposes of personally identifiable information using {{ insert: param, pt-03.02_odp }}.'
+    rules: []
+    status: pending
+  - id: pt-4
+    title: Consent
+    description: 'Implement {{ insert: param, pt-04_odp }} for individuals to consent to the processing of their personally identifiable information prior to its collection that facilitate individuals’ informed decision-making.'
+    rules: []
+    status: pending
+  - id: pt-4.1
+    title: Tailored Consent
+    description: 'Provide {{ insert: param, pt-04.01_odp }} to allow individuals to tailor processing permissions to selected elements of personally identifiable information.'
+    rules: []
+    status: pending
+  - id: pt-4.2
+    title: Just-in-time Consent
+    description: 'Present {{ insert: param, pt-04.02_odp.01 }} to individuals at {{ insert: param, pt-04.02_odp.02 }} and in conjunction with {{ insert: param, pt-04.02_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: pt-4.3
+    title: Revocation
+    description: 'Implement {{ insert: param, pt-04.03_odp }} for individuals to revoke consent to the processing of their personally identifiable information.'
+    rules: []
+    status: pending
+  - id: pt-5
+    title: Privacy Notice
+    description: 'Provide notice to individuals about the processing of personally identifiable information that:'
+    rules: []
+    status: pending
+  - id: pt-5.1
+    title: Just-in-time Notice
+    description: 'Present notice of personally identifiable information processing to individuals at a time and location where the individual provides personally identifiable information or in conjunction with a data action, or {{ insert: param, pt-05.01_odp }}.'
+    rules: []
+    status: pending
+  - id: pt-5.2
+    title: Privacy Act Statements
+    description: Include Privacy Act statements on forms that collect information that will be maintained in a Privacy Act system of records, or provide Privacy Act statements on separate forms that can be retained by individuals.
+    rules: []
+    status: pending
+  - id: pt-6
+    title: System of Records Notice
+    description: 'For systems that process information that will be maintained in a Privacy Act system of records:'
+    rules: []
+    status: pending
+  - id: pt-6.1
+    title: Routine Uses
+    description: 'Review all routine uses published in the system of records notice at {{ insert: param, pt-06.01_odp }} to ensure continued accuracy, and to ensure that routine uses continue to be compatible with the purpose for which the information was collected.'
+    rules: []
+    status: pending
+  - id: pt-6.2
+    title: Exemption Rules
+    description: 'Review all Privacy Act exemptions claimed for the system of records at {{ insert: param, pt-06.02_odp }} to ensure they remain appropriate and necessary in accordance with law, that they have been promulgated as regulations, and that they are accurately described in the system of records notice.'
+    rules: []
+    status: pending
+  - id: pt-7
+    title: Specific Categories of Personally Identifiable Information
+    description: 'Apply {{ insert: param, pt-07_odp }} for specific categories of personally identifiable information.'
+    rules: []
+    status: pending
+  - id: pt-7.1
+    title: Social Security Numbers
+    description: 'When a system processes Social Security numbers:'
+    rules: []
+    status: pending
+  - id: pt-7.2
+    title: First Amendment Information
+    description: Prohibit the processing of information describing how any individual exercises rights guaranteed by the First Amendment unless expressly authorized by statute or by the individual or unless pertinent to and within the scope of an authorized law enforcement activity.
+    rules: []
+    status: pending
+  - id: pt-8
+    title: Computer Matching Requirements
+    description: 'When a system or organization processes information for the purpose of conducting a matching program:'
+    rules: []
+    status: pending

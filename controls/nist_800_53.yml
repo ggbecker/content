@@ -1,0 +1,10 @@
+policy: NIST 800-53 Revision 5
+title: NIST Special Publication 800-53 Revision 5
+id: nist_800_53
+version: Revision 5
+source: https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final
+controls_dir: nist_800_53
+levels:
+  - id: low
+  - id: moderate
+  - id: high

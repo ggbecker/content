@@ -1,0 +1,103 @@
+# NIST 800-53 PL Family: Planning
+controls:
+  - id: pl-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: pl-2
+    title: System Security and Privacy Plans
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: pl-2.1
+    title: Concept of Operations
+    rules: []
+    status: pending
+  - id: pl-2.2
+    title: Functional Architecture
+    rules: []
+    status: pending
+  - id: pl-2.3
+    title: Plan and Coordinate with Other Organizational Entities
+    rules: []
+    status: pending
+  - id: pl-3
+    title: System Security Plan Update
+    rules: []
+    status: pending
+  - id: pl-4
+    title: Rules of Behavior
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: pl-4.1
+    title: Social Media and External Site/Application Usage Restrictions
+    description: 'Include in the rules of behavior, restrictions on:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: pl-5
+    title: Privacy Impact Assessment
+    rules: []
+    status: pending
+  - id: pl-6
+    title: Security-related Activity Planning
+    rules: []
+    status: pending
+  - id: pl-7
+    title: Concept of Operations
+    rules: []
+    status: pending
+  - id: pl-8
+    title: Security and Privacy Architectures
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: pl-8.1
+    title: Defense in Depth
+    description: 'Design the security and privacy architectures for the system using a defense-in-depth approach that:'
+    rules: []
+    status: pending
+  - id: pl-8.2
+    title: Supplier Diversity
+    description: 'Require that {{ insert: param, pl-08.02_odp.01 }} allocated to {{ insert: param, pl-08.02_odp.02 }} are obtained from different suppliers.'
+    rules: []
+    status: pending
+  - id: pl-9
+    title: Central Management
+    description: 'Centrally manage {{ insert: param, pl-09_odp }}.'
+    rules: []
+    status: pending
+  - id: pl-10
+    title: Baseline Selection
+    description: Select a control baseline for the system.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: pl-11
+    title: Baseline Tailoring
+    description: Tailor the selected control baseline by applying specified tailoring actions.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending

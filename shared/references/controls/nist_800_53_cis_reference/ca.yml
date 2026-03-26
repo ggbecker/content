@@ -1,0 +1,207 @@
+# NIST 800-53 CA Family: Assessment, Authorization, and Monitoring
+controls:
+  - id: ca-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-2
+    title: Control Assessments
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-2.1
+    title: Independent Assessors
+    description: Employ independent assessors or assessment teams to conduct control assessments.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-2.2
+    title: Specialized Assessments
+    description: 'Include as part of control assessments, {{ insert: param, ca-02.02_odp.01 }}, {{ insert: param, ca-02.02_odp.02 }}, {{ insert: param, ca-02.02_odp.03 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ca-2.3
+    title: Leveraging Results from External Organizations
+    description: 'Leverage the results of control assessments performed by {{ insert: param, ca-02.03_odp.01 }} on {{ insert: param, ca-02.03_odp.02 }} when the assessment meets {{ insert: param, ca-02.03_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: ca-3
+    title: Information Exchange
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-3.1
+    title: Unclassified National Security System Connections
+    rules: []
+    status: pending
+  - id: ca-3.2
+    title: Classified National Security System Connections
+    rules: []
+    status: pending
+  - id: ca-3.3
+    title: Unclassified Non-national Security System Connections
+    rules: []
+    status: pending
+  - id: ca-3.4
+    title: Connections to Public Networks
+    rules: []
+    status: pending
+  - id: ca-3.5
+    title: Restrictions on External System Connections
+    rules: []
+    status: pending
+  - id: ca-3.6
+    title: Transfer Authorizations
+    description: Verify that individuals or systems transferring data between interconnecting systems have the requisite authorizations (i.e., write permissions or privileges) prior to accepting such data.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ca-3.7
+    title: Transitive Information Exchanges
+    rules: []
+    status: pending
+  - id: ca-4
+    title: Security Certification
+    rules: []
+    status: pending
+  - id: ca-5
+    title: Plan of Action and Milestones
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-5.1
+    title: Automation Support for Accuracy and Currency
+    description: 'Ensure the accuracy, currency, and availability of the plan of action and milestones for the system using {{ insert: param, ca-05.01_odp }}.'
+    rules: []
+    status: pending
+  - id: ca-6
+    title: Authorization
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-6.1
+    title: Joint Authorization — Intra-organization
+    description: Employ a joint authorization process for the system that includes multiple authorizing officials from the same organization conducting the authorization.
+    rules: []
+    status: pending
+  - id: ca-6.2
+    title: Joint Authorization — Inter-organization
+    description: Employ a joint authorization process for the system that includes multiple authorizing officials with at least one authorizing official from an organization external to the organization conducting the authorization.
+    rules: []
+    status: pending
+  - id: ca-7
+    title: Continuous Monitoring
+    description: 'Develop a system-level continuous monitoring strategy and implement continuous monitoring in accordance with the organization-level continuous monitoring strategy that includes:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-7.1
+    title: Independent Assessment
+    description: Employ independent assessors or assessment teams to monitor the controls in the system on an ongoing basis.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-7.2
+    title: Types of Assessments
+    rules: []
+    status: pending
+  - id: ca-7.3
+    title: Trend Analyses
+    description: Employ trend analyses to determine if control implementations, the frequency of continuous monitoring activities, and the types of activities used in the continuous monitoring process need to be modified based on empirical data.
+    rules: []
+    status: pending
+  - id: ca-7.4
+    title: Risk Monitoring
+    description: 'Ensure risk monitoring is an integral part of the continuous monitoring strategy that includes the following:'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ca-7.5
+    title: Consistency Analysis
+    description: 'Employ the following actions to validate that policies are established and implemented controls are operating in a consistent manner: {{ insert: param, ca-7.5_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: ca-7.6
+    title: Automation Support for Monitoring
+    description: 'Ensure the accuracy, currency, and availability of monitoring results for the system using {{ insert: param, ca-07.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ca-8
+    title: Penetration Testing
+    description: 'Conduct penetration testing {{ insert: param, ca-08_odp.01 }} on {{ insert: param, ca-08_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ca-8.1
+    title: Independent Penetration Testing Agent or Team
+    description: Employ an independent penetration testing agent or team to perform penetration testing on the system or system components.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ca-8.2
+    title: Red Team Exercises
+    description: 'Employ the following red-team exercises to simulate attempts by adversaries to compromise organizational systems in accordance with applicable rules of engagement: {{ insert: param, ca-08.02_odp }}.'
+    rules: []
+    status: pending
+  - id: ca-8.3
+    title: Facility Penetration Testing
+    description: 'Employ a penetration testing process that includes {{ insert: param, ca-08.03_odp.01 }} {{ insert: param, ca-08.03_odp.02 }} attempts to bypass or circumvent controls associated with physical access points to the facility.'
+    rules: []
+    status: pending
+  - id: ca-9
+    title: Internal System Connections
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - firewalld-backend
+      {{% endif %}}
+      {{% if product == "rhel9" %}}
+      - firewalld_loopback_traffic_restricted
+      {{% endif %}}
+      {{% if product in ["rhel10", "rhel9"] %}}
+      - firewalld_loopback_traffic_trusted
+      {{% endif %}}
+      - package_firewalld_installed
+      {{% if product == "rhel9" %}}
+      - package_nftables_installed
+      {{% endif %}}
+    status: automated
+  - id: ca-9.1
+    title: Compliance Checks
+    description: Perform security and privacy compliance checks on constituent system components prior to the establishment of the internal connection.
+    rules: []
+    status: pending

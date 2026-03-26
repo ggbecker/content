@@ -1,0 +1,184 @@
+# NIST 800-53 SR Family: Supply Chain Risk Management
+controls:
+  - id: sr-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-2
+    title: Supply Chain Risk Management Plan
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-2.1
+    title: Establish SCRM Team
+    description: 'Establish a supply chain risk management team consisting of {{ insert: param, sr-02.01_odp.01 }} to lead and support the following SCRM activities: {{ insert: param, sr-02.01_odp.02 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-3
+    title: Supply Chain Controls and Processes
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-3.1
+    title: Diverse Supply Base
+    description: 'Employ a diverse set of sources for the following system components and services: {{ insert: param, sr-3.1_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sr-3.2
+    title: Limitation of Harm
+    description: 'Employ the following controls to limit harm from potential adversaries identifying and targeting the organizational supply chain: {{ insert: param, sr-03.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sr-3.3
+    title: Sub-tier Flow Down
+    description: Ensure that the controls included in the contracts of prime contractors are also included in the contracts of subcontractors.
+    rules: []
+    status: pending
+  - id: sr-4
+    title: Provenance
+    description: 'Document, monitor, and maintain valid provenance of the following systems, system components, and associated data: {{ insert: param, sr-04_odp }}.'
+    rules: []
+    status: pending
+  - id: sr-4.1
+    title: Identity
+    description: 'Establish and maintain unique identification of the following supply chain elements, processes, and personnel associated with the identified system and critical system components: {{ insert: param, sr-04.01_odp }}.'
+    rules: []
+    status: pending
+  - id: sr-4.2
+    title: Track and Trace
+    description: 'Establish and maintain unique identification of the following systems and critical system components for tracking through the supply chain: {{ insert: param, sr-04.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sr-4.3
+    title: Validate as Genuine and Not Altered
+    description: 'Employ the following controls to validate that the system or system component received is genuine and has not been altered: {{ insert: param, sr-4.3_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: sr-4.4
+    title: Supply Chain Integrity — Pedigree
+    description: 'Employ {{ insert: param, sr-04.04_odp.01 }} and conduct {{ insert: param, sr-04.04_odp.02 }} to ensure the integrity of the system and system components by validating the internal composition and provenance of critical or mission-essential technologies, products, and services.'
+    rules: []
+    status: pending
+  - id: sr-5
+    title: Acquisition Strategies, Tools, and Methods
+    description: 'Employ the following acquisition strategies, contract tools, and procurement methods to protect against, identify, and mitigate supply chain risks: {{ insert: param, sr-05_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-5.1
+    title: Adequate Supply
+    description: 'Employ the following controls to ensure an adequate supply of {{ insert: param, sr-05.01_odp.02 }}: {{ insert: param, sr-05.01_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: sr-5.2
+    title: Assessments Prior to Selection, Acceptance, Modification, or Update
+    description: Assess the system, system component, or system service prior to selection, acceptance, modification, or update.
+    rules: []
+    status: pending
+  - id: sr-6
+    title: Supplier Assessments and Reviews
+    description: 'Assess and review the supply chain-related risks associated with suppliers or contractors and the system, system component, or system service they provide {{ insert: param, sr-06_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-6.1
+    title: Testing and Analysis
+    description: 'Employ {{ insert: param, sr-06.01_odp.01 }} of the following supply chain elements, processes, and actors associated with the system, system component, or system service: {{ insert: param, sr-06.01_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sr-7
+    title: Supply Chain Operations Security
+    description: 'Employ the following Operations Security (OPSEC) controls to protect supply chain-related information for the system, system component, or system service: {{ insert: param, sr-07_odp }}.'
+    rules: []
+    status: pending
+  - id: sr-8
+    title: Notification Agreements
+    description: 'Establish agreements and procedures with entities involved in the supply chain for the system, system component, or system service for the {{ insert: param, sr-08_odp.01 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-9
+    title: Tamper Resistance and Detection
+    description: Implement a tamper protection program for the system, system component, or system service.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sr-9.1
+    title: Multiple Stages of System Development Life Cycle
+    description: Employ anti-tamper technologies, tools, and techniques throughout the system development life cycle.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sr-10
+    title: Inspection of Systems or Components
+    description: 'Inspect the following systems or system components {{ insert: param, sr-10_odp.02 }} to detect tampering: {{ insert: param, sr-10_odp.01 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-11
+    title: Component Authenticity
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-11.1
+    title: Anti-counterfeit Training
+    description: 'Train {{ insert: param, sr-11.01_odp }} to detect counterfeit system components (including hardware, software, and firmware).'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-11.2
+    title: Configuration Control for Component Service and Repair
+    description: 'Maintain configuration control over the following system components awaiting service or repair and serviced or repaired components awaiting return to service: {{ insert: param, sr-11.02_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sr-11.3
+    title: Anti-counterfeit Scanning
+    description: 'Scan for counterfeit system components {{ insert: param, sr-11.03_odp }}.'
+    rules: []
+    status: pending
+  - id: sr-12
+    title: Component Disposal
+    description: 'Dispose of {{ insert: param, sr-12_odp.01 }} using the following techniques and methods: {{ insert: param, sr-12_odp.02 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
