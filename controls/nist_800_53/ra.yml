@@ -1,0 +1,162 @@
+# NIST 800-53 RA Family: Risk Assessment
+controls:
+  - id: ra-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-2
+    title: Security Categorization
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-2.1
+    title: Impact-level Prioritization
+    description: Conduct an impact-level prioritization of organizational systems to obtain additional granularity on system impact levels.
+    rules: []
+    status: pending
+  - id: ra-3
+    title: Risk Assessment
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-3.1
+    title: Supply Chain Risk Assessment
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-3.2
+    title: Use of All-source Intelligence
+    description: Use all-source intelligence to assist in the analysis of risk.
+    rules: []
+    status: pending
+  - id: ra-3.3
+    title: Dynamic Threat Awareness
+    description: 'Determine the current cyber threat environment on an ongoing basis using {{ insert: param, ra-03.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ra-3.4
+    title: Predictive Cyber Analytics
+    description: 'Employ the following advanced automation and analytics capabilities to predict and identify risks to {{ insert: param, ra-03.04_odp.02 }}: {{ insert: param, ra-3.4_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: ra-4
+    title: Risk Assessment Update
+    rules: []
+    status: pending
+  - id: ra-5
+    title: Vulnerability Monitoring and Scanning
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-5.1
+    title: Update Tool Capability
+    rules: []
+    status: pending
+  - id: ra-5.2
+    title: Update Vulnerabilities to Be Scanned
+    description: 'Update the system vulnerabilities to be scanned {{ insert: param, ra-05.02_odp.01 }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-5.3
+    title: Breadth and Depth of Coverage
+    description: Define the breadth and depth of vulnerability scanning coverage.
+    rules: []
+    status: pending
+  - id: ra-5.4
+    title: Discoverable Information
+    description: 'Determine information about the system that is discoverable and take {{ insert: param, ra-05.04_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ra-5.5
+    title: Privileged Access
+    description: 'Implement privileged access authorization to {{ insert: param, ra-05.05_odp.01 }} for {{ insert: param, ra-05.05_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-5.6
+    title: Automated Trend Analyses
+    description: 'Compare the results of multiple vulnerability scans using {{ insert: param, ra-05.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ra-5.7
+    title: Automated Detection and Notification of Unauthorized Components
+    rules: []
+    status: pending
+  - id: ra-5.8
+    title: Review Historic Audit Logs
+    description: 'Review historic audit logs to determine if a vulnerability identified in a {{ insert: param, ra-05.08_odp.01 }} has been previously exploited within an {{ insert: param, ra-05.08_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ra-5.9
+    title: Penetration Testing and Analyses
+    rules: []
+    status: pending
+  - id: ra-5.10
+    title: Correlate Scanning Information
+    description: Correlate the output from vulnerability scanning tools to determine the presence of multi-vulnerability and multi-hop attack vectors.
+    rules: []
+    status: pending
+  - id: ra-5.11
+    title: Public Disclosure Program
+    description: Establish a public reporting channel for receiving reports of vulnerabilities in organizational systems and system components.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-6
+    title: Technical Surveillance Countermeasures Survey
+    description: 'Employ a technical surveillance countermeasures survey at {{ insert: param, ra-06_odp.01 }} {{ insert: param, ra-06_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ra-7
+    title: Risk Response
+    description: Respond to findings from security and privacy assessments, monitoring, and audits in accordance with organizational risk tolerance.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-8
+    title: Privacy Impact Assessments
+    description: 'Conduct privacy impact assessments for systems, programs, or other activities before:'
+    rules: []
+    status: pending
+  - id: ra-9
+    title: Criticality Analysis
+    description: 'Identify critical system components and functions by performing a criticality analysis for {{ insert: param, ra-09_odp.01 }} at {{ insert: param, ra-09_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ra-10
+    title: Threat Hunting
+    rules: []
+    status: pending

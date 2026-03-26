@@ -1,0 +1,717 @@
+# NIST 800-53 CM Family: Configuration Management
+controls:
+  - id: cm-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - sshd_idle_timeout_value=5_minutes
+      - sysctl_net_ipv4_conf_all_accept_redirects_value=disabled
+      - sysctl_net_ipv4_conf_all_accept_source_route_value=disabled
+      - sysctl_net_ipv4_conf_all_rp_filter_value=enabled
+      - sysctl_net_ipv4_conf_all_secure_redirects_value=disabled
+      - sysctl_net_ipv4_conf_default_accept_redirects_value=disabled
+      - sysctl_net_ipv4_conf_default_accept_source_route_value=disabled
+      - sysctl_net_ipv4_conf_default_rp_filter_value=enabled
+      - sysctl_net_ipv4_conf_default_secure_redirects_value=disabled
+      - sysctl_net_ipv4_icmp_echo_ignore_broadcasts_value=enabled
+      - sysctl_net_ipv4_icmp_ignore_bogus_error_responses_value=enabled
+      - sysctl_net_ipv4_tcp_syncookies_value=enabled
+      - sysctl_net_ipv6_conf_all_accept_ra_value=disabled
+      - sysctl_net_ipv6_conf_all_accept_redirects_value=disabled
+      - sysctl_net_ipv6_conf_all_accept_source_route_value=disabled
+      - sysctl_net_ipv6_conf_all_forwarding_value=disabled
+      - sysctl_net_ipv6_conf_default_accept_ra_value=disabled
+      - sysctl_net_ipv6_conf_default_accept_redirects_value=disabled
+      - sysctl_net_ipv6_conf_default_accept_source_route_value=disabled
+      - var_accounts_maximum_age_login_defs=365
+      - var_sshd_max_sessions=10
+      - var_sshd_set_keepalive=1
+      - var_sshd_set_maxstartups=10:30:60
+      - var_user_initialization_files_regex=all_dotfiles
+      - account_password_pam_faillock_password_auth
+      - account_password_pam_faillock_system_auth
+      - account_unique_id
+      - account_unique_name
+      - accounts_maximum_age_login_defs
+      - accounts_no_uid_except_zero
+      - accounts_password_set_max_life_existing
+      - accounts_root_gid_zero
+      - accounts_root_path_dirs_no_write
+      - accounts_user_dot_group_ownership
+      - accounts_user_dot_user_ownership
+      - configure_custom_crypto_policy_cis
+      - disable_host_auth
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_permission_user_bash_history
+      {{% endif %}}
+      - file_permission_user_init_files
+      - gid_passwd_group_same
+      - group_unique_id
+      - group_unique_name
+      - groups_no_zero_gid_except_root
+      {{% if product == "rhel9" %}}
+      - no_dirs_unowned_by_root
+      {{% endif %}}
+      - no_forward_files
+      - no_netrc_files
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - no_nologin_in_shells
+      - no_rhost_files
+      {{% endif %}}
+      {{% if product == "rhel9" %}}
+      - no_rsh_trust_files
+      {{% endif %}}
+      - package_cron_installed
+      {{% if product == "rhel9" %}}
+      - root_path_all_dirs
+      {{% endif %}}
+      - root_path_no_dot
+      - service_crond_enabled
+      - sshd_disable_empty_passwords
+      - sshd_disable_gssapi_auth
+      - sshd_disable_rhosts
+      - sshd_do_not_permit_user_env
+      - sshd_enable_pam
+      - sshd_enable_warning_banner_net
+      - sshd_set_idle_timeout
+      - sshd_set_keepalive
+      - sshd_set_max_sessions
+      - sshd_set_maxstartups
+      - sysctl_net_ipv4_conf_all_accept_redirects
+      - sysctl_net_ipv4_conf_all_accept_source_route
+      - sysctl_net_ipv4_conf_all_rp_filter
+      - sysctl_net_ipv4_conf_all_secure_redirects
+      - sysctl_net_ipv4_conf_all_send_redirects
+      - sysctl_net_ipv4_conf_default_accept_redirects
+      - sysctl_net_ipv4_conf_default_accept_source_route
+      - sysctl_net_ipv4_conf_default_rp_filter
+      - sysctl_net_ipv4_conf_default_secure_redirects
+      - sysctl_net_ipv4_conf_default_send_redirects
+      - sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+      - sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+      - sysctl_net_ipv4_ip_forward
+      - sysctl_net_ipv4_tcp_syncookies
+      - sysctl_net_ipv6_conf_all_accept_ra
+      - sysctl_net_ipv6_conf_all_accept_redirects
+      - sysctl_net_ipv6_conf_all_accept_source_route
+      - sysctl_net_ipv6_conf_all_forwarding
+      - sysctl_net_ipv6_conf_default_accept_ra
+      - sysctl_net_ipv6_conf_default_accept_redirects
+      - sysctl_net_ipv6_conf_default_accept_source_route
+    status: automated
+  - id: cm-2
+    title: Baseline Configuration
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-2.1
+    title: Reviews and Updates
+    rules: []
+    status: pending
+  - id: cm-2.2
+    title: Automation Support for Accuracy and Currency
+    description: 'Maintain the currency, completeness, accuracy, and availability of the baseline configuration of the system using {{ insert: param, cm-02.02_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-2.3
+    title: Retention of Previous Configurations
+    description: 'Retain {{ insert: param, cm-02.03_odp }} of previous versions of baseline configurations of the system to support rollback.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-2.4
+    title: Unauthorized Software
+    rules: []
+    status: pending
+  - id: cm-2.5
+    title: Authorized Software
+    rules: []
+    status: pending
+  - id: cm-2.6
+    title: Development and Test Environments
+    description: Maintain a baseline configuration for system development and test environments that is managed separately from the operational baseline configuration.
+    rules: []
+    status: pending
+  - id: cm-2.7
+    title: Configure Systems and Components for High-risk Areas
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-3
+    title: Configuration Change Control
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-3.1
+    title: Automated Documentation, Notification, and Prohibition of Changes
+    description: 'Use {{ insert: param, cm-03.01_odp.01 }} to:'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-3.2
+    title: Testing, Validation, and Documentation of Changes
+    description: Test, validate, and document changes to the system before finalizing the implementation of the changes.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-3.3
+    title: Automated Change Implementation
+    description: 'Implement changes to the current system baseline and deploy the updated baseline across the installed base using {{ insert: param, cm-03.03_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-3.4
+    title: Security and Privacy Representatives
+    description: 'Require {{ insert: param, cm-3.4_prm_1 }} to be members of the {{ insert: param, cm-03.04_odp.03 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-3.5
+    title: Automated Security Response
+    description: 'Implement the following security responses automatically if baseline configurations are changed in an unauthorized manner: {{ insert: param, cm-03.05_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-3.6
+    title: Cryptography Management
+    description: 'Ensure that cryptographic mechanisms used to provide the following controls are under configuration management: {{ insert: param, cm-03.06_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-3.7
+    title: Review System Changes
+    description: 'Review changes to the system {{ insert: param, cm-03.07_odp.01 }} or when {{ insert: param, cm-03.07_odp.02 }} to determine whether unauthorized changes have occurred.'
+    rules: []
+    status: pending
+  - id: cm-3.8
+    title: Prevent or Restrict Configuration Changes
+    description: 'Prevent or restrict changes to the configuration of the system under the following circumstances: {{ insert: param, cm-03.08_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-4
+    title: Impact Analyses
+    description: Analyze changes to the system to determine potential security and privacy impacts prior to change implementation.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-4.1
+    title: Separate Test Environments
+    description: Analyze changes to the system in a separate test environment before implementation in an operational environment, looking for security and privacy impacts due to flaws, weaknesses, incompatibility, or intentional malice.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-4.2
+    title: Verification of Controls
+    description: After system changes, verify that the impacted controls are implemented correctly, operating as intended, and producing the desired outcome with regard to meeting the security and privacy requirements for the system.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-5
+    title: Access Restrictions for Change
+    description: Define, document, approve, and enforce physical and logical access restrictions associated with changes to the system.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-5.1
+    title: Automated Access Enforcement and Audit Records
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-5.2
+    title: Review System Changes
+    rules: []
+    status: pending
+  - id: cm-5.3
+    title: Signed Components
+    rules: []
+    status: pending
+  - id: cm-5.4
+    title: Dual Authorization
+    description: 'Enforce dual authorization for implementing changes to {{ insert: param, cm-5.4_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: cm-5.5
+    title: Privilege Limitation for Production and Operation
+    rules: []
+    status: pending
+  - id: cm-5.6
+    title: Limit Library Privileges
+    description: Limit privileges to change software resident within software libraries.
+    rules: []
+    status: pending
+  - id: cm-5.7
+    title: Automatic Implementation of Security Safeguards
+    rules: []
+    status: pending
+  - id: cm-6
+    title: Configuration Settings
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - cis_banner_text=cis
+      - sysctl_net_ipv4_conf_all_accept_redirects_value=disabled
+      - sysctl_net_ipv4_conf_all_accept_source_route_value=disabled
+      - sysctl_net_ipv4_conf_all_log_martians_value=enabled
+      - sysctl_net_ipv4_conf_all_rp_filter_value=enabled
+      - sysctl_net_ipv4_conf_all_secure_redirects_value=disabled
+      - sysctl_net_ipv4_conf_default_accept_redirects_value=disabled
+      - sysctl_net_ipv4_conf_default_accept_source_route_value=disabled
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_net_ipv4_conf_default_forwarding_value=disabled
+      {{% endif %}}
+      - sysctl_net_ipv4_conf_default_log_martians_value=enabled
+      - sysctl_net_ipv4_conf_default_rp_filter_value=enabled
+      - sysctl_net_ipv4_conf_default_secure_redirects_value=disabled
+      - sysctl_net_ipv4_icmp_echo_ignore_broadcasts_value=enabled
+      - sysctl_net_ipv4_icmp_ignore_bogus_error_responses_value=enabled
+      - sysctl_net_ipv6_conf_all_accept_ra_value=disabled
+      - sysctl_net_ipv6_conf_all_accept_redirects_value=disabled
+      - sysctl_net_ipv6_conf_all_accept_source_route_value=disabled
+      - sysctl_net_ipv6_conf_all_forwarding_value=disabled
+      - sysctl_net_ipv6_conf_default_accept_ra_value=disabled
+      - sysctl_net_ipv6_conf_default_accept_redirects_value=disabled
+      - sysctl_net_ipv6_conf_default_accept_source_route_value=disabled
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_net_ipv6_conf_default_forwarding_value=disabled
+      {{% endif %}}
+      - var_accounts_user_umask=027
+      - var_sshd_set_login_grace_time=60
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - accounts_password_pam_pwquality_password_auth
+      - accounts_password_pam_pwquality_system_auth
+      {{% endif %}}
+      - accounts_umask_etc_bashrc
+      - accounts_umask_etc_login_defs
+      - accounts_umask_etc_profile
+      - accounts_user_interactive_home_directory_exists
+      - audit_rules_media_export
+      - banner_etc_issue_cis
+      - banner_etc_issue_net_cis
+      - banner_etc_motd_cis
+      - coredump_disable_backtraces
+      - coredump_disable_storage
+      - dconf_gnome_disable_user_list
+      - disable_host_auth
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - disable_users_coredumps
+      {{% endif %}}
+      {{% if product == "rhel10" %}}
+      - file_groupowner_boot_grub2
+      {{% endif %}}
+      {{% if product == "rhel8" %}}
+      - file_groupowner_efi_grub2_cfg
+      - file_groupowner_efi_user_cfg
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_groupowner_grub2_cfg
+      - file_groupowner_user_cfg
+      {{% endif %}}
+      - file_groupownership_sshd_private_key
+      - file_groupownership_sshd_pub_key
+      {{% if product == "rhel10" %}}
+      - file_owner_boot_grub2
+      {{% endif %}}
+      {{% if product == "rhel8" %}}
+      - file_owner_efi_grub2_cfg
+      - file_owner_efi_user_cfg
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_owner_grub2_cfg
+      - file_owner_user_cfg
+      {{% endif %}}
+      - file_ownership_home_directories
+      - file_ownership_sshd_private_key
+      - file_ownership_sshd_pub_key
+      {{% if product == "rhel10" %}}
+      - file_permissions_boot_grub2
+      {{% endif %}}
+      {{% if product == "rhel8" %}}
+      - file_permissions_efi_grub2_cfg
+      - file_permissions_efi_user_cfg
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_permissions_grub2_cfg
+      {{% endif %}}
+      - file_permissions_home_directories
+      - file_permissions_sshd_private_key
+      - file_permissions_sshd_pub_key
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_permissions_user_cfg
+      {{% endif %}}
+      - no_empty_passwords
+      - no_empty_passwords_etc_shadow
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - no_files_or_dirs_ungroupowned
+      - no_files_or_dirs_unowned_by_user
+      {{% endif %}}
+      - package_pam_pwquality_installed
+      - package_rsync_removed
+      {{% if product == "rhel8" %}}
+      - package_rsyslog_installed
+      {{% endif %}}
+      - package_samba_removed
+      - package_squid_removed
+      - partition_for_tmp
+      - partition_for_var_log
+      - service_nfs_disabled
+      - service_rpcbind_disabled
+      - sshd_disable_gssapi_auth
+      - sshd_set_login_grace_time
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_kernel_kptr_restrict
+      {{% endif %}}
+      - sysctl_kernel_randomize_va_space
+      - sysctl_kernel_yama_ptrace_scope
+      - sysctl_net_ipv4_conf_all_accept_redirects
+      - sysctl_net_ipv4_conf_all_accept_source_route
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_net_ipv4_conf_all_forwarding
+      {{% endif %}}
+      - sysctl_net_ipv4_conf_all_log_martians
+      - sysctl_net_ipv4_conf_all_rp_filter
+      - sysctl_net_ipv4_conf_all_secure_redirects
+      - sysctl_net_ipv4_conf_all_send_redirects
+      - sysctl_net_ipv4_conf_default_accept_redirects
+      - sysctl_net_ipv4_conf_default_accept_source_route
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_net_ipv4_conf_default_forwarding
+      {{% endif %}}
+      - sysctl_net_ipv4_conf_default_log_martians
+      - sysctl_net_ipv4_conf_default_rp_filter
+      - sysctl_net_ipv4_conf_default_secure_redirects
+      - sysctl_net_ipv4_conf_default_send_redirects
+      - sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+      - sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+      - sysctl_net_ipv4_ip_forward
+      - sysctl_net_ipv6_conf_all_accept_ra
+      - sysctl_net_ipv6_conf_all_accept_redirects
+      - sysctl_net_ipv6_conf_all_accept_source_route
+      - sysctl_net_ipv6_conf_all_forwarding
+      - sysctl_net_ipv6_conf_default_accept_ra
+      - sysctl_net_ipv6_conf_default_accept_redirects
+      - sysctl_net_ipv6_conf_default_accept_source_route
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_net_ipv6_conf_default_forwarding
+      {{% endif %}}
+    status: automated
+  - id: cm-6.1
+    title: Automated Management, Application, and Verification
+    description: 'Manage, apply, and verify configuration settings for {{ insert: param, cm-06.01_odp.01 }} using {{ insert: param, cm-6.1_prm_2 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-6.2
+    title: Respond to Unauthorized Changes
+    description: 'Take the following actions in response to unauthorized changes to {{ insert: param, cm-06.02_odp.02 }}: {{ insert: param, cm-06.02_odp.01 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-6.3
+    title: Unauthorized Change Detection
+    rules: []
+    status: pending
+  - id: cm-6.4
+    title: Conformance Demonstration
+    rules: []
+    status: pending
+  - id: cm-7
+    title: Least Functionality
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - var_postfix_inet_interfaces=loopback-only
+      - dconf_gnome_disable_autorun
+      - file_ownership_var_log_audit_stig
+      - has_nonlocal_mta
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - kernel_module_atm_disabled
+      - kernel_module_can_disabled
+      {{% endif %}}
+      - kernel_module_cramfs_disabled
+      - kernel_module_dccp_disabled
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - kernel_module_firewire-core_disabled
+      {{% endif %}}
+      - kernel_module_freevxfs_disabled
+      - kernel_module_hfs_disabled
+      - kernel_module_hfsplus_disabled
+      - kernel_module_jffs2_disabled
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - kernel_module_overlayfs_disabled
+      {{% endif %}}
+      - kernel_module_rds_disabled
+      - kernel_module_sctp_disabled
+      - kernel_module_squashfs_disabled
+      - kernel_module_tipc_disabled
+      - kernel_module_udf_disabled
+      - mount_option_dev_shm_nodev
+      - mount_option_dev_shm_noexec
+      - mount_option_dev_shm_nosuid
+      - mount_option_tmp_nodev
+      - mount_option_tmp_noexec
+      - mount_option_tmp_nosuid
+      - package_bind_removed
+      - package_cyrus-imapd_removed
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - package_dhcp_removed
+      {{% endif %}}
+      - package_dovecot_removed
+      - package_ftp_removed
+      - package_httpd_removed
+      {{% if product == "rhel10" %}}
+      - package_kea_removed
+      {{% endif %}}
+      - package_net-snmp_removed
+      - package_nginx_removed
+      - package_openldap-clients_removed
+      - package_telnet-server_removed
+      - package_telnet_removed
+      - package_tftp-server_removed
+      - package_tftp_removed
+      - package_vsftpd_removed
+      {{% if product == "rhel8" %}}
+      - package_xinetd_removed
+      - package_ypbind_removed
+      - package_ypserv_removed
+      {{% endif %}}
+      - partition_for_dev_shm
+      - partition_for_home
+      - partition_for_tmp
+      - partition_for_var
+      - partition_for_var_log
+      - partition_for_var_log_audit
+      - partition_for_var_tmp
+      - postfix_network_listening_disabled
+      - service_bluetooth_disabled
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - service_cockpit_disabled
+      {{% endif %}}
+      - service_cups_disabled
+      - service_dnsmasq_disabled
+      - sshd_disable_forwarding
+      - wireless_disable_interfaces
+    status: automated
+  - id: cm-7.1
+    title: Periodic Review
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-7.2
+    title: Prevent Program Execution
+    description: 'Prevent program execution in accordance with {{ insert: param, cm-07.02_odp.01 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-7.3
+    title: Registration Compliance
+    description: 'Ensure compliance with {{ insert: param, cm-07.03_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-7.4
+    title: Unauthorized Software — Deny-by-exception
+    rules: []
+    status: pending
+  - id: cm-7.5
+    title: Authorized Software — Allow-by-exception
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-7.6
+    title: Confined Environments with Limited Privileges
+    description: 'Require that the following user-installed software execute in a confined physical or virtual machine environment with limited privileges: {{ insert: param, cm-07.06_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-7.7
+    title: Code Execution in Protected Environments
+    description: 'Allow execution of binary or machine-executable code only in confined physical or virtual machine environments and with the explicit approval of {{ insert: param, cm-07.07_odp }} when such code is:'
+    rules: []
+    status: pending
+  - id: cm-7.8
+    title: Binary or Machine Executable Code
+    rules: []
+    status: pending
+  - id: cm-7.9
+    title: Prohibiting The Use of Unauthorized Hardware
+    rules: []
+    status: pending
+  - id: cm-8
+    title: System Component Inventory
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-8.1
+    title: Updates During Installation and Removal
+    description: Update the inventory of system components as part of component installations, removals, and system updates.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-8.2
+    title: Automated Maintenance
+    description: 'Maintain the currency, completeness, accuracy, and availability of the inventory of system components using {{ insert: param, cm-8.2_prm_1 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-8.3
+    title: Automated Unauthorized Component Detection
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-8.4
+    title: Accountability Information
+    description: 'Include in the system component inventory information, a means for identifying by {{ insert: param, cm-08.04_odp }} , individuals responsible and accountable for administering those components.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: cm-8.5
+    title: No Duplicate Accounting of Components
+    rules: []
+    status: pending
+  - id: cm-8.6
+    title: Assessed Configurations and Approved Deviations
+    description: Include assessed component configurations and any approved deviations to current deployed configurations in the system component inventory.
+    rules: []
+    status: pending
+  - id: cm-8.7
+    title: Centralized Repository
+    description: Provide a centralized repository for the inventory of system components.
+    rules: []
+    status: pending
+  - id: cm-8.8
+    title: Automated Location Tracking
+    description: 'Support the tracking of system components by geographic location using {{ insert: param, cm-08.08_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-8.9
+    title: Assignment of Components to Systems
+    rules: []
+    status: pending
+  - id: cm-9
+    title: Configuration Management Plan
+    description: 'Develop, document, and implement a configuration management plan for the system that:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-9.1
+    title: Assignment of Responsibility
+    description: Assign responsibility for developing the configuration management process to organizational personnel that are not directly involved in system development.
+    rules: []
+    status: pending
+  - id: cm-10
+    title: Software Usage Restrictions
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-10.1
+    title: Open-source Software
+    description: 'Establish the following restrictions on the use of open-source software: {{ insert: param, cm-10.01_odp }}.'
+    rules: []
+    status: pending
+  - id: cm-11
+    title: User-installed Software
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - package_xorg-x11-server-Xwayland_removed
+      {{% endif %}}
+      {{% if product == "rhel9" %}}
+      - package_xorg-x11-server-common_removed
+      - xwindows_runlevel_target
+      {{% endif %}}
+    status: automated
+  - id: cm-11.1
+    title: Alerts for Unauthorized Installations
+    rules: []
+    status: pending
+  - id: cm-11.2
+    title: Software Installation with Privileged Status
+    description: Allow user installation of software only with explicit privileged status.
+    rules: []
+    status: pending
+  - id: cm-11.3
+    title: Automated Enforcement and Monitoring
+    description: 'Enforce and monitor compliance with software installation policies using {{ insert: param, cm-11.3_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: cm-12
+    title: Information Location
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-12.1
+    title: Automated Tools to Support Information Location
+    description: 'Use automated tools to identify {{ insert: param, cm-12.01_odp.01 }} on {{ insert: param, cm-12.01_odp.02 }} to ensure controls are in place to protect organizational information and individual privacy.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: cm-13
+    title: Data Action Mapping
+    description: Develop and document a map of system data actions.
+    rules: []
+    status: pending
+  - id: cm-14
+    title: Signed Components
+    description: 'Prevent the installation of {{ insert: param, cm-14_prm_1 }} without verification that the component has been digitally signed using a certificate that is recognized and approved by the organization.'
+    rules: []
+    status: pending

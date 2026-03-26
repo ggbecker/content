@@ -1,0 +1,1062 @@
+# NIST 800-53 AC Family: Access Control
+controls:
+  - id: ac-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-2
+    title: Account Management
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.1
+    title: Automated System Account Management
+    description: 'Support the management of system accounts using {{ insert: param, ac-02.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.2
+    title: Automated Temporary and Emergency Account Management
+    description: 'Automatically {{ insert: param, ac-02.02_odp.01 }} temporary and emergency accounts after {{ insert: param, ac-02.02_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.3
+    title: Disable Accounts
+    description: 'Disable accounts within {{ insert: param, ac-02.03_odp.01 }} when the accounts:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.4
+    title: Automated Audit Actions
+    description: Automatically audit account creation, modification, enabling, disabling, and removal actions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.5
+    title: Inactivity Logout
+    description: 'Require that users log out when {{ insert: param, ac-02.05_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules:
+      - no_invalid_shell_accounts_unlocked
+      - no_password_auth_for_systemaccounts
+      - no_shelllogin_for_systemaccounts
+    status: automated
+  - id: ac-2.6
+    title: Dynamic Privilege Management
+    description: 'Implement {{ insert: param, ac-02.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-2.7
+    title: Privileged User Accounts
+    rules: []
+    status: pending
+  - id: ac-2.8
+    title: Dynamic Account Management
+    description: 'Create, activate, manage, and deactivate {{ insert: param, ac-02.08_odp }} dynamically.'
+    rules: []
+    status: pending
+  - id: ac-2.9
+    title: Restrictions on Use of Shared and Group Accounts
+    description: 'Only permit the use of shared and group accounts that meet {{ insert: param, ac-02.09_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-2.10
+    title: Shared and Group Account Credential Change
+    rules: []
+    status: pending
+  - id: ac-2.11
+    title: Usage Conditions
+    description: 'Enforce {{ insert: param, ac-02.11_odp.01 }} for {{ insert: param, ac-02.11_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.12
+    title: Account Monitoring for Atypical Usage
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-2.13
+    title: Disable Accounts for High-risk Individuals
+    description: 'Disable accounts of individuals within {{ insert: param, ac-02.13_odp.01 }} of discovery of {{ insert: param, ac-02.13_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-3
+    title: Access Enforcement
+    description: Enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - var_accounts_user_umask=027
+      - var_pam_wheel_group_for_su=cis
+      - var_selinux_policy_name=targeted
+      - accounts_umask_etc_bashrc
+      - accounts_umask_etc_login_defs
+      - accounts_umask_etc_profile
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - accounts_umask_root
+      {{% endif %}}
+      - audit_rules_immutable
+      - dir_perms_world_writable_sticky_bits
+      {{% if product == "rhel10" %}}
+      - directory_groupowner_sshd_config_d
+      - directory_owner_sshd_config_d
+      - directory_permissions_sshd_config_d
+      {{% endif %}}
+      - ensure_pam_wheel_group_empty
+      - file_at_allow_exists
+      - file_at_deny_not_exist
+      - file_cron_allow_exists
+      - file_cron_deny_not_exist
+      {{% if product == "rhel9" %}}
+      - file_etc_security_opasswd
+      {{% endif %}}
+      - file_groupowner_at_allow
+      - file_groupowner_backup_etc_group
+      - file_groupowner_backup_etc_gshadow
+      - file_groupowner_backup_etc_passwd
+      - file_groupowner_backup_etc_shadow
+      - file_groupowner_cron_allow
+      - file_groupowner_cron_d
+      - file_groupowner_cron_daily
+      - file_groupowner_cron_hourly
+      - file_groupowner_cron_monthly
+      - file_groupowner_cron_weekly
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_groupowner_cron_yearly
+      {{% endif %}}
+      - file_groupowner_crontab
+      - file_groupowner_etc_group
+      - file_groupowner_etc_gshadow
+      - file_groupowner_etc_issue
+      - file_groupowner_etc_issue_net
+      - file_groupowner_etc_motd
+      - file_groupowner_etc_passwd
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_groupowner_etc_security_opasswd
+      - file_groupowner_etc_security_opasswd_old
+      {{% endif %}}
+      - file_groupowner_etc_shadow
+      - file_groupowner_etc_shells
+      {{% if product == "rhel8" %}}
+      - file_groupowner_etc_sysconfig_sshd
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_groupowner_grub2_cfg
+      {{% endif %}}
+      - file_groupowner_sshd_config
+      {{% if product == "rhel10" %}}
+      - file_groupowner_sshd_drop_in_config
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_groupowner_user_cfg
+      {{% endif %}}
+      - file_groupownership_sshd_private_key
+      - file_groupownership_sshd_pub_key
+      - file_owner_at_allow
+      - file_owner_backup_etc_group
+      - file_owner_backup_etc_gshadow
+      - file_owner_backup_etc_passwd
+      - file_owner_backup_etc_shadow
+      - file_owner_cron_allow
+      - file_owner_cron_d
+      - file_owner_cron_daily
+      - file_owner_cron_hourly
+      - file_owner_cron_monthly
+      - file_owner_cron_weekly
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_owner_cron_yearly
+      {{% endif %}}
+      - file_owner_crontab
+      - file_owner_etc_group
+      - file_owner_etc_gshadow
+      - file_owner_etc_issue
+      - file_owner_etc_issue_net
+      - file_owner_etc_motd
+      - file_owner_etc_passwd
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_owner_etc_security_opasswd
+      - file_owner_etc_security_opasswd_old
+      {{% endif %}}
+      - file_owner_etc_shadow
+      - file_owner_etc_shells
+      {{% if product == "rhel8" %}}
+      - file_owner_etc_sysconfig_sshd
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_owner_grub2_cfg
+      {{% endif %}}
+      - file_owner_sshd_config
+      {{% if product == "rhel10" %}}
+      - file_owner_sshd_drop_in_config
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_owner_user_cfg
+      {{% endif %}}
+      - file_ownership_sshd_private_key
+      - file_ownership_sshd_pub_key
+      - file_permissions_at_allow
+      - file_permissions_backup_etc_group
+      - file_permissions_backup_etc_gshadow
+      - file_permissions_backup_etc_passwd
+      - file_permissions_backup_etc_shadow
+      - file_permissions_cron_allow
+      - file_permissions_cron_d
+      - file_permissions_cron_daily
+      - file_permissions_cron_hourly
+      - file_permissions_cron_monthly
+      - file_permissions_cron_weekly
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_permissions_cron_yearly
+      {{% endif %}}
+      - file_permissions_crontab
+      - file_permissions_etc_group
+      - file_permissions_etc_gshadow
+      - file_permissions_etc_issue
+      - file_permissions_etc_issue_net
+      - file_permissions_etc_motd
+      - file_permissions_etc_passwd
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - file_permissions_etc_security_opasswd
+      - file_permissions_etc_security_opasswd_old
+      {{% endif %}}
+      - file_permissions_etc_shadow
+      - file_permissions_etc_shells
+      {{% if product == "rhel8" %}}
+      - file_permissions_etc_sysconfig_sshd
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_permissions_grub2_cfg
+      {{% endif %}}
+      - file_permissions_sshd_config
+      {{% if product == "rhel10" %}}
+      - file_permissions_sshd_drop_in_config
+      {{% endif %}}
+      - file_permissions_sshd_private_key
+      - file_permissions_sshd_pub_key
+      - file_permissions_unauthorized_world_writable
+      {{% if product == "rhel9" %}}
+      - file_permissions_ungroupowned
+      {{% endif %}}
+      {{% if product in ["rhel8", "rhel9"] %}}
+      - file_permissions_user_cfg
+      {{% endif %}}
+      - grub2_enable_selinux
+      - grub2_password
+      {{% if product == "rhel8" %}}
+      - grub2_uefi_password
+      {{% endif %}}
+      - mount_option_dev_shm_nodev
+      - mount_option_dev_shm_noexec
+      - mount_option_dev_shm_nosuid
+      - mount_option_home_nodev
+      - mount_option_home_nosuid
+      - mount_option_tmp_noexec
+      - mount_option_tmp_nosuid
+      - mount_option_var_log_audit_nodev
+      - mount_option_var_log_audit_noexec
+      - mount_option_var_log_audit_nosuid
+      - mount_option_var_log_nodev
+      - mount_option_var_log_noexec
+      - mount_option_var_log_nosuid
+      - mount_option_var_nodev
+      - mount_option_var_nosuid
+      - mount_option_var_tmp_nodev
+      - mount_option_var_tmp_noexec
+      - mount_option_var_tmp_nosuid
+      {{% if product == "rhel9" %}}
+      - no_files_unowned_by_user
+      {{% endif %}}
+      - package_libselinux_installed
+      - package_mcstrans_removed
+      - package_setroubleshoot_removed
+      {{% if product == "rhel8" %}}
+      - rsyslog_filecreatemode
+      {{% endif %}}
+      - rsyslog_files_groupownership
+      - rsyslog_files_ownership
+      - rsyslog_files_permissions
+      - selinux_not_disabled
+      - selinux_policytype
+      - sshd_limit_user_access
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_fs_protected_hardlinks
+      - sysctl_fs_protected_symlinks
+      {{% endif %}}
+      - use_pam_wheel_group_for_su
+    status: automated
+  - id: ac-3.1
+    title: Restricted Access to Privileged Functions
+    rules: []
+    status: pending
+  - id: ac-3.2
+    title: Dual Authorization
+    description: 'Enforce dual authorization for {{ insert: param, ac-03.02_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-3.3
+    title: Mandatory Access Control
+    description: 'Enforce {{ insert: param, ac-3.3_prm_1 }} over the set of covered subjects and objects specified in the policy, and where the policy:'
+    rules: []
+    status: pending
+  - id: ac-3.4
+    title: Discretionary Access Control
+    description: 'Enforce {{ insert: param, ac-3.4_prm_1 }} over the set of covered subjects and objects specified in the policy, and where the policy specifies that a subject that has been granted access to information can do one or more of the following:'
+    rules: []
+    status: pending
+  - id: ac-3.5
+    title: Security-relevant Information
+    description: 'Prevent access to {{ insert: param, ac-03.05_odp }} except during secure, non-operable system states.'
+    rules: []
+    status: pending
+  - id: ac-3.6
+    title: Protection of User and System Information
+    rules: []
+    status: pending
+  - id: ac-3.7
+    title: Role-based Access Control
+    description: 'Enforce a role-based access control policy over defined subjects and objects and control access based upon {{ insert: param, ac-3.7_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: ac-3.8
+    title: Revocation of Access Authorizations
+    description: 'Enforce the revocation of access authorizations resulting from changes to the security attributes of subjects and objects based on {{ insert: param, ac-03.08_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-3.9
+    title: Controlled Release
+    description: 'Release information outside of the system only if:'
+    rules: []
+    status: pending
+  - id: ac-3.10
+    title: Audited Override of Access Control Mechanisms
+    description: 'Employ an audited override of automated access control mechanisms under {{ insert: param, ac-03.10_odp.01 }} by {{ insert: param, ac-03.10_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-3.11
+    title: Restrict Access to Specific Information Types
+    description: 'Restrict access to data repositories containing {{ insert: param, ac-03.11_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-3.12
+    title: Assert and Enforce Application Access
+    rules: []
+    status: pending
+  - id: ac-3.13
+    title: Attribute-based Access Control
+    description: 'Enforce attribute-based access control policy over defined subjects and objects and control access based upon {{ insert: param, ac-03.13_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-3.14
+    title: Individual Access
+    description: 'Provide {{ insert: param, ac-03.14_odp.01 }} to enable individuals to have access to the following elements of their personally identifiable information: {{ insert: param, ac-03.14_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-3.15
+    title: Discretionary and Mandatory Access Control
+    rules: []
+    status: pending
+  - id: ac-4
+    title: Information Flow Enforcement
+    description: 'Enforce approved authorizations for controlling the flow of information within the system and between connected systems based on {{ insert: param, ac-04_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-4.1
+    title: Object Security and Privacy Attributes
+    description: 'Use {{ insert: param, ac-4.1_prm_1 }} associated with {{ insert: param, ac-4.1_prm_2 }} to enforce {{ insert: param, ac-04.01_odp.09 }} as a basis for flow control decisions.'
+    rules: []
+    status: pending
+  - id: ac-4.2
+    title: Processing Domains
+    description: 'Use protected processing domains to enforce {{ insert: param, ac-04.02_odp }} as a basis for flow control decisions.'
+    rules: []
+    status: pending
+  - id: ac-4.3
+    title: Dynamic Information Flow Control
+    description: 'Enforce {{ insert: param, ac-04.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-4.4
+    title: Flow Control of Encrypted Information
+    description: 'Prevent encrypted information from bypassing {{ insert: param, ac-04.04_odp.01 }} by {{ insert: param, ac-04.04_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-4.5
+    title: Embedded Data Types
+    description: 'Enforce {{ insert: param, ac-04.05_odp }} on embedding data types within other data types.'
+    rules: []
+    status: pending
+  - id: ac-4.6
+    title: Metadata
+    description: 'Enforce information flow control based on {{ insert: param, ac-04.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-4.7
+    title: One-way Flow Mechanisms
+    description: Enforce one-way information flows through hardware-based flow control mechanisms.
+    rules: []
+    status: pending
+  - id: ac-4.8
+    title: Security and Privacy Policy Filters
+    rules: []
+    status: pending
+  - id: ac-4.9
+    title: Human Reviews
+    description: 'Enforce the use of human reviews for {{ insert: param, ac-04.09_odp.01 }} under the following conditions: {{ insert: param, ac-04.09_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-4.10
+    title: Enable and Disable Security or Privacy Policy Filters
+    description: 'Provide the capability for privileged administrators to enable and disable {{ insert: param, ac-4.10_prm_1 }} under the following conditions: {{ insert: param, ac-4.10_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: ac-4.11
+    title: Configuration of Security or Privacy Policy Filters
+    description: 'Provide the capability for privileged administrators to configure {{ insert: param, ac-4.11_prm_1 }} to support different security or privacy policies.'
+    rules: []
+    status: pending
+  - id: ac-4.12
+    title: Data Type Identifiers
+    description: 'When transferring information between different security domains, use {{ insert: param, ac-04.12_odp }} to validate data essential for information flow decisions.'
+    rules: []
+    status: pending
+  - id: ac-4.13
+    title: Decomposition into Policy-relevant Subcomponents
+    description: 'When transferring information between different security domains, decompose information into {{ insert: param, ac-04.13_odp }} for submission to policy enforcement mechanisms.'
+    rules: []
+    status: pending
+  - id: ac-4.14
+    title: Security or Privacy Policy Filter Constraints
+    description: 'When transferring information between different security domains, implement {{ insert: param, ac-4.14_prm_1 }} requiring fully enumerated formats that restrict data structure and content.'
+    rules: []
+    status: pending
+  - id: ac-4.15
+    title: Detection of Unsanctioned Information
+    description: 'When transferring information between different security domains, examine the information for the presence of {{ insert: param, ac-04.15_odp.01 }} and prohibit the transfer of such information in accordance with the {{ insert: param, ac-4.15_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: ac-4.16
+    title: Information Transfers on Interconnected Systems
+    rules: []
+    status: pending
+  - id: ac-4.17
+    title: Domain Authentication
+    description: 'Uniquely identify and authenticate source and destination points by {{ insert: param, ac-04.17_odp }} for information transfer.'
+    rules: []
+    status: pending
+  - id: ac-4.18
+    title: Security Attribute Binding
+    rules: []
+    status: pending
+  - id: ac-4.19
+    title: Validation of Metadata
+    description: 'When transferring information between different security domains, implement {{ insert: param, ac-4.19_prm_1 }} on metadata.'
+    rules: []
+    status: pending
+  - id: ac-4.20
+    title: Approved Solutions
+    description: 'Employ {{ insert: param, ac-04.20_odp.01 }} to control the flow of {{ insert: param, ac-04.20_odp.02 }} across security domains.'
+    rules: []
+    status: pending
+  - id: ac-4.21
+    title: Physical or Logical Separation of Information Flows
+    description: 'Separate information flows logically or physically using {{ insert: param, ac-4.21_prm_1 }} to accomplish {{ insert: param, ac-04.21_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: ac-4.22
+    title: Access Only
+    description: Provide access from a single device to computing platforms, applications, or data residing in multiple different security domains, while preventing information flow between the different security domains.
+    rules: []
+    status: pending
+  - id: ac-4.23
+    title: Modify Non-releasable Information
+    description: 'When transferring information between different security domains, modify non-releasable information by implementing {{ insert: param, ac-04.23_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-4.24
+    title: Internal Normalized Format
+    description: When transferring information between different security domains, parse incoming data into an internal normalized format and regenerate the data to be consistent with its intended specification.
+    rules: []
+    status: pending
+  - id: ac-4.25
+    title: Data Sanitization
+    description: 'When transferring information between different security domains, sanitize data to minimize {{ insert: param, ac-04.25_odp.01 }} in accordance with {{ insert: param, ac-04.25_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-4.26
+    title: Audit Filtering Actions
+    description: When transferring information between different security domains, record and audit content filtering actions and results for the information being filtered.
+    rules: []
+    status: pending
+  - id: ac-4.27
+    title: Redundant/Independent Filtering Mechanisms
+    description: When transferring information between different security domains, implement content filtering solutions that provide redundant and independent filtering mechanisms for each data type.
+    rules: []
+    status: pending
+  - id: ac-4.28
+    title: Linear Filter Pipelines
+    description: When transferring information between different security domains, implement a linear content filter pipeline that is enforced with discretionary and mandatory access controls.
+    rules: []
+    status: pending
+  - id: ac-4.29
+    title: Filter Orchestration Engines
+    description: 'When transferring information between different security domains, employ content filter orchestration engines to ensure that:'
+    rules: []
+    status: pending
+  - id: ac-4.30
+    title: Filter Mechanisms Using Multiple Processes
+    description: When transferring information between different security domains, implement content filtering mechanisms using multiple processes.
+    rules: []
+    status: pending
+  - id: ac-4.31
+    title: Failed Content Transfer Prevention
+    description: When transferring information between different security domains, prevent the transfer of failed content to the receiving domain.
+    rules: []
+    status: pending
+  - id: ac-4.32
+    title: Process Requirements for Information Transfer
+    description: 'When transferring information between different security domains, the process that transfers information between filter pipelines:'
+    rules: []
+    status: pending
+  - id: ac-5
+    title: Separation of Duties
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-6
+    title: Least Privilege
+    description: Employ the principle of least privilege, allowing only authorized accesses for users (or processes acting on behalf of users) that are necessary to accomplish assigned organizational tasks.
+    levels:
+      - moderate
+      - high
+    rules:
+      - sshd_disable_root_login
+      - sudo_add_use_pty
+      - sudo_remove_no_authenticate
+      - sudo_remove_nopasswd
+    status: automated
+  - id: ac-6.1
+    title: Authorize Access to Security Functions
+    description: 'Authorize access for {{ insert: param, ac-06.01_odp.01 }} to:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-6.2
+    title: Non-privileged Access for Nonsecurity Functions
+    description: 'Require that users of system accounts (or roles) with access to {{ insert: param, ac-06.02_odp }} use non-privileged accounts or roles, when accessing nonsecurity functions.'
+    levels:
+      - moderate
+      - high
+    rules:
+      - package_sudo_installed
+    status: automated
+  - id: ac-6.3
+    title: Network Access to Privileged Commands
+    description: 'Authorize network access to {{ insert: param, ac-06.03_odp.01 }} only for {{ insert: param, ac-06.03_odp.02 }} and document the rationale for such access in the security plan for the system.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-6.4
+    title: Separate Processing Domains
+    description: Provide separate processing domains to enable finer-grained allocation of user privileges.
+    rules: []
+    status: pending
+  - id: ac-6.5
+    title: Privileged Accounts
+    description: 'Restrict privileged accounts on the system to {{ insert: param, ac-06.05_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-6.6
+    title: Privileged Access by Non-organizational Users
+    description: Prohibit privileged access to the system by non-organizational users.
+    rules: []
+    status: pending
+  - id: ac-6.7
+    title: Review of User Privileges
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-6.8
+    title: Privilege Levels for Code Execution
+    description: 'Prevent the following software from executing at higher privilege levels than users executing the software: {{ insert: param, ac-06.08_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-6.9
+    title: Log Use of Privileged Functions
+    description: Log the execution of privileged functions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-6.10
+    title: Prohibit Non-privileged Users from Executing Privileged Functions
+    description: Prevent non-privileged users from executing privileged functions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-7
+    title: Unsuccessful Logon Attempts
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - account_password_pam_faillock_password_auth
+      - account_password_pam_faillock_system_auth
+    status: automated
+  - id: ac-7.1
+    title: Automatic Account Lock
+    rules: []
+    status: pending
+  - id: ac-7.2
+    title: Purge or Wipe Mobile Device
+    description: 'Purge or wipe information from {{ insert: param, ac-07.02_odp.01 }} based on {{ insert: param, ac-07.02_odp.02 }} after {{ insert: param, ac-07.02_odp.03 }} consecutive, unsuccessful device logon attempts.'
+    rules: []
+    status: pending
+  - id: ac-7.3
+    title: Biometric Attempt Limiting
+    description: 'Limit the number of unsuccessful biometric logon attempts to {{ insert: param, ac-07.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-7.4
+    title: Use of Alternate Authentication Factor
+    rules: []
+    status: pending
+  - id: ac-8
+    title: System Use Notification
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - dconf_login_banner_contents=cis_default
+      - dconf_login_banner_text=cis_banners
+      - dconf_gnome_banner_enabled
+      - dconf_gnome_login_banner_text
+    status: automated
+  - id: ac-9
+    title: Previous Logon Notification
+    description: Notify the user, upon successful logon to the system, of the date and time of the last logon.
+    rules: []
+    status: pending
+  - id: ac-9.1
+    title: Unsuccessful Logons
+    description: Notify the user, upon successful logon, of the number of unsuccessful logon attempts since the last successful logon.
+    rules: []
+    status: pending
+  - id: ac-9.2
+    title: Successful and Unsuccessful Logons
+    description: 'Notify the user, upon successful logon, of the number of {{ insert: param, ac-09.02_odp.01 }} during {{ insert: param, ac-09.02_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-9.3
+    title: Notification of Account Changes
+    description: 'Notify the user, upon successful logon, of changes to {{ insert: param, ac-09.03_odp.01 }} during {{ insert: param, ac-09.03_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-9.4
+    title: Additional Logon Information
+    description: 'Notify the user, upon successful logon, of the following additional information: {{ insert: param, ac-09.04_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-10
+    title: Concurrent Session Control
+    description: 'Limit the number of concurrent sessions for each {{ insert: param, ac-10_odp.01 }} to {{ insert: param, ac-10_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-11
+    title: Device Lock
+    levels:
+      - moderate
+      - high
+    rules:
+      - inactivity_timeout_value=15_minutes
+      - var_screensaver_lock_delay=5_seconds
+      - dconf_gnome_screensaver_idle_delay
+      - dconf_gnome_screensaver_lock_delay
+      - dconf_gnome_screensaver_user_locks
+      - dconf_gnome_session_idle_user_locks
+    status: automated
+  - id: ac-11.1
+    title: Pattern-hiding Displays
+    description: Conceal, via the device lock, information previously visible on the display with a publicly viewable image.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-12
+    title: Session Termination
+    description: 'Automatically terminate a user session after {{ insert: param, ac-12_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-12.1
+    title: User-initiated Logouts
+    description: 'Provide a logout capability for user-initiated communications sessions whenever authentication is used to gain access to {{ insert: param, ac-12.01_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-12.2
+    title: Termination Message
+    description: Display an explicit logout message to users indicating the termination of authenticated communications sessions.
+    rules: []
+    status: pending
+  - id: ac-12.3
+    title: Timeout Warning Message
+    description: 'Display an explicit message to users indicating that the session will end in {{ insert: param, ac-12.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-13
+    title: Supervision and Review — Access Control
+    rules: []
+    status: pending
+  - id: ac-14
+    title: Permitted Actions Without Identification or Authentication
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-14.1
+    title: Necessary Uses
+    rules: []
+    status: pending
+  - id: ac-15
+    title: Automated Marking
+    rules: []
+    status: pending
+  - id: ac-16
+    title: Security and Privacy Attributes
+    rules: []
+    status: pending
+  - id: ac-16.1
+    title: Dynamic Attribute Association
+    description: 'Dynamically associate security and privacy attributes with {{ insert: param, ac-16.1_prm_1 }} in accordance with the following security and privacy policies as information is created and combined: {{ insert: param, ac-16.1_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: ac-16.2
+    title: Attribute Value Changes by Authorized Individuals
+    description: Provide authorized individuals (or processes acting on behalf of individuals) the capability to define or change the value of associated security and privacy attributes.
+    rules: []
+    status: pending
+  - id: ac-16.3
+    title: Maintenance of Attribute Associations by System
+    description: 'Maintain the association and integrity of {{ insert: param, ac-16.3_prm_1 }} to {{ insert: param, ac-16.3_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: ac-16.4
+    title: Association of Attributes by Authorized Individuals
+    description: 'Provide the capability to associate {{ insert: param, ac-16.4_prm_1 }} with {{ insert: param, ac-16.4_prm_2 }} by authorized individuals (or processes acting on behalf of individuals).'
+    rules: []
+    status: pending
+  - id: ac-16.5
+    title: Attribute Displays on Objects to Be Output
+    description: 'Display security and privacy attributes in human-readable form on each object that the system transmits to output devices to identify {{ insert: param, ac-16.05_odp.01 }} using {{ insert: param, ac-16.05_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-16.6
+    title: Maintenance of Attribute Association
+    description: 'Require personnel to associate and maintain the association of {{ insert: param, ac-16.6_prm_1 }} with {{ insert: param, ac-16.6_prm_2 }} in accordance with {{ insert: param, ac-16.6_prm_3 }}.'
+    rules: []
+    status: pending
+  - id: ac-16.7
+    title: Consistent Attribute Interpretation
+    description: Provide a consistent interpretation of security and privacy attributes transmitted between distributed system components.
+    rules: []
+    status: pending
+  - id: ac-16.8
+    title: Association Techniques and Technologies
+    description: 'Implement {{ insert: param, ac-16.8_prm_1 }} in associating security and privacy attributes to information.'
+    rules: []
+    status: pending
+  - id: ac-16.9
+    title: Attribute Reassignment — Regrading Mechanisms
+    description: 'Change security and privacy attributes associated with information only via regrading mechanisms validated using {{ insert: param, ac-16.9_prm_1 }}.'
+    rules: []
+    status: pending
+  - id: ac-16.10
+    title: Attribute Configuration by Authorized Individuals
+    description: Provide authorized individuals the capability to define or change the type and value of security and privacy attributes available for association with subjects and objects.
+    rules: []
+    status: pending
+  - id: ac-17
+    title: Remote Access
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - configure_custom_crypto_policy_cis
+      {{% if product == "rhel8" %}}
+      - configure_ssh_crypto_policy
+      {{% endif %}}
+    status: automated
+  - id: ac-17.1
+    title: Monitoring and Control
+    description: Employ automated mechanisms to monitor and control remote access methods.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-17.2
+    title: Protection of Confidentiality and Integrity Using Encryption
+    description: Implement cryptographic mechanisms to protect the confidentiality and integrity of remote access sessions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-17.3
+    title: Managed Access Control Points
+    description: Route remote accesses through authorized and managed network access control points.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-17.4
+    title: Privileged Commands and Access
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-17.5
+    title: Monitoring for Unauthorized Connections
+    rules: []
+    status: pending
+  - id: ac-17.6
+    title: Protection of Mechanism Information
+    description: Protect information about remote access mechanisms from unauthorized use and disclosure.
+    rules: []
+    status: pending
+  - id: ac-17.7
+    title: Additional Protection for Security Function Access
+    rules: []
+    status: pending
+  - id: ac-17.8
+    title: Disable Nonsecure Network Protocols
+    rules: []
+    status: pending
+  - id: ac-17.9
+    title: Disconnect or Disable Access
+    description: 'Provide the capability to disconnect or disable remote access to the system within {{ insert: param, ac-17.09_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-17.10
+    title: Authenticate Remote Commands
+    description: 'Implement {{ insert: param, ac-17.10_odp.01 }} to authenticate {{ insert: param, ac-17.10_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ac-18
+    title: Wireless Access
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - wireless_disable_interfaces
+    status: automated
+  - id: ac-18.1
+    title: Authentication and Encryption
+    description: 'Protect wireless access to the system using authentication of {{ insert: param, ac-18.01_odp }} and encryption.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-18.2
+    title: Monitoring Unauthorized Connections
+    rules: []
+    status: pending
+  - id: ac-18.3
+    title: Disable Wireless Networking
+    description: Disable, when not intended for use, wireless networking capabilities embedded within system components prior to issuance and deployment.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-18.4
+    title: Restrict Configurations by Users
+    description: Identify and explicitly authorize users allowed to independently configure wireless networking capabilities.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-18.5
+    title: Antennas and Transmission Power Levels
+    description: Select radio antennas and calibrate transmission power levels to reduce the probability that signals from wireless access points can be received outside of organization-controlled boundaries.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ac-19
+    title: Access Control for Mobile Devices
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-19.1
+    title: Use of Writable and Portable Storage Devices
+    rules: []
+    status: pending
+  - id: ac-19.2
+    title: Use of Personally Owned Portable Storage Devices
+    rules: []
+    status: pending
+  - id: ac-19.3
+    title: Use of Portable Storage Devices with No Identifiable Owner
+    rules: []
+    status: pending
+  - id: ac-19.4
+    title: Restrictions for Classified Information
+    rules: []
+    status: pending
+  - id: ac-19.5
+    title: Full Device or Container-based Encryption
+    description: 'Employ {{ insert: param, ac-19.05_odp.01 }} to protect the confidentiality and integrity of information on {{ insert: param, ac-19.05_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-20
+    title: Use of External Systems
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-20.1
+    title: Limits on Authorized Use
+    description: 'Permit authorized individuals to use an external system to access the system or to process, store, or transmit organization-controlled information only after:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-20.2
+    title: Portable Storage Devices — Restricted Use
+    description: 'Restrict the use of organization-controlled portable storage devices by authorized individuals on external systems using {{ insert: param, ac-20.02_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-20.3
+    title: Non-organizationally Owned Systems — Restricted Use
+    description: 'Restrict the use of non-organizationally owned systems or system components to process, store, or transmit organizational information using {{ insert: param, ac-20.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-20.4
+    title: Network Accessible Storage Devices — Prohibited Use
+    description: 'Prohibit the use of {{ insert: param, ac-20.04_odp }} in external systems.'
+    rules: []
+    status: pending
+  - id: ac-20.5
+    title: Portable Storage Devices — Prohibited Use
+    description: Prohibit the use of organization-controlled portable storage devices by authorized individuals on external systems.
+    rules: []
+    status: pending
+  - id: ac-21
+    title: Information Sharing
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-21.1
+    title: Automated Decision Support
+    description: 'Employ {{ insert: param, ac-21.01_odp }} to enforce information-sharing decisions by authorized users based on access authorizations of sharing partners and access restrictions on information to be shared.'
+    rules: []
+    status: pending
+  - id: ac-21.2
+    title: Information Search and Retrieval
+    description: 'Implement information search and retrieval services that enforce {{ insert: param, ac-21.02_odp }}.'
+    rules: []
+    status: pending
+  - id: ac-22
+    title: Publicly Accessible Content
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ac-23
+    title: Data Mining Protection
+    description: 'Employ {{ insert: param, ac-23_odp.01 }} for {{ insert: param, ac-23_odp.02 }} to detect and protect against unauthorized data mining.'
+    rules: []
+    status: pending
+  - id: ac-24
+    title: Access Control Decisions
+    description: '{{ insert: param, ac-24_odp.01 }} to ensure {{ insert: param, ac-24_odp.02 }} are applied to each access request prior to access enforcement.'
+    rules: []
+    status: pending
+  - id: ac-24.1
+    title: Transmit Access Authorization Information
+    description: 'Transmit {{ insert: param, ac-24.01_odp.01 }} using {{ insert: param, ac-24.01_odp.02 }} to {{ insert: param, ac-24.01_odp.03 }} that enforce access control decisions.'
+    rules: []
+    status: pending
+  - id: ac-24.2
+    title: No User or Process Identity
+    description: 'Enforce access control decisions based on {{ insert: param, ac-24.2_prm_1 }} that do not include the identity of the user or process acting on behalf of the user.'
+    rules: []
+    status: pending
+  - id: ac-25
+    title: Reference Monitor
+    description: 'Implement a reference monitor for {{ insert: param, ac-25_odp }} that is tamperproof, always invoked, and small enough to be subject to analysis and testing, the completeness of which can be assured.'
+    rules: []
+    status: pending
