@@ -155,6 +155,10 @@ class Control(ssg.entities.common.SelectionHandler, ssg.entities.common.XCCDFEnt
         related_rules=list,
         rules=list,
         controls=list,
+        # OSCAL metadata fields (for documentation, ignored during processing)
+        parameters=list,
+        guidance=str,
+        related_controls=list,
     )
 
     MANDATORY_KEYS = {
@@ -181,6 +185,10 @@ class Control(ssg.entities.common.SelectionHandler, ssg.entities.common.XCCDFEnt
         self.original_title = ""
         self.related_rules = []
         self.rules = []
+        # OSCAL metadata fields (for documentation)
+        self.parameters = []
+        self.guidance = ""
+        self.related_controls = []
 
     def __hash__(self):
         """
@@ -246,6 +254,10 @@ class Control(ssg.entities.common.SelectionHandler, ssg.entities.common.XCCDFEnt
         control.original_title = control_dict.get('original_title')
         control.related_rules = control_dict.get('related_rules')
         control.rules = control_dict.get('rules')
+        # OSCAL metadata fields
+        control.parameters = control_dict.get('parameters', [])
+        control.guidance = control_dict.get('guidance', '')
+        control.related_controls = control_dict.get('related_controls', [])
 
         if control.status == "automated":
             control.automated = "yes"
