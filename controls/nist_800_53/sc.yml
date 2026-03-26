@@ -1,0 +1,878 @@
+# NIST 800-53 SC Family: System and Communications Protection
+controls:
+  - id: sc-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-2
+    title: Separation of System and User Functionality
+    description: Separate user functionality, including user interface services, from system management functionality.
+    levels:
+      - moderate
+      - high
+    rules:
+      {{% if product in ["rhel10", "rhel8"] %}}
+      - sysctl_kernel_dmesg_restrict
+      {{% else %}}
+      []
+      {{% endif %}}
+    status: automated
+  - id: sc-2.1
+    title: Interfaces for Non-privileged Users
+    description: Prevent the presentation of system management functionality at interfaces to non-privileged users.
+    rules: []
+    status: pending
+  - id: sc-2.2
+    title: Disassociability
+    description: Store state information from applications and software separately.
+    rules: []
+    status: pending
+  - id: sc-3
+    title: Security Function Isolation
+    description: Isolate security functions from nonsecurity functions.
+    levels:
+      - high
+    rules:
+      - var_selinux_state=enforcing
+      - selinux_not_disabled
+      - selinux_state
+    status: automated
+  - id: sc-3.1
+    title: Hardware Separation
+    description: Employ hardware separation mechanisms to implement security function isolation.
+    rules: []
+    status: pending
+  - id: sc-3.2
+    title: Access and Flow Control Functions
+    description: Isolate security functions enforcing access and information flow control from nonsecurity functions and from other security functions.
+    rules: []
+    status: pending
+  - id: sc-3.3
+    title: Minimize Nonsecurity Functionality
+    description: Minimize the number of nonsecurity functions included within the isolation boundary containing security functions.
+    rules: []
+    status: pending
+  - id: sc-3.4
+    title: Module Coupling and Cohesiveness
+    description: Implement security functions as largely independent modules that maximize internal cohesiveness within modules and minimize coupling between modules.
+    rules: []
+    status: pending
+  - id: sc-3.5
+    title: Layered Structures
+    description: Implement security functions as a layered structure minimizing interactions between layers of the design and avoiding any dependence by lower layers on the functionality or correctness of higher layers.
+    rules: []
+    status: pending
+  - id: sc-4
+    title: Information in Shared System Resources
+    description: Prevent unauthorized and unintended information transfer via shared system resources.
+    levels:
+      - moderate
+      - high
+    rules:
+      - dir_perms_world_writable_sticky_bits
+      - file_permissions_unauthorized_world_writable
+    status: automated
+  - id: sc-4.1
+    title: Security Levels
+    rules: []
+    status: pending
+  - id: sc-4.2
+    title: Multilevel or Periods Processing
+    description: 'Prevent unauthorized information transfer via shared resources in accordance with {{ insert: param, sc-04.02_odp }} when system processing explicitly switches between different information classification levels or security categories.'
+    rules: []
+    status: pending
+  - id: sc-5
+    title: Denial-of-service Protection
+    levels:
+      - low
+      - moderate
+      - high
+    rules:
+      - sysctl_net_ipv4_tcp_syncookies_value=enabled
+      - sysctl_net_ipv4_tcp_syncookies
+    status: automated
+  - id: sc-5.1
+    title: Restrict Ability to Attack Other Systems
+    description: 'Restrict the ability of individuals to launch the following denial-of-service attacks against other systems: {{ insert: param, sc-05.01_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-5.2
+    title: Capacity, Bandwidth, and Redundancy
+    description: Manage capacity, bandwidth, or other redundancy to limit the effects of information flooding denial-of-service attacks.
+    rules: []
+    status: pending
+  - id: sc-5.3
+    title: Detection and Monitoring
+    rules: []
+    status: pending
+  - id: sc-6
+    title: Resource Availability
+    description: 'Protect the availability of resources by allocating {{ insert: param, sc-06_odp.01 }} by {{ insert: param, sc-06_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-7
+    title: Boundary Protection
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.1
+    title: Physically Separated Subnetworks
+    rules: []
+    status: pending
+  - id: sc-7.2
+    title: Public Access
+    rules: []
+    status: pending
+  - id: sc-7.3
+    title: Access Points
+    description: Limit the number of external network connections to the system.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.4
+    title: External Telecommunications Services
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.5
+    title: Deny by Default — Allow by Exception
+    description: 'Deny network communications traffic by default and allow network communications traffic by exception {{ insert: param, sc-07.05_odp.01 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.6
+    title: Response to Recognized Failures
+    rules: []
+    status: pending
+  - id: sc-7.7
+    title: Split Tunneling for Remote Devices
+    description: 'Prevent split tunneling for remote devices connecting to organizational systems unless the split tunnel is securely provisioned using {{ insert: param, sc-07.07_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.8
+    title: Route Traffic to Authenticated Proxy Servers
+    description: 'Route {{ insert: param, sc-07.08_odp.01 }} to {{ insert: param, sc-07.08_odp.02 }} through authenticated proxy servers at managed interfaces.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.9
+    title: Restrict Threatening Outgoing Communications Traffic
+    rules: []
+    status: pending
+  - id: sc-7.10
+    title: Prevent Exfiltration
+    rules: []
+    status: pending
+  - id: sc-7.11
+    title: Restrict Incoming Communications Traffic
+    description: 'Only allow incoming communications from {{ insert: param, sc-07.11_odp.01 }} to be routed to {{ insert: param, sc-07.11_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-7.12
+    title: Host-based Protection
+    description: 'Implement {{ insert: param, sc-07.12_odp.01 }} at {{ insert: param, sc-07.12_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-7.13
+    title: Isolation of Security Tools, Mechanisms, and Support Components
+    description: 'Isolate {{ insert: param, sc-07.13_odp }} from other internal system components by implementing physically separate subnetworks with managed interfaces to other components of the system.'
+    rules: []
+    status: pending
+  - id: sc-7.14
+    title: Protect Against Unauthorized Physical Connections
+    description: 'Protect against unauthorized physical connections at {{ insert: param, sc-07.14_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-7.15
+    title: Networked Privileged Accesses
+    description: Route networked, privileged accesses through a dedicated, managed interface for purposes of access control and auditing.
+    rules: []
+    status: pending
+  - id: sc-7.16
+    title: Prevent Discovery of System Components
+    description: Prevent the discovery of specific system components that represent a managed interface.
+    rules: []
+    status: pending
+  - id: sc-7.17
+    title: Automated Enforcement of Protocol Formats
+    description: Enforce adherence to protocol formats.
+    rules: []
+    status: pending
+  - id: sc-7.18
+    title: Fail Secure
+    description: Prevent systems from entering unsecure states in the event of an operational failure of a boundary protection device.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.19
+    title: Block Communication from Non-organizationally Configured Hosts
+    description: 'Block inbound and outbound communications traffic between {{ insert: param, sc-07.19_odp }} that are independently configured by end users and external service providers.'
+    rules: []
+    status: pending
+  - id: sc-7.20
+    title: Dynamic Isolation and Segregation
+    description: 'Provide the capability to dynamically isolate {{ insert: param, sc-07.20_odp }} from other system components.'
+    rules: []
+    status: pending
+  - id: sc-7.21
+    title: Isolation of System Components
+    description: 'Employ boundary protection mechanisms to isolate {{ insert: param, sc-07.21_odp.01 }} supporting {{ insert: param, sc-07.21_odp.02 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sc-7.22
+    title: Separate Subnets for Connecting to Different Security Domains
+    description: Implement separate network addresses to connect to systems in different security domains.
+    rules: []
+    status: pending
+  - id: sc-7.23
+    title: Disable Sender Feedback on Protocol Validation Failure
+    description: Disable feedback to senders on protocol format validation failure.
+    rules: []
+    status: pending
+  - id: sc-7.24
+    title: Personally Identifiable Information
+    description: 'For systems that process personally identifiable information:'
+    rules: []
+    status: pending
+  - id: sc-7.25
+    title: Unclassified National Security System Connections
+    description: 'Prohibit the direct connection of {{ insert: param, sc-07.25_odp.01 }} to an external network without the use of {{ insert: param, sc-07.25_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-7.26
+    title: Classified National Security System Connections
+    description: 'Prohibit the direct connection of a classified national security system to an external network without the use of {{ insert: param, sc-07.26_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-7.27
+    title: Unclassified Non-national Security System Connections
+    description: 'Prohibit the direct connection of {{ insert: param, sc-07.27_odp.01 }} to an external network without the use of {{ insert: param, sc-07.27_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-7.28
+    title: Connections to Public Networks
+    description: 'Prohibit the direct connection of {{ insert: param, sc-07.28_odp }} to a public network.'
+    rules: []
+    status: pending
+  - id: sc-7.29
+    title: Separate Subnets to Isolate Functions
+    description: 'Implement {{ insert: param, sc-07.29_odp.01 }} separate subnetworks to isolate the following critical system components and functions: {{ insert: param, sc-07.29_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-8
+    title: Transmission Confidentiality and Integrity
+    description: 'Protect the {{ insert: param, sc-08_odp }} of transmitted information.'
+    levels:
+      - moderate
+      - high
+    rules:
+      - configure_custom_crypto_policy_cis
+    status: automated
+  - id: sc-8.1
+    title: Cryptographic Protection
+    description: 'Implement cryptographic mechanisms to {{ insert: param, sc-08.01_odp }} during transmission.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-8.2
+    title: Pre- and Post-transmission Handling
+    description: 'Maintain the {{ insert: param, sc-08.02_odp }} of information during preparation for transmission and during reception.'
+    rules: []
+    status: pending
+  - id: sc-8.3
+    title: Cryptographic Protection for Message Externals
+    description: 'Implement cryptographic mechanisms to protect message externals unless otherwise protected by {{ insert: param, sc-08.03_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-8.4
+    title: Conceal or Randomize Communications
+    description: 'Implement cryptographic mechanisms to conceal or randomize communication patterns unless otherwise protected by {{ insert: param, sc-08.04_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-8.5
+    title: Protected Distribution System
+    description: 'Implement {{ insert: param, sc-08.05_odp.01 }} to {{ insert: param, sc-08.05_odp.02 }} during transmission.'
+    rules: []
+    status: pending
+  - id: sc-9
+    title: Transmission Confidentiality
+    rules: []
+    status: pending
+  - id: sc-10
+    title: Network Disconnect
+    description: 'Terminate the network connection associated with a communications session at the end of the session or after {{ insert: param, sc-10_odp }} of inactivity.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-11
+    title: Trusted Path
+    rules: []
+    status: pending
+  - id: sc-11.1
+    title: Irrefutable Communications Path
+    rules: []
+    status: pending
+  - id: sc-12
+    title: Cryptographic Key Establishment and Management
+    description: 'Establish and manage cryptographic keys when cryptography is employed within the system in accordance with the following key management requirements: {{ insert: param, sc-12_odp }}.'
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-12.1
+    title: Availability
+    description: Maintain availability of information in the event of the loss of cryptographic keys by users.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: sc-12.2
+    title: Symmetric Keys
+    description: 'Produce, control, and distribute symmetric cryptographic keys using {{ insert: param, sc-12.02_odp }} key management technology and processes.'
+    rules: []
+    status: pending
+  - id: sc-12.3
+    title: Asymmetric Keys
+    description: 'Produce, control, and distribute asymmetric cryptographic keys using {{ insert: param, sc-12.03_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-12.4
+    title: PKI Certificates
+    rules: []
+    status: pending
+  - id: sc-12.5
+    title: PKI Certificates / Hardware Tokens
+    rules: []
+    status: pending
+  - id: sc-12.6
+    title: Physical Control of Keys
+    description: Maintain physical control of cryptographic keys when stored information is encrypted by external service providers.
+    rules: []
+    status: pending
+  - id: sc-13
+    title: Cryptographic Protection
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-13.1
+    title: FIPS-validated Cryptography
+    rules: []
+    status: pending
+  - id: sc-13.2
+    title: NSA-approved Cryptography
+    rules: []
+    status: pending
+  - id: sc-13.3
+    title: Individuals Without Formal Access Approvals
+    rules: []
+    status: pending
+  - id: sc-13.4
+    title: Digital Signatures
+    rules: []
+    status: pending
+  - id: sc-14
+    title: Public Access Protections
+    rules: []
+    status: pending
+  - id: sc-15
+    title: Collaborative Computing Devices and Applications
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-15.1
+    title: Physical or Logical Disconnect
+    description: 'Provide {{ insert: param, sc-15.01_odp }} disconnect of collaborative computing devices in a manner that supports ease of use.'
+    rules: []
+    status: pending
+  - id: sc-15.2
+    title: Blocking Inbound and Outbound Communications Traffic
+    rules: []
+    status: pending
+  - id: sc-15.3
+    title: Disabling and Removal in Secure Work Areas
+    description: 'Disable or remove collaborative computing devices and applications from {{ insert: param, sc-15.03_odp.01 }} in {{ insert: param, sc-15.03_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-15.4
+    title: Explicitly Indicate Current Participants
+    description: 'Provide an explicit indication of current participants in {{ insert: param, sc-15.04_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-16
+    title: Transmission of Security and Privacy Attributes
+    description: 'Associate {{ insert: param, sc-16_prm_1 }} with information exchanged between systems and between system components.'
+    rules: []
+    status: pending
+  - id: sc-16.1
+    title: Integrity Verification
+    description: Verify the integrity of transmitted security and privacy attributes.
+    rules: []
+    status: pending
+  - id: sc-16.2
+    title: Anti-spoofing Mechanisms
+    description: Implement anti-spoofing mechanisms to prevent adversaries from falsifying the security attributes indicating the successful application of the security process.
+    rules: []
+    status: pending
+  - id: sc-16.3
+    title: Cryptographic Binding
+    description: 'Implement {{ insert: param, sc-16.03_odp }} to bind security and privacy attributes to transmitted information.'
+    rules: []
+    status: pending
+  - id: sc-17
+    title: Public Key Infrastructure Certificates
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-18
+    title: Mobile Code
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-18.1
+    title: Identify Unacceptable Code and Take Corrective Actions
+    description: 'Identify {{ insert: param, sc-18.01_odp.01 }} and take {{ insert: param, sc-18.01_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-18.2
+    title: Acquisition, Development, and Use
+    description: 'Verify that the acquisition, development, and use of mobile code to be deployed in the system meets {{ insert: param, sc-18.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-18.3
+    title: Prevent Downloading and Execution
+    description: 'Prevent the download and execution of {{ insert: param, sc-18.03_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-18.4
+    title: Prevent Automatic Execution
+    description: 'Prevent the automatic execution of mobile code in {{ insert: param, sc-18.04_odp.01 }} and enforce {{ insert: param, sc-18.04_odp.02 }} prior to executing the code.'
+    rules: []
+    status: pending
+  - id: sc-18.5
+    title: Allow Execution Only in Confined Environments
+    description: Allow execution of permitted mobile code only in confined virtual machine environments.
+    rules: []
+    status: pending
+  - id: sc-19
+    title: Voice Over Internet Protocol
+    description: Technology-specific; addressed as any other technology or protocol.
+    rules: []
+    status: pending
+  - id: sc-20
+    title: Secure Name/Address Resolution Service (Authoritative Source)
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-20.1
+    title: Child Subspaces
+    rules: []
+    status: pending
+  - id: sc-20.2
+    title: Data Origin and Integrity
+    description: Provide data origin and integrity protection artifacts for internal name/address resolution queries.
+    rules: []
+    status: pending
+  - id: sc-21
+    title: Secure Name/Address Resolution Service (Recursive or Caching Resolver)
+    description: Request and perform data origin authentication and data integrity verification on the name/address resolution responses the system receives from authoritative sources.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-21.1
+    title: Data Origin and Integrity
+    rules: []
+    status: pending
+  - id: sc-22
+    title: Architecture and Provisioning for Name/Address Resolution Service
+    description: Ensure the systems that collectively provide name/address resolution service for an organization are fault-tolerant and implement internal and external role separation.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-23
+    title: Session Authenticity
+    description: Protect the authenticity of communications sessions.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-23.1
+    title: Invalidate Session Identifiers at Logout
+    description: Invalidate session identifiers upon user logout or other session termination.
+    rules: []
+    status: pending
+  - id: sc-23.2
+    title: User-initiated Logouts and Message Displays
+    rules: []
+    status: pending
+  - id: sc-23.3
+    title: Unique System-generated Session Identifiers
+    description: 'Generate a unique session identifier for each session with {{ insert: param, sc-23.03_odp }} and recognize only session identifiers that are system-generated.'
+    rules: []
+    status: pending
+  - id: sc-23.4
+    title: Unique Session Identifiers with Randomization
+    rules: []
+    status: pending
+  - id: sc-23.5
+    title: Allowed Certificate Authorities
+    description: 'Only allow the use of {{ insert: param, sc-23.05_odp }} for verification of the establishment of protected sessions.'
+    rules: []
+    status: pending
+  - id: sc-24
+    title: Fail in Known State
+    description: 'Fail to a {{ insert: param, sc-24_odp.02 }} for the following failures on the indicated components while preserving {{ insert: param, sc-24_odp.03 }} in failure: {{ insert: param, sc-24_odp.01 }}.'
+    levels:
+      - high
+    rules:
+      - service_systemd-journald_enabled
+    status: automated
+  - id: sc-25
+    title: Thin Nodes
+    description: 'Employ minimal functionality and information storage on the following system components: {{ insert: param, sc-25_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-26
+    title: Decoys
+    description: Include components within organizational systems specifically designed to be the target of malicious attacks for detecting, deflecting, and analyzing such attacks.
+    rules: []
+    status: pending
+  - id: sc-26.1
+    title: Detection of Malicious Code
+    rules: []
+    status: pending
+  - id: sc-27
+    title: Platform-independent Applications
+    description: 'Include within organizational systems the following platform independent applications: {{ insert: param, sc-27_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-28
+    title: Protection of Information at Rest
+    description: 'Protect the {{ insert: param, sc-28_odp.01 }} of the following information at rest: {{ insert: param, sc-28_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-28.1
+    title: Cryptographic Protection
+    description: 'Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of the following information at rest on {{ insert: param, sc-28.01_odp.02 }}: {{ insert: param, sc-28.01_odp.01 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-28.2
+    title: Offline Storage
+    description: 'Remove the following information from online storage and store offline in a secure location: {{ insert: param, sc-28.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-28.3
+    title: Cryptographic Keys
+    description: 'Provide protected storage for cryptographic keys {{ insert: param, sc-28.03_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: sc-29
+    title: Heterogeneity
+    description: 'Employ a diverse set of information technologies for the following system components in the implementation of the system: {{ insert: param, sc-29_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-29.1
+    title: Virtualization Techniques
+    description: 'Employ virtualization techniques to support the deployment of a diversity of operating systems and applications that are changed {{ insert: param, sc-29.01_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-30
+    title: Concealment and Misdirection
+    description: 'Employ the following concealment and misdirection techniques for {{ insert: param, sc-30_odp.02 }} at {{ insert: param, sc-30_odp.03 }} to confuse and mislead adversaries: {{ insert: param, sc-30_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: sc-30.1
+    title: Virtualization Techniques
+    rules: []
+    status: pending
+  - id: sc-30.2
+    title: Randomness
+    description: 'Employ {{ insert: param, sc-30.02_odp }} to introduce randomness into organizational operations and assets.'
+    rules: []
+    status: pending
+  - id: sc-30.3
+    title: Change Processing and Storage Locations
+    description: 'Change the location of {{ insert: param, sc-30.03_odp.01 }} {{ insert: param, sc-30.03_odp.02 }}].'
+    rules: []
+    status: pending
+  - id: sc-30.4
+    title: Misleading Information
+    description: 'Employ realistic, but misleading information in {{ insert: param, sc-30.04_odp }} about its security state or posture.'
+    rules: []
+    status: pending
+  - id: sc-30.5
+    title: Concealment of System Components
+    description: 'Employ the following techniques to hide or conceal {{ insert: param, sc-30.05_odp.02 }}: {{ insert: param, sc-30.05_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: sc-31
+    title: Covert Channel Analysis
+    rules: []
+    status: pending
+  - id: sc-31.1
+    title: Test Covert Channels for Exploitability
+    description: Test a subset of the identified covert channels to determine the channels that are exploitable.
+    rules: []
+    status: pending
+  - id: sc-31.2
+    title: Maximum Bandwidth
+    description: 'Reduce the maximum bandwidth for identified covert {{ insert: param, sc-31.02_odp.01 }} channels to {{ insert: param, sc-31.02_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: sc-31.3
+    title: Measure Bandwidth in Operational Environments
+    description: 'Measure the bandwidth of {{ insert: param, sc-31.03_odp }} in the operational environment of the system.'
+    rules: []
+    status: pending
+  - id: sc-32
+    title: System Partitioning
+    description: 'Partition the system into {{ insert: param, sc-32_odp.01 }} residing in separate {{ insert: param, sc-32_odp.02 }} domains or environments based on {{ insert: param, sc-32_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: sc-32.1
+    title: Separate Physical Domains for Privileged Functions
+    description: Partition privileged functions into separate physical domains.
+    rules: []
+    status: pending
+  - id: sc-33
+    title: Transmission Preparation Integrity
+    rules: []
+    status: pending
+  - id: sc-34
+    title: Non-modifiable Executable Programs
+    description: 'For {{ insert: param, sc-34_odp.01 }} , load and execute:'
+    rules: []
+    status: pending
+  - id: sc-34.1
+    title: No Writable Storage
+    description: 'Employ {{ insert: param, sc-34.01_odp }} with no writeable storage that is persistent across component restart or power on/off.'
+    rules: []
+    status: pending
+  - id: sc-34.2
+    title: Integrity Protection on Read-only Media
+    description: Protect the integrity of information prior to storage on read-only media and control the media after such information has been recorded onto the media.
+    rules: []
+    status: pending
+  - id: sc-34.3
+    title: Hardware-based Protection
+    rules: []
+    status: pending
+  - id: sc-35
+    title: External Malicious Code Identification
+    description: Include system components that proactively seek to identify network-based malicious code or malicious websites.
+    rules: []
+    status: pending
+  - id: sc-36
+    title: Distributed Processing and Storage
+    description: 'Distribute the following processing and storage components across multiple {{ insert: param, sc-36_prm_1 }}: {{ insert: param, sc-36_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: sc-36.1
+    title: Polling Techniques
+    rules: []
+    status: pending
+  - id: sc-36.2
+    title: Synchronization
+    description: 'Synchronize the following duplicate systems or system components: {{ insert: param, sc-36.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-37
+    title: Out-of-band Channels
+    description: 'Employ the following out-of-band channels for the physical delivery or electronic transmission of {{ insert: param, sc-37_odp.02 }} to {{ insert: param, sc-37_odp.03 }}: {{ insert: param, sc-37_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: sc-37.1
+    title: Ensure Delivery and Transmission
+    description: 'Employ {{ insert: param, sc-37.01_odp.01 }} to ensure that only {{ insert: param, sc-37.01_odp.02 }} receive the following information, system components, or devices: {{ insert: param, sc-37.01_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: sc-38
+    title: Operations Security
+    description: 'Employ the following operations security controls to protect key organizational information throughout the system development life cycle: {{ insert: param, sc-38_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-39
+    title: Process Isolation
+    description: Maintain a separate execution domain for each executing system process.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: sc-39.1
+    title: Hardware Separation
+    description: Implement hardware separation mechanisms to facilitate process isolation.
+    rules: []
+    status: pending
+  - id: sc-39.2
+    title: Separate Execution Domain Per Thread
+    description: 'Maintain a separate execution domain for each thread in {{ insert: param, sc-39.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-40
+    title: Wireless Link Protection
+    description: 'Protect external and internal {{ insert: param, sc-40_prm_1 }} from the following signal parameter attacks: {{ insert: param, sc-40_prm_2 }}.'
+    rules: []
+    status: pending
+  - id: sc-40.1
+    title: Electromagnetic Interference
+    description: 'Implement cryptographic mechanisms that achieve {{ insert: param, sc-40.01_odp }} against the effects of intentional electromagnetic interference.'
+    rules: []
+    status: pending
+  - id: sc-40.2
+    title: Reduce Detection Potential
+    description: 'Implement cryptographic mechanisms to reduce the detection potential of wireless links to {{ insert: param, sc-40.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-40.3
+    title: Imitative or Manipulative Communications Deception
+    description: Implement cryptographic mechanisms to identify and reject wireless transmissions that are deliberate attempts to achieve imitative or manipulative communications deception based on signal parameters.
+    rules: []
+    status: pending
+  - id: sc-40.4
+    title: Signal Parameter Identification
+    description: 'Implement cryptographic mechanisms to prevent the identification of {{ insert: param, sc-40.04_odp }} by using the transmitter signal parameters.'
+    rules: []
+    status: pending
+  - id: sc-41
+    title: Port and I/O Device Access
+    description: '{{ insert: param, sc-41_odp.02 }} disable or remove {{ insert: param, sc-41_odp.01 }} on the following systems or system components: {{ insert: param, sc-41_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: sc-42
+    title: Sensor Capability and Data
+    rules: []
+    status: pending
+  - id: sc-42.1
+    title: Reporting to Authorized Individuals or Roles
+    description: 'Verify that the system is configured so that data or information collected by the {{ insert: param, sc-42.01_odp }} is only reported to authorized individuals or roles.'
+    rules: []
+    status: pending
+  - id: sc-42.2
+    title: Authorized Use
+    description: 'Employ the following measures so that data or information collected by {{ insert: param, sc-42.01_odp }} is only used for authorized purposes: {{ insert: param, sc-42.02_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-42.3
+    title: Prohibit Use of Devices
+    rules: []
+    status: pending
+  - id: sc-42.4
+    title: Notice of Collection
+    description: 'Employ the following measures to facilitate an individual’s awareness that personally identifiable information is being collected by {{ insert: param, sc-42.04_odp.02 }}: {{ insert: param, sc-42.04_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: sc-42.5
+    title: Collection Minimization
+    description: 'Employ {{ insert: param, sc-42.05_odp }} that are configured to minimize the collection of information about individuals that is not needed.'
+    rules: []
+    status: pending
+  - id: sc-43
+    title: Usage Restrictions
+    rules: []
+    status: pending
+  - id: sc-44
+    title: Detonation Chambers
+    description: 'Employ a detonation chamber capability within {{ insert: param, sc-44_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-45
+    title: System Time Synchronization
+    description: Synchronize system clocks within and between systems and system components.
+    rules: []
+    status: pending
+  - id: sc-45.1
+    title: Synchronization with Authoritative Time Source
+    rules: []
+    status: pending
+  - id: sc-45.2
+    title: Secondary Authoritative Time Source
+    rules: []
+    status: pending
+  - id: sc-46
+    title: Cross Domain Policy Enforcement
+    description: 'Implement a policy enforcement mechanism {{ insert: param, sc-46_odp }} between the physical and/or network interfaces for the connecting security domains.'
+    rules: []
+    status: pending
+  - id: sc-47
+    title: Alternate Communications Paths
+    description: 'Establish {{ insert: param, sc-47_odp }} for system operations organizational command and control.'
+    rules: []
+    status: pending
+  - id: sc-48
+    title: Sensor Relocation
+    description: 'Relocate {{ insert: param, sc-48_odp.01 }} to {{ insert: param, sc-48_odp.02 }} under the following conditions or circumstances: {{ insert: param, sc-48_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: sc-48.1
+    title: Dynamic Relocation of Sensors or Monitoring Capabilities
+    description: 'Dynamically relocate {{ insert: param, sc-48.01_odp.01 }} to {{ insert: param, sc-48.01_odp.02 }} under the following conditions or circumstances: {{ insert: param, sc-48.01_odp.03 }}.'
+    rules: []
+    status: pending
+  - id: sc-49
+    title: Hardware-enforced Separation and Policy Enforcement
+    description: 'Implement hardware-enforced separation and policy enforcement mechanisms between {{ insert: param, sc-49_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-50
+    title: Software-enforced Separation and Policy Enforcement
+    description: 'Implement software-enforced separation and policy enforcement mechanisms between {{ insert: param, sc-50_odp }}.'
+    rules: []
+    status: pending
+  - id: sc-51
+    title: Hardware-based Protection
+    rules: []
+    status: pending

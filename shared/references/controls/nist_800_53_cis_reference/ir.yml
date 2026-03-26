@@ -1,0 +1,259 @@
+# NIST 800-53 IR Family: Incident Response
+controls:
+  - id: ir-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-2
+    title: Incident Response Training
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-2.1
+    title: Simulated Events
+    description: Incorporate simulated events into incident response training to facilitate the required response by personnel in crisis situations.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ir-2.2
+    title: Automated Training Environments
+    description: 'Provide an incident response training environment using {{ insert: param, ir-02.02_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ir-2.3
+    title: Breach
+    description: Provide incident response training on how to identify and respond to a breach, including the organization’s process for reporting a breach.
+    rules: []
+    status: pending
+  - id: ir-3
+    title: Incident Response Testing
+    description: 'Test the effectiveness of the incident response capability for the system {{ insert: param, ir-03_odp.01 }} using the following tests: {{ insert: param, ir-03_odp.02 }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-3.1
+    title: Automated Testing
+    description: 'Test the incident response capability using {{ insert: param, ir-03.01_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-3.2
+    title: Coordination with Related Plans
+    description: Coordinate incident response testing with organizational elements responsible for related plans.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-3.3
+    title: Continuous Improvement
+    description: 'Use qualitative and quantitative data from testing to:'
+    rules: []
+    status: pending
+  - id: ir-4
+    title: Incident Handling
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-4.1
+    title: Automated Incident Handling Processes
+    description: 'Support the incident handling process using {{ insert: param, ir-04.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-4.2
+    title: Dynamic Reconfiguration
+    description: 'Include the following types of dynamic reconfiguration for {{ insert: param, ir-04.02_odp.02 }} as part of the incident response capability: {{ insert: param, ir-04.02_odp.01 }}.'
+    rules: []
+    status: pending
+  - id: ir-4.3
+    title: Continuity of Operations
+    description: 'Identify {{ insert: param, ir-04.03_odp.01 }} and take the following actions in response to those incidents to ensure continuation of organizational mission and business functions: {{ insert: param, ir-04.03_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ir-4.4
+    title: Information Correlation
+    description: Correlate incident information and individual incident responses to achieve an organization-wide perspective on incident awareness and response.
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ir-4.5
+    title: Automatic Disabling of System
+    description: 'Implement a configurable capability to automatically disable the system if {{ insert: param, ir-04.05_odp }} are detected.'
+    rules: []
+    status: pending
+  - id: ir-4.6
+    title: Insider Threats
+    description: Implement an incident handling capability for incidents involving insider threats.
+    rules: []
+    status: pending
+  - id: ir-4.7
+    title: Insider Threats — Intra-organization Coordination
+    description: 'Coordinate an incident handling capability for insider threats that includes the following organizational entities {{ insert: param, ir-04.07_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-4.8
+    title: Correlation with External Organizations
+    description: 'Coordinate with {{ insert: param, ir-04.08_odp.01 }} to correlate and share {{ insert: param, ir-04.08_odp.02 }} to achieve a cross-organization perspective on incident awareness and more effective incident responses.'
+    rules: []
+    status: pending
+  - id: ir-4.9
+    title: Dynamic Response Capability
+    description: 'Employ {{ insert: param, ir-04.09_odp }} to respond to incidents.'
+    rules: []
+    status: pending
+  - id: ir-4.10
+    title: Supply Chain Coordination
+    description: Coordinate incident handling activities involving supply chain events with other organizations involved in the supply chain.
+    rules: []
+    status: pending
+  - id: ir-4.11
+    title: Integrated Incident Response Team
+    description: 'Establish and maintain an integrated incident response team that can be deployed to any location identified by the organization in {{ insert: param, ir-04.11_odp }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ir-4.12
+    title: Malicious Code and Forensic Analysis
+    description: Analyze malicious code and/or other residual artifacts remaining in the system after the incident.
+    rules: []
+    status: pending
+  - id: ir-4.13
+    title: Behavior Analysis
+    description: 'Analyze anomalous or suspected adversarial behavior in or related to {{ insert: param, ir-04.13_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-4.14
+    title: Security Operations Center
+    description: Establish and maintain a security operations center.
+    rules: []
+    status: pending
+  - id: ir-4.15
+    title: Public Relations and Reputation Repair
+    rules: []
+    status: pending
+  - id: ir-5
+    title: Incident Monitoring
+    description: Track and document incidents.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-5.1
+    title: Automated Tracking, Data Collection, and Analysis
+    description: 'Track incidents and collect and analyze incident information using {{ insert: param, ir-5.1_prm_1 }}.'
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ir-6
+    title: Incident Reporting
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-6.1
+    title: Automated Reporting
+    description: 'Report incidents using {{ insert: param, ir-06.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-6.2
+    title: Vulnerabilities Related to Incidents
+    description: 'Report system vulnerabilities associated with reported incidents to {{ insert: param, ir-06.02_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-6.3
+    title: Supply Chain Coordination
+    description: Provide incident information to the provider of the product or service and other organizations involved in the supply chain or supply chain governance for systems or system components related to the incident.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-7
+    title: Incident Response Assistance
+    description: Provide an incident response support resource, integral to the organizational incident response capability, that offers advice and assistance to users of the system for the handling and reporting of incidents.
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-7.1
+    title: Automation Support for Availability of Information and Support
+    description: 'Increase the availability of incident response information and support using {{ insert: param, ir-07.01_odp }}.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-7.2
+    title: Coordination with External Providers
+    rules: []
+    status: pending
+  - id: ir-8
+    title: Incident Response Plan
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ir-8.1
+    title: Breaches
+    description: 'Include the following in the Incident Response Plan for breaches involving personally identifiable information:'
+    rules: []
+    status: pending
+  - id: ir-9
+    title: Information Spillage Response
+    description: 'Respond to information spills by:'
+    rules: []
+    status: pending
+  - id: ir-9.1
+    title: Responsible Personnel
+    rules: []
+    status: pending
+  - id: ir-9.2
+    title: Training
+    description: 'Provide information spillage response training {{ insert: param, ir-09.02_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-9.3
+    title: Post-spill Operations
+    description: 'Implement the following procedures to ensure that organizational personnel impacted by information spills can continue to carry out assigned tasks while contaminated systems are undergoing corrective actions: {{ insert: param, ir-09.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-9.4
+    title: Exposure to Unauthorized Personnel
+    description: 'Employ the following controls for personnel exposed to information not within assigned access authorizations: {{ insert: param, ir-09.04_odp }}.'
+    rules: []
+    status: pending
+  - id: ir-10
+    title: Integrated Information Security Analysis Team
+    rules: []
+    status: pending

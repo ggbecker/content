@@ -1,0 +1,177 @@
+# NIST 800-53 MA Family: Maintenance
+controls:
+  - id: ma-1
+    title: Policy and Procedures
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-2
+    title: Controlled Maintenance
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-2.1
+    title: Record Content
+    rules: []
+    status: pending
+  - id: ma-2.2
+    title: Automated Maintenance Activities
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ma-3
+    title: Maintenance Tools
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-3.1
+    title: Inspect Tools
+    description: Inspect the maintenance tools used by maintenance personnel for improper or unauthorized modifications.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-3.2
+    title: Inspect Media
+    description: Check media containing diagnostic and test programs for malicious code before the media are used in the system.
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-3.3
+    title: Prevent Unauthorized Removal
+    description: 'Prevent the removal of maintenance equipment containing organizational information by:'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-3.4
+    title: Restricted Tool Use
+    description: Restrict the use of maintenance tools to authorized personnel only.
+    rules: []
+    status: pending
+  - id: ma-3.5
+    title: Execution with Privilege
+    description: Monitor the use of maintenance tools that execute with increased privilege.
+    rules: []
+    status: pending
+  - id: ma-3.6
+    title: Software Updates and Patches
+    description: Inspect maintenance tools to ensure the latest software updates and patches are installed.
+    rules: []
+    status: pending
+  - id: ma-4
+    title: Nonlocal Maintenance
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-4.1
+    title: Logging and Review
+    rules: []
+    status: pending
+  - id: ma-4.2
+    title: Document Nonlocal Maintenance
+    rules: []
+    status: pending
+  - id: ma-4.3
+    title: Comparable Security and Sanitization
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ma-4.4
+    title: Authentication and Separation of Maintenance Sessions
+    description: 'Protect nonlocal maintenance sessions by:'
+    rules: []
+    status: pending
+  - id: ma-4.5
+    title: Approvals and Notifications
+    rules: []
+    status: pending
+  - id: ma-4.6
+    title: Cryptographic Protection
+    description: 'Implement the following cryptographic mechanisms to protect the integrity and confidentiality of nonlocal maintenance and diagnostic communications: {{ insert: param, ma-04.06_odp }}.'
+    rules: []
+    status: pending
+  - id: ma-4.7
+    title: Disconnect Verification
+    description: Verify session and network connection termination after the completion of nonlocal maintenance and diagnostic sessions.
+    rules: []
+    status: pending
+  - id: ma-5
+    title: Maintenance Personnel
+    levels:
+      - low
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-5.1
+    title: Individuals Without Appropriate Access
+    levels:
+      - high
+    rules: []
+    status: pending
+  - id: ma-5.2
+    title: Security Clearances for Classified Systems
+    description: Verify that personnel performing maintenance and diagnostic activities on a system processing, storing, or transmitting classified information possess security clearances and formal access approvals for at least the highest classification level and for compartments of information on the system.
+    rules: []
+    status: pending
+  - id: ma-5.3
+    title: Citizenship Requirements for Classified Systems
+    description: Verify that personnel performing maintenance and diagnostic activities on a system processing, storing, or transmitting classified information are U.S. citizens.
+    rules: []
+    status: pending
+  - id: ma-5.4
+    title: Foreign Nationals
+    description: 'Ensure that:'
+    rules: []
+    status: pending
+  - id: ma-5.5
+    title: Non-system Maintenance
+    description: Ensure that non-escorted personnel performing maintenance activities not directly associated with the system but in the physical proximity of the system, have required access authorizations.
+    rules: []
+    status: pending
+  - id: ma-6
+    title: Timely Maintenance
+    description: 'Obtain maintenance support and/or spare parts for {{ insert: param, ma-06_odp.01 }} within {{ insert: param, ma-06_odp.02 }} of failure.'
+    levels:
+      - moderate
+      - high
+    rules: []
+    status: pending
+  - id: ma-6.1
+    title: Preventive Maintenance
+    description: 'Perform preventive maintenance on {{ insert: param, ma-06.01_odp.01 }} at {{ insert: param, ma-06.01_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ma-6.2
+    title: Predictive Maintenance
+    description: 'Perform predictive maintenance on {{ insert: param, ma-06.02_odp.01 }} at {{ insert: param, ma-06.02_odp.02 }}.'
+    rules: []
+    status: pending
+  - id: ma-6.3
+    title: Automated Support for Predictive Maintenance
+    description: 'Transfer predictive maintenance data to a maintenance management system using {{ insert: param, ma-06.03_odp }}.'
+    rules: []
+    status: pending
+  - id: ma-7
+    title: Field Maintenance
+    description: 'Restrict or prohibit field maintenance on {{ insert: param, ma-07_odp.01 }} to {{ insert: param, ma-07_odp.02 }}.'
+    rules: []
+    status: pending
