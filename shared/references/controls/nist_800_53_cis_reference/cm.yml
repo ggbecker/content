@@ -64,7 +64,6 @@ controls:
       - sysctl_net_ipv4_icmp_ignore_bogus_error_responses_value=enabled
       - sysctl_net_ipv4_tcp_syncookies_value=enabled
       - sysctl_net_ipv6_conf_all_accept_ra_value=disabled
-      - sysctl_net_ipv6_conf_all_accept_redirects_value=disabled
       - sysctl_net_ipv6_conf_all_accept_source_route_value=disabled
       - sysctl_net_ipv6_conf_all_forwarding_value=disabled
       - sysctl_net_ipv6_conf_default_accept_ra_value=disabled
@@ -139,7 +138,6 @@ controls:
       - sysctl_net_ipv4_ip_forward
       - sysctl_net_ipv4_tcp_syncookies
       - sysctl_net_ipv6_conf_all_accept_ra
-      - sysctl_net_ipv6_conf_all_accept_redirects
       - sysctl_net_ipv6_conf_all_accept_source_route
       - sysctl_net_ipv6_conf_all_forwarding
       - sysctl_net_ipv6_conf_default_accept_ra
@@ -661,7 +659,6 @@ controls:
       - sysctl_net_ipv4_icmp_echo_ignore_broadcasts_value=enabled
       - sysctl_net_ipv4_icmp_ignore_bogus_error_responses_value=enabled
       - sysctl_net_ipv6_conf_all_accept_ra_value=disabled
-      - sysctl_net_ipv6_conf_all_accept_redirects_value=disabled
       - sysctl_net_ipv6_conf_all_accept_source_route_value=disabled
       - sysctl_net_ipv6_conf_all_forwarding_value=disabled
       - sysctl_net_ipv6_conf_default_accept_ra_value=disabled
@@ -780,7 +777,6 @@ controls:
       - sysctl_net_ipv4_icmp_ignore_bogus_error_responses
       - sysctl_net_ipv4_ip_forward
       - sysctl_net_ipv6_conf_all_accept_ra
-      - sysctl_net_ipv6_conf_all_accept_redirects
       - sysctl_net_ipv6_conf_all_accept_source_route
       - sysctl_net_ipv6_conf_all_forwarding
       - sysctl_net_ipv6_conf_default_accept_ra
