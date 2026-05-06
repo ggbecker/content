@@ -200,3 +200,25 @@ def replace_platform(tree_root, namespace, product):
     for oval in tree_root.findall(".//{%s}oval_definitions" % (namespace)):
         for platform in oval.findall(".//{%s}platform" % (namespace)):
             platform.text = (platform.text).replace("Red Hat Enterprise Linux", product)
+
+
+def replace_titles(benchmark, namespace, derivative):
+    """
+    Replaces "Red Hat Enterprise Linux" with derivative name in benchmark
+    title and all profile titles and descriptions.
+    """
+    title_el = benchmark.find("./{%s}title" % (namespace))
+    if title_el is not None and title_el.text:
+        title_el.text = title_el.text.replace("Red Hat Enterprise Linux", derivative)
+
+    for profile in benchmark.findall("./{%s}Profile" % (namespace)):
+        profile_title = profile.find("./{%s}title" % (namespace))
+        if profile_title is not None and profile_title.text:
+            profile_title.text = profile_title.text.replace(
+                "Red Hat Enterprise Linux", derivative
+            )
+        profile_desc = profile.find("./{%s}description" % (namespace))
+        if profile_desc is not None and profile_desc.text:
+            profile_desc.text = profile_desc.text.replace(
+                "Red Hat Enterprise Linux", derivative
+            )

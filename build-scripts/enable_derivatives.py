@@ -108,6 +108,8 @@ def main():
                 "notice to affected XCCDF Benchmark '%s'." % (benchmark)
             )
 
+        ssg.build_derivatives.replace_titles(benchmark, namespace, derivative)
+
     ssg.build_derivatives.replace_platform(root, oval_ns, derivative)
     oval_def_id = ssg.build_derivatives.add_cpe_item_to_dictionary(
         root, args[0], args[1], options.id_name, options.cpe_items_dir
