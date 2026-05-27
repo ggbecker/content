@@ -1,0 +1,46 @@
+documentation_complete: true
+
+
+title: 'Increase Default Receive Buffer Size to Prevent Audit Message Loss'
+
+description: |-
+    The <tt>net.core.rmem_default</tt> kernel parameter controls the default
+    size of the receive buffer for all network sockets, including the netlink
+    socket used by <tt>auditd</tt>. When the system has many audit rules
+    configured, the kernel audit subsystem can produce messages faster than
+    <tt>auditd</tt> can consume them, causing the netlink socket buffer to
+    overflow and triggering <tt>ENOBUFS</tt> errors.
+    {{{ describe_sysctl_option_value(sysctl="net.core.rmem_default", value="8388608") }}}
+
+rationale: |-
+    The default socket receive buffer (<tt>net.core.rmem_default</tt>) is
+    approximately 208 KB, which can hold only around 400 audit messages.
+    The kernel audit thread can fill this buffer in well under a millisecond,
+    while <tt>auditd</tt> may need tens of milliseconds to drain it due to
+    synchronous disk writes. Increasing the buffer to 8 MB provides sufficient
+    headroom to prevent <tt>auditd</tt> from reporting
+    <tt>Error receiving audit netlink packet (No buffer space available)</tt>
+    during audit event bursts, such as those occurring at boot time or during
+    log rotation.
+
+severity: medium
+
+identifiers: {}
+
+references:
+    nist: AU-12,AU-12(1),AU-12(3)
+
+{{{ complete_ocil_entry_sysctl_option_value(sysctl="net.core.rmem_default", value="8388608") }}}
+
+fixtext: |-
+    Configure {{{ full_name }}} to use a larger default socket receive buffer to prevent audit message loss.
+    {{{ fixtext_sysctl(sysctl="net.core.rmem_default", value="8388608") | indent(4) }}}
+
+platform: system_with_kernel
+
+template:
+    name: sysctl
+    vars:
+        sysctlvar: net.core.rmem_default
+        sysctlval: '8388608'
+        datatype: int

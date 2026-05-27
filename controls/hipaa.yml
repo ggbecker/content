@@ -156,6 +156,7 @@ controls:
           - sysctl_kernel_exec_shield
           - sysctl_kernel_randomize_va_space
           - sysctl_kernel_dmesg_restrict
+          - sysctl_net_core_rmem_default
           - coreos_enable_selinux_kernel_argument
           - grub2_enable_selinux
           - sebool_selinuxuser_execheap
