@@ -71,6 +71,52 @@ def _validate_product_oval_feed_url(contents):
         raise ValueError(msg)
 
 
+def _validate_boolean_string_fields(contents):
+    """
+    Validates that certain product.yml fields use string values "true"/"false", not boolean values.
+
+    Templates use string comparisons (e.g., if sysctl_remediate_drop_in_file == "true"), so
+    boolean True/False values will fail the comparison and cause incorrect behavior.
+
+    Args:
+        contents (dict): A dictionary containing product information.
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: If any of the checked fields contains a boolean value instead of string.
+    """
+    # Fields that must be strings "true" or "false", not boolean True/False
+    string_boolean_fields = [
+        'sysctl_remediate_drop_in_file',
+        'sshd_distributed_config',
+        'bootable_containers_supported',
+    ]
+
+    for field in string_boolean_fields:
+        if field not in contents:
+            continue
+
+        value = contents[field]
+        if isinstance(value, bool):
+            msg = (
+                "Product '{product}' field '{field}' has boolean value {value}. "
+                "This field must be a string \"true\" or \"false\", not a boolean. "
+                "Templates use string comparison and boolean values will cause incorrect behavior."
+                .format(product=contents.get("product", "unknown"), field=field, value=value)
+            )
+            raise ValueError(msg)
+
+        if value not in ["true", "false"]:
+            msg = (
+                "Product '{product}' field '{field}' has invalid value '{value}'. "
+                "Only string values \"true\" or \"false\" are allowed."
+                .format(product=contents.get("product", "unknown"), field=field, value=value)
+            )
+            raise ValueError(msg)
+
+
 def _get_implied_properties(existing_properties):
     """
     Generate a dictionary of properties with default values for missing keys.
@@ -269,11 +315,12 @@ class Product(object):
 
         This method performs the following tasks:
         1. Validates the product OVAL feed URL.
-        2. Sets the product directory path based on the filename.
-        3. Merges common platform package mappings with product-specific mappings.
-        4. Updates the primary data with implied properties.
-        5. Merges reference URIs with predefined SSG reference URIs.
-        6. Marks the basic properties as derived.
+        2. Validates that boolean-string fields use string values, not booleans.
+        3. Sets the product directory path based on the filename.
+        4. Merges common platform package mappings with product-specific mappings.
+        5. Updates the primary data with implied properties.
+        6. Merges reference URIs with predefined SSG reference URIs.
+        7. Marks the basic properties as derived.
 
         Args:
             filename (str): The path to the product file used to derive properties.
@@ -282,9 +329,11 @@ class Product(object):
             None
 
         Raises:
-            ValueError: If the product OVAL feed URL is invalid.
+            ValueError: If the product OVAL feed URL is invalid or if boolean-string fields
+                       contain boolean values instead of strings.
         """
         _validate_product_oval_feed_url(self._primary_data)
+        _validate_boolean_string_fields(self._primary_data)
 
         # The product directory is necessary to get absolute paths to benchmark, profile and
         # cpe directories, which are all relative to the product directory
