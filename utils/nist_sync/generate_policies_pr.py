@@ -10,7 +10,9 @@ a directory tree matching the complytime-policies repository layout:
     │   └── nist-800-53-rev5-{product}.yaml        # bundle manifest
     ├── governance/
     │   ├── catalogs/
-    │   │   └── nist-800-53-rev5-{product}-catalog.yaml
+    │   │   ├── nist-800-53-rev5-{product}-catalog.yaml   # combined, used by the Policy
+    │   │   └── nist-800-53/{product}/nist-800-53-{product}/
+    │   │       └── nist-800-53-rev5-{product}-{family}-catalog.yaml  # split by NIST family
     │   ├── guidance/
     │   │   └── nist-800-53-rev5-guidance.yaml      # shared across products
     │   └── policies/
@@ -58,6 +60,9 @@ def _yaml() -> YAML:
     y.default_flow_style = False
     y.allow_unicode = True
     y.width = 120
+    # See export_to_gemara.py's _yaml_instance(): ruamel's id()-based aliasing
+    # can spuriously collapse equal-but-unrelated lists into anchors/aliases.
+    y.representer.ignore_aliases = lambda data: True
     return y
 
 
@@ -124,6 +129,15 @@ def stage_product(product: str, gemara_dir: Path, output_dir: Path, has_guidance
     catalog_dest = catalogs_dir / f"{pid}-catalog.yaml"
     shutil.copy2(catalog_path, catalog_dest)
     print(f"  [{product.upper()}] Catalog:  {catalog_dest.relative_to(output_dir)}")
+
+    by_group_dir = gemara_dir / product / "by_group"
+    if by_group_dir.is_dir():
+        split_dir = catalogs_dir / "nist-800-53" / product / f"nist-800-53-{product}"
+        split_dir.mkdir(parents=True, exist_ok=True)
+        fam_files = sorted(by_group_dir.glob("*.yaml"))
+        for fam_file in fam_files:
+            shutil.copy2(fam_file, split_dir / fam_file.name)
+        print(f"  [{product.upper()}] Split catalogs: {split_dir.relative_to(output_dir)}/ ({len(fam_files)} files)")
 
     policy_dest = policies_dir / f"{pid}-policy.yaml"
     dump_yaml(policy, policy_dest)

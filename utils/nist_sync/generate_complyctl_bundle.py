@@ -67,6 +67,9 @@ def _yaml() -> YAML:
     y.default_flow_style = False
     y.allow_unicode = True
     y.width = 120
+    # See export_to_gemara.py's _yaml_instance(): ruamel's id()-based aliasing
+    # can spuriously collapse equal-but-unrelated lists into anchors/aliases.
+    y.representer.ignore_aliases = lambda data: True
     return y
 
 

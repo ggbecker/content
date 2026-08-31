@@ -4,6 +4,9 @@ Export ComplianceAsCode NIST 800-53 controls to Gemara format.
 
 Reads product-specific NIST 800-53 control files and produces per product:
   - control_catalog.yaml  (ControlCatalog: NIST controls → XCCDF rule IDs)
+  - by_group/nist-800-53-rev5-{product}-{family}-catalog.yaml
+                           (same ControlCatalog, split one file per NIST
+                           family — mirrors complytime-policies' layout)
   - rules_mapping.yaml    (MappingDocument: traceability between layers)
   - products/{product}/profiles/nist_800_53.profile  (XCCDF tailoring base)
 
@@ -189,6 +192,11 @@ def _yaml_instance() -> YAML:
     yaml.default_flow_style = False
     yaml.allow_unicode = True
     yaml.width = 120
+    # ruamel aliases list/dict objects by id(), and CPython can reuse the same
+    # id() for distinct short-lived lists (e.g. repeated ['fedora-low'] built in
+    # a loop). Without this, equal-but-unrelated applicability lists randomly
+    # collapse into YAML anchors/aliases (&id001 / *id001).
+    yaml.representer.ignore_aliases = lambda data: True
     return yaml
 
 
@@ -314,6 +322,16 @@ def export_product(
     write_yaml(catalog, catalog_path)
     if verbose:
         print(f"  Wrote {catalog_path}")
+
+    # Write one ControlCatalog per NIST family (AC, AU, SI, ...) alongside the
+    # combined one, matching complytime-policies' split-by-group layout.
+    by_group_dir = product_dir / "by_group"
+    by_group_dir.mkdir(parents=True, exist_ok=True)
+    for fam_id, fam_catalog in builder.build_by_group().items():
+        fam_path = by_group_dir / f"nist-800-53-rev5-{product}-{fam_id}-catalog.yaml"
+        write_yaml(fam_catalog, fam_path)
+    if verbose:
+        print(f"  Wrote {by_group_dir}/ ({len(list(by_group_dir.glob('*.yaml')))} family catalogs)")
 
     # Generate the XCCDF tailoring base profile (not committed — see .gitignore)
     _write_xccdf_profile(product, repo_root, verbose)
