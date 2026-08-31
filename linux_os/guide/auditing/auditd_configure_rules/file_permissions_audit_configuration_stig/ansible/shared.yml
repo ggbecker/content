@@ -7,8 +7,9 @@
 # Copied and modified from `file_permissions/ansible.yml` template
 #
 # Sets mode 0600 and ownership root:root on all audit config files.
-# Installs an auditd.service dropin to restore 0600 on audit.rules after augenrules
-# rewrites it to 0640 when /etc/audit/rules.d/ content changes (RHEL 8/9 only, not containers).
+# Installs an auditd.service dropin to restore 0600 on audit.rules and auditd.conf after they
+# are reset to 0640 on auditd start (augenrules rewrites audit.rules when /etc/audit/rules.d/
+# content changes; auditd itself resets auditd.conf). RHEL 8/9 only, not containers.
 
 - name: "{{{ rule_title }}} - Set /etc/audit/audit.rules and /etc/audit/auditd.conf to 0600, owned by root"
   ansible.builtin.file:
@@ -54,7 +55,7 @@
         dest: /etc/systemd/system/auditd.service.d/permissions.conf
         content: |
           [Service]
-          ExecStartPost=/usr/bin/chmod 0600 /etc/audit/audit.rules
+          ExecStartPost=/usr/bin/chmod 0600 /etc/audit/audit.rules /etc/audit/auditd.conf
         mode: '0644'
 
     - name: "{{{ rule_title }}} - Restore SELinux context on /etc/systemd/system/auditd.service.d/permissions.conf"
