@@ -82,7 +82,6 @@ controls:
       - sysctl_net_ipv4_icmp_ignore_bogus_error_responses_value=enabled
       - sysctl_net_ipv4_tcp_syncookies_value=enabled
       - sysctl_net_ipv6_conf_all_accept_ra_value=disabled
-      - sysctl_net_ipv6_conf_all_accept_redirects_value=disabled
       - sysctl_net_ipv6_conf_all_accept_source_route_value=disabled
       - sysctl_net_ipv6_conf_all_forwarding_value=disabled
       - sysctl_net_ipv6_conf_default_accept_ra_value=disabled
