@@ -1580,7 +1580,7 @@ controls:
     status: pending
   - id: sa-15.13
     title: Logging Syntax
-    description: Require the developer of the system or system component to minimize the use of personally identifiable information in development and test environments.
+    description: 'Require the developer of the system, system component, or system service to use [[ insert: param, sa-15.13_odp.01 ]] to log [[ insert: param, sa-15.13_odp.02 ]] at [[ insert: param, sa-15.13_odp.03 ]].'
     parameters:
       - id: sa-15.13_odp.01
         label: secure logging format(s)
