@@ -58,6 +58,6 @@ template:
     vars:
         path: '{{{ sshd_sysconfig }}}'
         parameter: 'SSH_USE_STRONG_RNG'
-        value: '32'
+        value: '64'
         datatype: int
         no_quotes: 'true'
