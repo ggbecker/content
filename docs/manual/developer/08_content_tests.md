@@ -141,3 +141,12 @@ You can combine multiple on one `/packit test` command:
 ```
 
 Please **use this test sparingly** as it uses a LOT of resources and will take several hours to run, ideally run it only on a final version of a Pull Request, not on every small change. Limiting by `TESTS` helps only slightly - the bulk of the runtime is spent setting up the testing environment (a constant cost).
+
+## Contest Merge Gate
+
+When a pull request is approved, the `Contest Merge Gate` check runs [Content Test Filtering (CTF)](https://github.com/ComplianceAsCode/content-test-filtering) against the pull request and posts a comment stating whether the full Contest test suite is needed:
+
+- If CTF detects changes that affect the built content, the comment recommends running `/packit test -i contest-all` before merging.
+- If no content-affecting changes are detected, the comment states that Contest tests are not required.
+
+The check is informational and does not block the merge. It is defined in `.github/workflows/contest-merge-gate.yaml`.
