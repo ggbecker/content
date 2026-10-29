@@ -1,0 +1,139 @@
+name: Contest Merge Gate
+
+on:
+  pull_request_review:
+    types: [submitted]
+    branches: [master, 'stabilization*']
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  evaluate-content-changes:
+    name: Evaluate content changes
+    if: ${{ github.event.review.state == 'approved' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Deps
+        run: sudo apt-get update && sudo apt-get install -y git jq python3-jinja2 python3-yaml python3-setuptools python3-deepdiff python3-git python3-github python3-requests xmldiff
+      - name: Checkout PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Set git safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Find forking point
+        id: fork_point
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: echo "FORK_POINT=$(git merge-base origin/$BASE_BRANCH ${{ github.event.pull_request.head.sha }})" >> "$GITHUB_OUTPUT"
+      - name: Checkout fork point
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: ${{ steps.fork_point.outputs.FORK_POINT }}
+          fetch-depth: 0
+      - name: Checkout (CTF)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          repository: ComplianceAsCode/content-test-filtering
+          path: ctf
+      - name: Detect content changes in the PR
+        run: python3 ./ctf/content_test_filtering.py pr --base ${{ steps.fork_point.outputs.FORK_POINT }} --remote_repo ${{ github.server_url }}/${{ github.repository }} --verbose --rule --output json ${{ github.event.pull_request.number }} > output.json
+      - name: Check for content changes
+        id: ctf
+        run: echo "CTF_OUTPUT_SIZE=$(stat --printf="%s" output.json)" >> "$GITHUB_OUTPUT"
+      - name: Print changes to content detected if any
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        run: cat output.json
+      - name: Get product attribute
+        id: product
+        if: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE != '0' }}
+        uses: notiz-dev/github-action-json-property@a5a9c668b16513c737c3e1f8956772c99c73f6e8 # v0.2.0
+        with:
+          path: 'output.json'
+          prop_path: 'product'
+      - name: Prepare pull request comment
+        id: comment
+        if: always()
+        env:
+          CTF_OUTPUT_SIZE: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE }}
+          PRODUCT: ${{ steps.product.outputs.prop }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          {
+            echo "body<<$EOF"
+            if [[ "${CTF_OUTPUT_SIZE}" == "0" ]]; then
+              echo "### Contest Merge Gate: no content changes detected"
+              echo
+              echo "CTF did not detect changes that affect the built content in this pull request, so Contest tests are **not required** before merging."
+              echo
+              echo "If you still want to run them, trigger the suite by commenting:"
+              echo
+              echo '```text'
+              echo "/packit test -i contest-all"
+              echo '```'
+            elif [[ -n "${CTF_OUTPUT_SIZE}" ]]; then
+              echo "### Contest Merge Gate: content changes detected"
+              echo
+              echo "CTF detected changes that affect the built content (product: \`${PRODUCT}\`), so Contest tests **should be run** before merging."
+              echo
+              echo "Trigger the suite by commenting:"
+              echo
+              echo '```text'
+              echo "/packit test -i contest-all"
+              echo '```'
+              echo
+              echo "Details: ${RUN_URL}"
+            else
+              echo "### Contest Merge Gate: evaluation did not complete"
+              echo
+              echo "CTF could not evaluate this pull request, so no recommendation could be made. Check the [workflow run](${RUN_URL}) and re-run it if needed."
+            fi
+            echo "$EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Comment on pull request
+        if: always()
+        uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v2
+        with:
+          message: ${{ steps.comment.outputs.body }}
+          comment-tag: contest-merge-gate
+          mode: upsert
+          pr-number: ${{ github.event.pull_request.number }}
+      - name: Evaluate gate result
+        id: gate
+        if: always()
+        env:
+          CTF_OUTPUT_SIZE: ${{ steps.ctf.outputs.CTF_OUTPUT_SIZE }}
+          PRODUCT: ${{ steps.product.outputs.prop }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [[ "${CTF_OUTPUT_SIZE}" == "0" ]]; then
+            CONCLUSION=success
+            SUMMARY="CTF did not detect content changes. Contest tests are not required. Job: ${RUN_URL}"
+          elif [[ -n "${CTF_OUTPUT_SIZE}" ]]; then
+            CONCLUSION=success
+            SUMMARY="CTF detected content changes${PRODUCT:+ for product ${PRODUCT}}. Contest tests should be run: /packit test -i contest-all. Job: ${RUN_URL}"
+          else
+            CONCLUSION=failure
+            SUMMARY="The CTF evaluation did not complete, so no recommendation was made. Job: ${RUN_URL}"
+          fi
+          OUTPUT=$(jq -cn --arg summary "${SUMMARY}" '{summary: $summary}')
+          echo "conclusion=${CONCLUSION}" >> "$GITHUB_OUTPUT"
+          echo "output=${OUTPUT}" >> "$GITHUB_OUTPUT"
+      - name: Publish Contest Merge Gate check
+        if: always()
+        uses: LouisBrunner/checks-action@937cbbcde3259005b50746dc91cde29098aac2ff # v3.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Contest Merge Gate
+          sha: ${{ github.event.pull_request.head.sha }}
+          conclusion: ${{ steps.gate.outputs.conclusion }}
+          output: ${{ steps.gate.outputs.output }}
