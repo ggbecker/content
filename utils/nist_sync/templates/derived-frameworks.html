@@ -121,11 +121,12 @@
         <div class="page-header">
             <h2>Derived Frameworks</h2>
             <p>
-                NIST SP 800-171 (CUI) and NIST SP 800-172 (Enhanced Security Requirements) each
-                derive their requirements from NIST 800-53 controls rather than listing rules
-                directly. This page resolves each requirement against the current product's
-                800-53 controls to show real rule coverage, independent of the requirement's own
-                authored status.
+                NIST SP 800-171 (CUI), NIST SP 800-172 (Enhanced Security Requirements) and
+                IEC 62443-4-2 each derive their requirements from NIST 800-53 controls rather
+                than listing rules directly. This page resolves each requirement against the
+                current product's 800-53 controls to show real rule coverage and status,
+                independent of the requirement's own authored status. Frameworks that a product
+                does not ship are omitted.
             </p>
         </div>
 
@@ -133,67 +134,59 @@
             <!-- Populated by JavaScript -->
         </div>
 
-        <div class="framework-tabs">
-            <button class="framework-tab active" data-framework="nist_800_171" onclick="switchFramework('nist_800_171')">NIST 800-171 (CUI)</button>
-            <button class="framework-tab" data-framework="nist_800_172" onclick="switchFramework('nist_800_172')">NIST 800-172 (Enhanced)</button>
-        </div>
-
-        <div class="card framework-panel active" id="panel-nist_800_171">
-            <div class="filter-bar">
-                <label><input type="checkbox" id="filter-171-gaps-only"> Show gaps only (no rules)</label>
-            </div>
-            <table class="derived-table" id="table-nist_800_171">
-                <thead>
-                    <tr>
-                        <th>Requirement</th>
-                        <th>Title</th>
-                        <th>Source 800-53 Control(s)</th>
-                        <th>Rules</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <div class="card framework-panel" id="panel-nist_800_172">
-            <div class="filter-bar">
-                <label><input type="checkbox" id="filter-172-gaps-only"> Show gaps only (no rules)</label>
-                <label><input type="checkbox" id="filter-172-net-new-only"> Show net-new vs CUI only</label>
-            </div>
-            <table class="derived-table" id="table-nist_800_172">
-                <thead>
-                    <tr>
-                        <th>Requirement</th>
-                        <th>Title</th>
-                        <th>Source 800-53 Control(s)</th>
-                        <th>Rules</th>
-                        <th>Net new vs CUI</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        <div class="framework-tabs" id="framework-tabs"></div>
+        <div id="framework-panels"></div>
     </div>
 
     <script>
         /* DATA_PLACEHOLDER */
 
+        // Preferred display order and short labels. Any framework present in the data
+        // but not listed here is appended and labelled from derived_framework_meta.
+        const FRAMEWORK_ORDER = ['nist_800_171', 'nist_800_172', 'iec_62443'];
         const FRAMEWORK_LABELS = {
             nist_800_171: 'NIST 800-171 (CUI)',
             nist_800_172: 'NIST 800-172 (Enhanced)',
+            iec_62443: 'IEC 62443-4-2',
         };
 
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        function frameworkLabel(fwId) {
+            return FRAMEWORK_LABELS[fwId]
+                || EMBEDDED_DATA.derived_framework_meta?.[fwId]?.title
+                || fwId;
+        }
+
+        // Frameworks this product actually ships, in preferred order.
+        function availableFrameworks() {
+            const data = EMBEDDED_DATA.derived_frameworks?.[CURRENT_PRODUCT] || {};
+            const present = Object.keys(data);
+            const ordered = FRAMEWORK_ORDER.filter(fw => present.includes(fw));
+            const extra = present.filter(fw => !FRAMEWORK_ORDER.includes(fw));
+            return [...ordered, ...extra];
+        }
+
+        // Net-new vs CUI only applies to frameworks whose requirements carry net_new
+        // (currently NIST 800-172). Detected from the data, not hardcoded.
+        function hasNetNew(fwId) {
+            const reqs = EMBEDDED_DATA.derived_frameworks?.[CURRENT_PRODUCT]?.[fwId] || [];
+            return reqs.some(r => Array.isArray(r.net_new));
+        }
+
         function renderSummary() {
-            const product = CURRENT_PRODUCT;
-            const stats = EMBEDDED_DATA.derived_framework_stats?.[product] || {};
+            const stats = EMBEDDED_DATA.derived_framework_stats?.[CURRENT_PRODUCT] || {};
             const container = document.getElementById('framework-summary');
 
             let html = '';
-            for (const [fwId, label] of Object.entries(FRAMEWORK_LABELS)) {
+            for (const fwId of availableFrameworks()) {
                 const s = stats[fwId];
                 if (!s) continue;
+                const label = frameworkLabel(fwId);
                 html += `
                     <div class="stat-card">
                         <div class="stat-value">${s.total}</div>
@@ -214,16 +207,56 @@
                     </div>` : ''}
                 `;
             }
-            container.innerHTML = html;
+            container.innerHTML = html || '<div class="empty-state"><h3>No derived frameworks for this product</h3></div>';
         }
 
         function sourceLinksHtml(sourceControls) {
+            if (!sourceControls || sourceControls.length === 0) return '<span style="color:#959da5;">-</span>';
             return sourceControls.map(id =>
-                `<a class="source-link" href="control-detail.html?id=${id}">${id.toUpperCase()}</a>`
+                `<a class="source-link" href="control-detail.html?id=${encodeURIComponent(id)}">${escapeHtml(id.toUpperCase())}</a>`
             ).join('');
         }
 
-        function renderTable(fwId, requirements, filters) {
+        function buildTabs(frameworks) {
+            const tabs = document.getElementById('framework-tabs');
+            tabs.innerHTML = frameworks.map((fwId, i) =>
+                `<button class="framework-tab${i === 0 ? ' active' : ''}" data-framework="${fwId}" onclick="switchFramework('${fwId}')">${escapeHtml(frameworkLabel(fwId))}</button>`
+            ).join('');
+        }
+
+        function buildPanels(frameworks) {
+            const panels = document.getElementById('framework-panels');
+            panels.innerHTML = frameworks.map((fwId, i) => {
+                const showNetNew = hasNetNew(fwId);
+                const netNewFilter = showNetNew
+                    ? `<label><input type="checkbox" id="filter-${fwId}-net-new-only"> Show net-new vs CUI only</label>`
+                    : '';
+                const netNewHeader = showNetNew ? '<th>Net new vs CUI</th>' : '';
+                return `
+                    <div class="card framework-panel${i === 0 ? ' active' : ''}" id="panel-${fwId}">
+                        <div class="filter-bar">
+                            <label><input type="checkbox" id="filter-${fwId}-gaps-only"> Show gaps only (no rules)</label>
+                            ${netNewFilter}
+                        </div>
+                        <table class="derived-table" id="table-${fwId}">
+                            <thead>
+                                <tr>
+                                    <th>Requirement</th>
+                                    <th>Title</th>
+                                    <th>Source 800-53 Control(s)</th>
+                                    <th>Rules</th>
+                                    ${netNewHeader}
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTable(fwId, requirements, filters, showNetNew) {
             const tbody = document.querySelector(`#table-${fwId} tbody`);
             let rows = requirements;
 
@@ -234,25 +267,25 @@
                 rows = rows.filter(r => (r.net_new || []).length > 0);
             }
 
+            const colspan = showNetNew ? 6 : 5;
             if (rows.length === 0) {
-                const colspan = fwId === 'nist_800_172' ? 6 : 5;
                 tbody.innerHTML = `<tr><td colspan="${colspan}" style="text-align: center; color: #586069; padding: 20px;">No requirements match the current filter</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = rows.map(r => {
-                const statusBadge = `<span class="badge badge-${r.status.replace(/ /g, '_')}">${r.status}</span>`;
+                const statusBadge = `<span class="badge badge-${String(r.status).replace(/ /g, '_')}">${escapeHtml(r.status)}</span>`;
                 const mismatch = r.status_mismatch ? ' <span class="mismatch-badge">status mismatch</span>' : '';
                 const ruleCount = r.rules.length;
                 let netNewCell = '';
-                if (fwId === 'nist_800_172') {
+                if (showNetNew) {
                     const netNew = r.net_new || [];
                     netNewCell = `<td>${netNew.length > 0 ? `<span class="net-new-badge">${netNew.length} new</span>` : '-'}</td>`;
                 }
                 return `
                     <tr>
-                        <td class="req-id">${r.id}</td>
-                        <td>${r.title}</td>
+                        <td class="req-id">${escapeHtml(r.id)}</td>
+                        <td>${escapeHtml(r.title)}</td>
                         <td>${sourceLinksHtml(r.source_controls)}</td>
                         <td>${ruleCount}</td>
                         ${netNewCell}
@@ -263,13 +296,12 @@
         }
 
         function renderFramework(fwId) {
-            const product = CURRENT_PRODUCT;
-            const requirements = EMBEDDED_DATA.derived_frameworks?.[product]?.[fwId] || [];
-            const gapsOnly = document.getElementById(`filter-${fwId === 'nist_800_171' ? '171' : '172'}-gaps-only`).checked;
-            const netNewOnly = fwId === 'nist_800_172'
-                ? document.getElementById('filter-172-net-new-only').checked
-                : false;
-            renderTable(fwId, requirements, { gapsOnly, netNewOnly });
+            const requirements = EMBEDDED_DATA.derived_frameworks?.[CURRENT_PRODUCT]?.[fwId] || [];
+            const showNetNew = hasNetNew(fwId);
+            const gapsOnly = document.getElementById(`filter-${fwId}-gaps-only`)?.checked || false;
+            const netNewEl = document.getElementById(`filter-${fwId}-net-new-only`);
+            const netNewOnly = showNetNew && netNewEl ? netNewEl.checked : false;
+            renderTable(fwId, requirements, { gapsOnly, netNewOnly }, showNetNew);
         }
 
         function switchFramework(fwId) {
@@ -286,13 +318,18 @@
                 return;
             }
 
+            const frameworks = availableFrameworks();
             renderSummary();
-            renderFramework('nist_800_171');
-            renderFramework('nist_800_172');
+            buildTabs(frameworks);
+            buildPanels(frameworks);
 
-            document.getElementById('filter-171-gaps-only').addEventListener('change', () => renderFramework('nist_800_171'));
-            document.getElementById('filter-172-gaps-only').addEventListener('change', () => renderFramework('nist_800_172'));
-            document.getElementById('filter-172-net-new-only').addEventListener('change', () => renderFramework('nist_800_172'));
+            for (const fwId of frameworks) {
+                renderFramework(fwId);
+                document.getElementById(`filter-${fwId}-gaps-only`)
+                    ?.addEventListener('change', () => renderFramework(fwId));
+                document.getElementById(`filter-${fwId}-net-new-only`)
+                    ?.addEventListener('change', () => renderFramework(fwId));
+            }
         });
     </script>
 </body>

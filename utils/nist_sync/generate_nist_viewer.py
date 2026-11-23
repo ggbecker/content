@@ -407,6 +407,16 @@ DERIVED_FRAMEWORK_FILES = {
     'nist_800_172': 'nist_800_172.yml',
 }
 
+# Product-scoped derived frameworks live under products/<product>/controls/ with a
+# <name>.yml metadata file and a <name>/ directory of split section files (e.g. IEC
+# 62443-4-2's per-FR files). Like the flat derived frameworks above, each requirement
+# maps to NIST 800-53 via 'controls: [nist_800_53:<id>]' references rather than listing
+# rules directly, so it resolves through the same resolve_derived_framework() path.
+# A framework here is only shown for products that actually ship it.
+PRODUCT_DERIVED_FRAMEWORK_DIRS = {
+    'iec_62443': 'iec_62443',
+}
+
 
 def load_derived_framework_yaml(framework_file: Path) -> Dict[str, Any]:
     """Load a derived-framework control file (nist_800_171.yml, nist_800_172.yml).
@@ -419,32 +429,81 @@ def load_derived_framework_yaml(framework_file: Path) -> Dict[str, Any]:
     return load_yaml(framework_file)
 
 
+def load_product_derived_framework(product: str, repo_root: Path, subdir: str) -> Dict[str, Any]:
+    """Load a product-scoped, split-by-section derived framework (e.g. IEC 62443).
+
+    Reads products/<product>/controls/<subdir>.yml for metadata (policy/title/id)
+    and concatenates the 'controls' lists from products/<product>/controls/<subdir>/*.yml.
+    Returns {} if the product does not ship this framework, so it is simply omitted.
+    """
+    base = repo_root / 'products' / product / 'controls'
+    meta_file = base / f'{subdir}.yml'
+    section_dir = base / subdir
+    if not meta_file.exists() or not section_dir.exists():
+        return {}
+
+    meta = load_yaml(meta_file) or {}
+    controls: List[Dict[str, Any]] = []
+    for section_file in sorted(section_dir.glob('*.yml')):
+        section_data = load_yaml(section_file) or {}
+        if section_data.get('controls'):
+            controls.extend(section_data['controls'])
+
+    if not controls:
+        return {}
+
+    # Normalise to the same shape load_derived_framework_yaml returns: a dict with
+    # 'title'/'id' and a flat 'controls' list consumable by resolve_derived_framework.
+    # Prefer the human-facing 'policy' label for the title when present.
+    return {
+        'title': meta.get('policy') or meta.get('title', ''),
+        'id': meta.get('id', subdir),
+        'controls': controls,
+    }
+
+
 def resolve_derived_framework(
     framework_data: Dict[str, Any],
     nist53_by_id: Dict[str, Dict[str, Any]],
 ) -> List[Dict[str, Any]]:
     """Resolve a derived framework's requirements against one product's merged 800-53 controls.
 
-    Each requirement's 'controls:' list holds nist_800_53:<id> cross-references;
-    its resolved rule set is the union of those 800-53 controls' own rules for
-    this product. 'has_rules' mirrors gaps.html's own gap definition for NIST
-    800-53 (an empty resolved rule set) rather than trusting the requirement's
-    authored 'status:' - 'status_mismatch' flags where those two disagree
-    (status says automated, but nothing actually resolved), the same class of
-    bug found and fixed in nist_800_171.yml.
+    A requirement's resolved rule set is the union of two sources:
+    - its own direct 'rules:' list (used by product-scoped frameworks such as
+      IEC 62443, whose requirements add selections on top of the NIST crosswalk), and
+    - the rules of the 800-53 controls it references via 'controls: [nist_800_53:<id>]'
+      (the only source for the flat 800-171/800-172 frameworks).
+
+    Variable assignments (entries containing '=') are reported separately in
+    'variable_selections' and excluded from the rule count, matching the existing
+    behaviour for inherited rules. 'has_rules' mirrors gaps.html's own gap
+    definition for NIST 800-53 (an empty resolved rule set) rather than trusting
+    the requirement's authored 'status:'. 'status_mismatch' flags a requirement
+    whose status claims automation (automated/partial) while nothing actually
+    resolved - the same class of bug found and fixed in nist_800_171.yml.
     """
     resolved = []
     for req in framework_data.get('controls', []):
         source_controls = [
             ref.split(':', 1)[1] for ref in req.get('controls', []) if ':' in ref
         ]
-        rules = set()
+        inherited = set()
         for source_id in source_controls:
             source_control = nist53_by_id.get(source_id.lower())
             if source_control:
-                rules.update(
+                inherited.update(
                     r for r in source_control.get('rules', []) if '=' not in str(r)
                 )
+
+        direct = set()
+        variable_selections = []
+        for r in req.get('rules') or []:
+            if '=' in str(r):
+                variable_selections.append(str(r))
+            else:
+                direct.add(str(r))
+
+        rules = inherited | direct
         status = req.get('status', 'pending')
         has_rules = len(rules) > 0
         resolved.append({
@@ -453,8 +512,11 @@ def resolve_derived_framework(
             'status': status,
             'source_controls': source_controls,
             'rules': sorted(rules),
+            'direct_rules': sorted(direct),
+            'inherited_rules': sorted(inherited),
+            'variable_selections': variable_selections,
             'has_rules': has_rules,
-            'status_mismatch': status == 'automated' and not has_rules,
+            'status_mismatch': status in ('automated', 'partial') and not has_rules,
         })
     return resolved
 
@@ -485,6 +547,10 @@ def generate_viewer_data(products: List[str], repo_root: Path) -> Dict[str, Any]
     # Load controls for each product
     products_data = {}
     derived_frameworks_data = {}
+    # Collected across products: {fw_id: {title, id}} for product-scoped frameworks
+    # (e.g. IEC 62443), which carry their metadata per product rather than in a
+    # single shared controls/ file like the flat derived frameworks do.
+    product_framework_meta: Dict[str, Dict[str, str]] = {}
     for product in products:
         print(f"Loading controls for {product}...")
         product_controls = load_product_controls(product, repo_root)
@@ -513,6 +579,22 @@ def generate_viewer_data(products: List[str], repo_root: Path) -> Dict[str, Any]
                 if fw_data
             }
 
+            # Resolve product-scoped derived frameworks (e.g. IEC 62443), which are
+            # only shipped for some products. They resolve through the same path:
+            # their requirements reference nist_800_53:<id> and inherit those rules.
+            for fw_id, subdir in PRODUCT_DERIVED_FRAMEWORK_DIRS.items():
+                fw_data = load_product_derived_framework(product, repo_root, subdir)
+                if not fw_data:
+                    continue
+                print(f"  Loading product-scoped framework '{fw_id}' for {product}...")
+                derived_frameworks_data[product][fw_id] = resolve_derived_framework(
+                    fw_data, nist53_by_id
+                )
+                product_framework_meta.setdefault(fw_id, {
+                    'title': fw_data.get('title', ''),
+                    'id': fw_data.get('id', fw_id),
+                })
+
     # For NIST 800-172, flag which requirements' rules aren't already covered
     # by NIST 800-171 - the "does this enhanced requirement actually add
     # anything beyond CUI" question (see cui_enhanced.profile / ADR-0005).
@@ -540,6 +622,8 @@ def generate_viewer_data(products: List[str], repo_root: Path) -> Dict[str, Any]
         fw_id: {'title': fw_data.get('title', ''), 'id': fw_data.get('id', fw_id)}
         for fw_id, fw_data in derived_framework_raw.items() if fw_data
     }
+    # Product-scoped frameworks (e.g. IEC 62443) contribute their metadata too.
+    derived_framework_meta.update(product_framework_meta)
 
     # Calculate statistics
     stats = {}
